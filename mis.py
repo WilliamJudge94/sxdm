@@ -8,6 +8,11 @@ from det_chan import return_det
 from h5 import h5grab_data, h5set_attr, h5read_attr
 
 def order_dir(path):
+    """For a selected path return the ordered filenames
+
+    :param path:
+    :return:
+    """
     images = sorted(os.listdir(path))
     im_loc = []
     im_name = []

@@ -8,7 +8,17 @@ from h5 import h5images_wra
 
 def import_images(file, images_loc, fill_num = 4, delete = False, 
                   import_type = 'uint32', delimeter_function = delimeter_func):
-    
+
+    """Allows the user to import all .tif images into the .h5 file
+
+    :param file:
+    :param images_loc:
+    :param fill_num:
+    :param delete:
+    :param import_type:
+    :param delimeter_function:
+    :return:
+    """
     sorted_images_loc = sorted(os.listdir(images_loc))
     zfill_sorted_images_loc = zfill_scan(sorted_images_loc,fill_num)
     its = len(sorted_images_loc)

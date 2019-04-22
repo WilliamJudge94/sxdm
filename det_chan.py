@@ -5,6 +5,20 @@ from tqdm import tqdm
 from h5 import h5group_list, h5create_dataset, h5grab_data, h5del_group, h5list_group
 
 def space_check(fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis):
+    """Based on the input variables this checks to see if the user has put any spaces into their group names.
+
+    Warns the user that they are using spaces
+
+    :param fluor:
+    :param roi:
+    :param detector_scan:
+    :param filenumber:
+    :param sample_theta:
+    :param hybrid_x:
+    :param hybrid_y:
+    :param mis:
+    :return:
+    """
     dic = False
     ints = False
     master_dic = [fluor, roi, detector_scan, mis]
@@ -34,6 +48,19 @@ def space_check(fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, h
 
 
 def setup_det_chan(file,fluor,roi,detector_scan,filenumber,sample_theta,hybrid_x, hybrid_y,mis):
+    """Sets detector channel information and stores it in the .h5 file
+
+    :param file:
+    :param fluor:
+    :param roi:
+    :param detector_scan:
+    :param filenumber:
+    :param sample_theta:
+    :param hybrid_x:
+    :param hybrid_y:
+    :param mis:
+    :return:
+    """
     cont = space_check(fluor,roi,detector_scan,filenumber,sample_theta,hybrid_x,hybrid_y,mis)
 
     if cont == True:
@@ -62,9 +89,19 @@ def setup_det_chan(file,fluor,roi,detector_scan,filenumber,sample_theta,hybrid_x
                         warnings.warn(' - '+det_type+' - Detector Channel Already Exists. Will Not Overwrite')
 
 def del_det_chan(file):
+    """Deletes the /detector_channels group
+
+    :param file:
+    :return:
+    """
     h5del_group(file,'/detector_channels')
 
 def disp_det_chan(file):
+    """Allows the user to quicky see what all values are set to in the detector_channel group
+
+    :param file:
+    :return:
+    """
     try:
         det_chans = h5group_list(file,'/detector_channels/')
 
@@ -111,6 +148,13 @@ def disp_det_chan(file):
 
 
 def return_det(file, scan_numbers, group='fluor'):
+    """Returns all information for a given detector channel for an array of scan numbers
+
+    :param file:
+    :param scan_numbers:
+    :param group:
+    :return:
+    """
     acceptable_values = h5grab_data(file, 'detector_channels')
     if group in acceptable_values:
         path = 'detector_channels/' + group

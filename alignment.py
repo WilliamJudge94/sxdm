@@ -8,10 +8,22 @@ from det_chan import return_det
 from preprocess import init_dxdy
 
 def alignment_function(self):
+    """Allows the user to align the scans based on Fluorescence or Region Of Interest.
 
+    Sets alignment variables and stores them in designated .h5 file. Easier to reload alignment data
+    or redo alignment data
+
+    :param (SXDMFrameset)
+    :return: --------
+    """
+
+
+    #Check to see if /dxdy group exsists if not make it and set attributes
     if h5path_exists(self.file, self.dataset_name + '/dxdy') == True:
         warnings.warn('Previous Data Found')
         redo_alignment = input('Previous Data Found. Redo Alignment? y/n ')
+
+        #Determining if User wants to reload or redo alignment
         if redo_alignment == 'y':
             start_alignment = 'y'
             self.alignment_group = h5read_attr(self.file, self.dataset_name + '/dxdy', 'alignment_group')
@@ -29,13 +41,14 @@ def alignment_function(self):
             init_dxdy(self)
         else:
             print('Previous Alignment Done On -  ' + self.alignment_group + ' - ' + self.alignment_subgroup)
-
+            #Grabbing old alignment and setting alignment circles
             retrieve_old_data = array2dic(h5grab_data(self.file, self.dataset_name + '/dxdy'))
             warnings.warn('Refreshing Old Aligment Data')
         self.clicks = {}
         self.correction_store = {}
         plt.close('all')
         cont = True
+        #Ask which images the user wants to align to
         while cont == True:
             user_val = input('Would You Like To Align On fluor Or roi? ')
             if user_val == 'fluor' or user_val == 'roi':
@@ -71,6 +84,8 @@ def alignment_function(self):
 
         plt.suptitle('Please Click On Any Of The Images Below')
         plt.show()
+
+        #Based on the Users clicks display different information
         fig.canvas.mpl_connect('button_press_event', initiate)
         fig.canvas.mpl_connect('button_press_event', click1)
         fig.canvas.mpl_connect('button_press_event', saving)
