@@ -9,6 +9,8 @@ from mis import dic2array
 def onclick_1(event, self):
     """Deal with click events for first figure. Only allows for 30 figures
 
+    Once you click on figure one open up a second figure with the figure you just clicked on, but larger
+
     Parameters
     ==========
     event: (?)
@@ -17,11 +19,16 @@ def onclick_1(event, self):
     self: (SXDMFrameset)
         An SXDMFrameset which allows the function to store click values
 
+    Returns
+    -------
+    Nothing
+
     """
     button = ['left', 'middle', 'right']
     toolbar = plt.get_current_fig_manager().toolbar
     if toolbar.mode != '':
         print("You clicked on something, but toolbar is in mode {:s}.".format(toolbar.mode))
+    # Keep making up to 30 figures in a single plot
     else:
         self.clicks['loc'] = (int(event.xdata), int(event.ydata))
         total = 30
@@ -33,7 +40,9 @@ def onclick_1(event, self):
             pass
 
 def onclick_2(event, self):
-    """Determine the pixel location the user has clicked on
+    """Determine the pixel location the user has clicked on.
+
+    From the second figure that popped up, once you click on it, determine the location of that click
 
     Parameters
     ==========
@@ -113,6 +122,7 @@ def save_alignment(event, self):
 
     """
 
+    # Save/Replace the dxdy data
     if h5path_exists(self.file, self.dataset_name + '/dxdy') == False:
         h5create_dataset(self.file, self.dataset_name + '/dxdy', dic2array(self.dxdy_store))
         h5set_attr(self.file, self.dataset_name + '/dxdy', 'alignment_group', self.alignment_group)

@@ -9,10 +9,17 @@ def scan_background(self, amount2ave=3, multiplier=1):
     Takes the first "amount2ave" and last "amount2ave" images of each scan and average them together to each scan.
     Create a dictionary of these background images.
 
-    :param self: (SXDMFrameset)
-    :param amount2ave: (int) amount of images from the beginning and end of each scan to average together
-    :param multiplier: (int/float) multiplier for each background scan
-    :return: dictionary of background images for each scan number
+    Paramteters
+    -----------
+    self: (SXDMFrameset)
+    amount2ave: (int)
+        amount of images from the beginning and enf of each scan to average together
+    multiplier: (int/float)
+        multiplier for each background scan
+
+    Returns
+    -------
+    A dictionary of background images with entries for each scan number
     """
     unshifted_array = centering_det(self, group='filenumber', center_around=-1)
     first = 0
@@ -46,7 +53,7 @@ def scan_background(self, amount2ave=3, multiplier=1):
             middle_store.append(data)
         background_store.append(np.mean(middle_store, axis=0))
 
-        # Create a dictionary of these entries so it is easier to get info out
+    # Create a dictionary of these entries so it is easier to get info out
     background_dic = {}
     for j, scan in enumerate(scans):
         background_dic[scan] = background_store[i] * multiplier
@@ -56,11 +63,18 @@ def scan_background(self, amount2ave=3, multiplier=1):
 
 def scan_background_finder(destination, background_dic):
     """The destination is the scan numbers associated with a given pixel location. This will take all scans in a pixel
-    location and return a numpy array of their appropriate background images
+    location and return a numpy array of their appropriate background images.
 
-    :param destination: (numpy array) list of scan numbers which the user want to get the background images for
-    :param background_dic: (dic) the dictionary output of the scan_background() function
-    :return: a numpy array of background images corresponding to the scans in the destination input
+    Parameters
+    ----------
+    destination: (numpy array)
+        list of scan numbers which the user wants to get the background images for
+    background_dic: (dic)
+        the dictionary otuput from the scan_background() function
+
+    Returns
+    -------
+    A numpy array of background images corresponding to the scans in the destination input
     """
     scans = [value.split('/')[1] for value in destination]
     background = []
