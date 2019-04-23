@@ -201,7 +201,7 @@ def better_multi(self, rows, columns, med_blur_distance = 4, med_blur_height = 1
 
     return master_results
 
-def best_analysis(self, rows, columns, med_blur_distance = 4, med_blur_height = 10, stdev_min = 35, multiplier = 1):
+def best_analysis(self, rows, columns, med_blur_distance = 4, med_blur_height = 10, stdev_min = 35, multiplier = 1, center_around = False):
     """
     :param self:
     :param rows:
@@ -219,7 +219,7 @@ def best_analysis(self, rows, columns, med_blur_distance = 4, med_blur_height = 
     self.stdev_min = stdev_min
     background_dic_basic = scan_background(self, multiplier=multiplier)
 
-    image_array = centering_det(self, group='filenumber')
+    image_array = centering_det(self, group='filenumber', center_around = center_around)
     self.image_array = np.asarray(image_array)
     row, column = initialize_vectorize(self,rows, columns)
     vectorize_pixel_analysis = np.vectorize(pixel_analysis_v2,

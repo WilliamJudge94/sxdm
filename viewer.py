@@ -115,9 +115,9 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
         summed_dif_ax.set_yticks = []
 
     ttheta_map_ax.imshow(ttheta_centroid)
-    chi_map_ax.imshow(chi_centroid)
-    roi_ax.imshow(roi_im)
-    fluor_ax.imshow(fluor_image)
+    chi_map_ax.imshow(chi_centroid, cmap = 'magma')
+    roi_ax.imshow(roi_im, cmap = 'inferno')
+    fluor_ax.imshow(fluor_image, cmap = 'inferno')
 
 
 def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
@@ -176,7 +176,8 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         chi_centroid_ax.plot(chi_centroid_finder, color = 'red')
         chi_centroid_ax.axvline(chi_centroid, color = 'black')
 
-def run_viewer(results, fluor_image):
+def run_viewer(user_class, fluor_image):
+    results = user_class.results
     #make buttons and tb do something
     #make clicking figures do something
     current_figure = FiguresClass()
@@ -215,7 +216,7 @@ def run_viewer(results, fluor_image):
     current_figure.med_blur_dis_val = int(current_figure.med_blur_dis_tb.text)
     current_figure.med_blur_h_val = int(current_figure.med_blur_h_tb.text)
     current_figure.stdev_val = float(current_figure.stdev_tb.text)
-    multiplier_val = float(current_figure.multiplier_tb.text)
+    current_figure.bkgx_val = float(current_figure.multiplier_tb.text)
 
 
     load_static_data(current_figure.results, current_figure.vmin_sum_val, current_figure.vmax_sum_val,
@@ -239,6 +240,7 @@ def run_viewer(results, fluor_image):
     current_figure.fig.canvas.mpl_connect('button_press_event', p_viewer_mouse_click)
 
     p_spot_change = partial(spot_change, self = current_figure)
+    p_reprocessbtn_click = partial(reprocessbtn_click, user_class = user_class, figure_class = current_figure )
 
     current_figure.vmin_spot_tb.on_submit(p_spot_change)
     current_figure.vmax_spot_tb.on_submit(p_spot_change)
@@ -248,6 +250,9 @@ def run_viewer(results, fluor_image):
     current_figure.med_blur_h_tb.on_submit(p_analysis_change)
     current_figure.med_blur_dis_tb.on_submit(p_analysis_change)
     current_figure.multiplier_tb.on_submit(p_analysis_change)
+
+    current_figure.reproocessbtn.on_clicked(p_reprocessbtn_click)
+
 
 def spot_change(text, self):
 
@@ -329,6 +334,14 @@ def viewer_mouse_click(event, self):
         plt.draw()
     else:
         pass
+
+
+def reprocessbtn_click(event,user_class, figure_class):
+    user_class.total_rows = 34
+    user_class.total_columns = 27
+    user_class.analysis(user_class.total_rows, user_class.total_columns, med_blur_distance = figure_class.med_blur_dis_val,
+                        med_blur_height = figure_class.med_blur_h_val,
+                        stdev_min = figure_class.stdev_val, bkg_multiplier = figure_class.bkgx_val)
 
 
 

@@ -62,8 +62,11 @@ class SXDMFrameset():
         :param bkg_multiplier: (int) multiplier for the background signal to be subtracted
         :return:
         """
+        self.total_rows = rows
+        self.total_columns = columns
         self.results = best_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
-                                     med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier)
+                                     med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier,
+                                     center_around = 1)
 
         print('Results Stored As self.results')
 
@@ -90,8 +93,9 @@ class SXDMFrameset():
     def viewer(self):
         try:
             fluor_image = centering_det(self)
+            fluor_image = fluor_image[0]
         except:
-            fluor_image = 'default'
+            fluor_image = sum_error()
 
-        run_viewer(self.results, fluor_image[0])
+        run_viewer(self, fluor_image)
 
