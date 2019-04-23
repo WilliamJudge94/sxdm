@@ -148,7 +148,7 @@ def check_mouse_ax(event, self):
         self.viewer_currentax = self.fluor_ax
     elif event.inaxes == self.roi_ax:
         self.viewer_currentax = self.roi_ax
-    else:
-        self.viewer_currentax = None
 
+def fig_leave(event, self):
+    self.viewer_currentax = None
 

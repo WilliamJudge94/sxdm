@@ -8,6 +8,7 @@ from multi import *
 from pixel import *
 from alignment import *
 from logger import *
+from viewer import *
 
 from tqdm import tqdm
 
@@ -87,5 +88,10 @@ class SXDMFrameset():
                 h5replace_data(save_filename, self.dataset_name + '/{}'.format(value), np.asarray(readable_results2))
 
     def viewer(self):
-        run_viewer(self.results)
+        try:
+            fluor_image = centering_det(self)
+        except:
+            fluor_image = 'default'
+
+        run_viewer(self.results, fluor_image[0])
 

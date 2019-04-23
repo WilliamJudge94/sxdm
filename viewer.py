@@ -11,7 +11,7 @@ from postprocess import pixel_analysis_return
 from mis import  median_blur, centering_det
 from postprocess import centroid_roi_map, pooled_return
 from pixel import theta_maths, chi_maths
-from clicks import check_mouse_ax
+from clicks import check_mouse_ax, fig_leave
 
 def figure_setup():
 
@@ -96,12 +96,15 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
            med_blur_dis_tb, med_blur_h_tb, stdev_tb, multiplier_tb
 
 def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
-                     summed_dif_ax, ttheta_map_ax, chi_map_ax):
+                     summed_dif_ax, ttheta_map_ax, chi_map_ax, fluor_image):
 
     roi_im = centroid_roi_map(results, 'full_roi')
     chi_centroid = centroid_roi_map(results, 'chi_centroid')
     ttheta_centroid = centroid_roi_map(results, 'ttheta_centroid')
-    #fluor_im = centering_det(self, group='fluor', summed=True)
+    if np.shape(fluor_image) != ():
+        pass
+    else:
+        fluor_image = roi_im
 
     try:
         summed_dif = np.sum(results[:, 1], axis = 0)
@@ -114,7 +117,7 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
     ttheta_map_ax.imshow(ttheta_centroid)
     chi_map_ax.imshow(chi_centroid)
     roi_ax.imshow(roi_im)
-    fluor_ax.imshow(roi_im)
+    fluor_ax.imshow(fluor_image)
 
 
 def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
@@ -173,7 +176,7 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         chi_centroid_ax.plot(chi_centroid_finder, color = 'red')
         chi_centroid_ax.axvline(chi_centroid, color = 'black')
 
-def run_viewer(results):
+def run_viewer(results, fluor_image):
     #make buttons and tb do something
     #make clicking figures do something
     current_figure = FiguresClass()
@@ -218,7 +221,7 @@ def run_viewer(results):
     load_static_data(current_figure.results, current_figure.vmin_sum_val, current_figure.vmax_sum_val,
                      current_figure.fluor_ax,
                      current_figure.roi_ax, current_figure.summed_dif_ax,
-                     current_figure.ttheta_map_ax, current_figure.chi_map_ax)
+                     current_figure.ttheta_map_ax, current_figure.chi_map_ax, fluor_image)
 
     load_dynamic_data(current_figure.results, current_figure.vmin_spot_val, current_figure.vmax_spot_val,
                       current_figure.spot_diff_ax, current_figure.ttheta_centroid_ax, current_figure.chi_centroid_ax,
@@ -229,8 +232,10 @@ def run_viewer(results):
     p_check_mouse_ax = partial(check_mouse_ax,self = current_figure)
     p_viewer_mouse_click = partial(viewer_mouse_click, self = current_figure)
     p_analysis_change = partial(analysis_change, self = current_figure)
+    p_fig_leave = partial(fig_leave, self = current_figure)
 
     current_figure.fig.canvas.mpl_connect('axes_enter_event', p_check_mouse_ax)
+    current_figure.fig.canvas.mpl_connect('axes_leave_event', p_fig_leave)
     current_figure.fig.canvas.mpl_connect('button_press_event', p_viewer_mouse_click)
 
     p_spot_change = partial(spot_change, self = current_figure)
@@ -290,8 +295,7 @@ class FiguresClass():
 
 
 def viewer_mouse_click(event, self):
-
-    if self.viewer_currentax in [self.fluor_ax, self.roi_ax]:
+    if self.viewer_currentax in [self.fluor_ax, self.roi_ax] and self.viewer_currentax != None:
         self.row = int(np.floor(event.ydata))
         self.column = int(np.floor(event.xdata))
         try:
