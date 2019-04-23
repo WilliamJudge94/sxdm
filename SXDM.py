@@ -86,3 +86,6 @@ class SXDMFrameset():
             except:
                 h5replace_data(save_filename, self.dataset_name + '/{}'.format(value), np.asarray(readable_results2))
 
+    def viewer(self):
+        run_viewer(self.results)
+

@@ -11,7 +11,7 @@ from postprocess import pixel_analysis_return
 from mis import  median_blur, centering_det
 from postprocess import centroid_roi_map, pooled_return
 from pixel import theta_maths, chi_maths
-from clicks import check_mouse_ax, viewer_mouse_click
+from clicks import check_mouse_ax
 
 def figure_setup():
 
@@ -273,7 +273,6 @@ def spot_change(text, self):
         self.spot_diff_ax.set_xticks = []
         self.spot_diff_ax.set_yticks = []
 
-
 def analysis_change(text, self):
     self.med_blur_dis_val = int(self.med_blur_dis_tb.text)
     self.med_blur_h_val = int(self.med_blur_h_tb.text)
@@ -285,7 +284,47 @@ def analysis_change(text, self):
                       self.row, self.column)
 
 
+
 class FiguresClass():
     pass
+
+
+def viewer_mouse_click(event, self):
+
+    if self.viewer_currentax in [self.fluor_ax, self.roi_ax]:
+        self.row = int(np.floor(event.ydata))
+        self.column = int(np.floor(event.xdata))
+        try:
+            self.fluor_ax.lines[1].remove()
+            self.fluor_ax.lines[0].remove()
+            self.roi_ax.lines[1].remove()
+            self.roi_ax.lines[0].remove()
+            self.ttheta_map_ax.lines[1].remove()
+            self.ttheta_map_ax.lines[0].remove()
+            self.chi_map_ax.lines[1].remove()
+            self.chi_map_ax.lines[0].remove()
+
+        except:
+            pass
+        self.fluor_ax.axvline(x = self.column, color = 'w', linewidth = 1)
+        self.fluor_ax.axhline(y = self.row, color = 'w', linewidth = 1)
+
+        self.roi_ax.axvline(x = self.column, color = 'w', linewidth = 1)
+        self.roi_ax.axhline(y = self.row, color = 'w', linewidth = 1)
+
+        self.ttheta_map_ax.axvline(x = self.column, color = 'r', linewidth = 0.5)
+        self.ttheta_map_ax.axhline(y = self.row, color = 'r', linewidth = 0.5)
+
+        self.chi_map_ax.axvline(x = self.column, color = 'r', linewidth = 0.5)
+        self.chi_map_ax.axhline(y = self.row, color = 'r', linewidth = 0.5)
+
+        load_dynamic_data(self.results, self.vmin_spot_val, self.vmax_spot_val, self.spot_diff_ax,
+                              self.ttheta_centroid_ax, self.chi_centroid_ax, self.med_blur_dis_val,
+                              self.med_blur_h_val, self.stdev_val, self.row, self.column)
+
+        plt.draw()
+    else:
+        pass
+
 
 

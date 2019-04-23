@@ -6,7 +6,6 @@ import time
 
 from h5 import h5create_dataset, h5set_attr, h5replace_data, h5del_group, h5path_exists
 from mis import dic2array
-from viewer import load_dynamic_data
 
 def onclick_1(event, self):
     """Deal with click events for first figure. Only allows for 30 figures
@@ -152,40 +151,4 @@ def check_mouse_ax(event, self):
     else:
         self.viewer_currentax = None
 
-def viewer_mouse_click(event, self):
-
-    if self.viewer_currentax in [self.fluor_ax, self.roi_ax]:
-        self.row = int(np.floor(event.ydata))
-        self.column = int(np.floor(event.xdata))
-        try:
-            self.fluor_ax.lines[1].remove()
-            self.fluor_ax.lines[0].remove()
-            self.roi_ax.lines[1].remove()
-            self.roi_ax.lines[0].remove()
-            self.ttheta_map_ax.lines[1].remove()
-            self.ttheta_map_ax.lines[0].remove()
-            self.chi_map_ax.lines[1].remove()
-            self.chi_map_ax.lines[0].remove()
-
-        except:
-            pass
-        self.fluor_ax.axvline(x = self.column, color = 'w', linewidth = 1)
-        self.fluor_ax.axhline(y = self.row, color = 'w', linewidth = 1)
-
-        self.roi_ax.axvline(x = self.column, color = 'w', linewidth = 1)
-        self.roi_ax.axhline(y = self.row, color = 'w', linewidth = 1)
-
-        self.ttheta_map_ax.axvline(x = self.column, color = 'r', linewidth = 0.5)
-        self.ttheta_map_ax.axhline(y = self.row, color = 'r', linewidth = 0.5)
-
-        self.chi_map_ax.axvline(x = self.column, color = 'r', linewidth = 0.5)
-        self.chi_map_ax.axhline(y = self.row, color = 'r', linewidth = 0.5)
-
-        load_dynamic_data(self.results, self.vmin_spot_val, self.vmax_spot_val, self.spot_diff_ax,
-                              self.ttheta_centroid_ax, self.chi_centroid_ax, self.med_blur_dis_val,
-                              self.med_blur_h_val, self.stdev_val, self.row, self.column)
-
-        plt.draw()
-    else:
-        pass
 
