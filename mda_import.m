@@ -31,37 +31,49 @@ end
 total_amount_pre = size(filenames);
 total_amount = total_amount_pre(2);
 
+user_input = input('Type In Scan Number To Import Or Type - 0 - To Import Entire Folder '); 
+user_input_corr = sprintf('%04d',user_input);
+
 %For each file open up all the channels and store values in hdf5
 for filename = filenames
     mda_file = filename{1}(end-7:end-4);
-    loading_str = ['Loading Scan - ' mda_file ' -  Please Wait' ];
-    waitbar((counter-1)/total_amount,bar,loading_str);
-    counter = counter + 1;
-    %For each detector channel
-    for detector_channel = (1:detector_channel_limit)
-        %create a string of the detector challen for the h5 file
-        detector_string = strcat('D',sprintf('%02d',detector_channel));
-        %try to loadmda for that detector
-        disp(detector_channel)
-        try
-            data=loadmda(filename{1},detector_channel,'n','n'); 
-            clc
-            close all
-            data2=data(:,:,1);
-            data2 = flipud(data2);
-            data2 = transpose(data2);
-            shape_data2  = size(data2);
-            dim1 = shape_data2(1);
-            dim2 = shape_data2(2);
+    if user_input_corr == '0000'
+        user_input_corr2 = mda_file;
+    else
+        user_input_corr2 = user_input_corr;
+    end
+    
+    if mda_file == user_input_corr2
         
-        %if you can load it try to save the data to the appropriate
-        %location in h5 file
-            group = strcat('/mda/',mda_file,'/',detector_string);
+        loading_str = ['Loading Scan - ' mda_file ' -  Please Wait' ];
+        waitbar((counter-1)/total_amount,bar,loading_str);
+        counter = counter + 1;
+        %For each detector channel
+        for detector_channel = (1:detector_channel_limit)
+            %create a string of the detector challen for the h5 file
+            detector_string = strcat('D',sprintf('%02d',detector_channel));
+            %try to loadmda for that detector
+            disp(detector_channel)
             try
-                h5create(output_path,group,[dim1 dim2]);  
-            end
-            try
-                h5write(output_path,group,data2);
+                data=loadmda(filename{1},detector_channel,'n','n'); 
+                clc
+                close all
+                data2=data(:,:,1);
+                data2 = flipud(data2);
+                data2 = transpose(data2);
+                shape_data2  = size(data2);
+                dim1 = shape_data2(1);
+                dim2 = shape_data2(2);
+
+            %if you can load it try to save the data to the appropriate
+            %location in h5 file
+                group = strcat('/mda/',mda_file,'/',detector_string);
+                try
+                    h5create(output_path,group,[dim1 dim2]);  
+                end
+                try
+                    h5write(output_path,group,data2);
+                end
             end
         end
     end
@@ -69,6 +81,4 @@ end
 close(bar)
 clc
 disp('Done')
-
-
         
