@@ -11,6 +11,7 @@ from functools import partial
 
 from scipy.ndimage import shift
 from matplotlib.patches import Circle
+from matplotlib.widgets import Button, TextBox
 
 # Make sure this directory is in python path for imports
 sys.path.append(os.path.dirname(__file__))
@@ -29,3 +30,5 @@ from pixel import *
 from postprocess import *
 from preprocess import *
 from SXDM import *
+from viewer import *
+

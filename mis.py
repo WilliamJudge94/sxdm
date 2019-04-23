@@ -216,7 +216,7 @@ def ram_check():
 
 
 def median_blur(input_array, median_blur_distance,
-                cut_off_value_above_mean):  # Created my own median blur for the data
+                cut_off_value_above_mean):
     iteration_number = np.shape(input_array)[
         0]  # Finds out the length of the array you want to median blur. This equals the number of iterations you will perform
     median_array = []  # Create a blank array for the final output

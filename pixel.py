@@ -20,7 +20,6 @@ def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,
     else:
         q.put([ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2])
 
-
 def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,q = False):
         chi = np.sum(summed_dif, axis=1)
         chi = median_blur(chi, median_blur_distance, median_blur_height)

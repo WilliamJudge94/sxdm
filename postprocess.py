@@ -1,6 +1,7 @@
 import numpy as np
 import warnings
 import os
+from tqdm import tqdm
 
 from multi import pooled_return
 from h5 import h5grab_data
@@ -156,32 +157,34 @@ def signal_broadening(self):
 
 def saved_return(file, group, summed_dif_return = False):
     acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi',
-                         'ttheta_corr', 'ttheta_centroid','chi_corr',
+                         'ttheta_corr', 'ttheta_centroid', 'chi_corr',
                          'chi_centroid', 'full_roi']
     pre_store = []
     for value in tqdm(acceptable_values):
         if value != 'summed_dif':
-            data = h5grab_data(file, '{}/{}'.format(group,value))
+            data = h5grab_data(file, '{}/{}'.format(group, value))
 
             rc_appender = []
             if value == 'row_column':
                 length_data = len(data)
                 for rc_data in data:
                     rc_appender.append((rc_data[0], rc_data[1]))
-                pre_store.append((rc_appender))
+                pre_store.append(rc_appender)
 
             else:
                 pre_store.append(data)
+
         elif value == 'summed_dif' and summed_dif_return == True:
             pre_store.append(data)
+
         elif value == 'summed_dif' and summed_dif_return == False:
             pre_store.append(np.ones(length_data))
 
-        results_store = []
-        for i, iteration in enumerate(pre_store[0]):
-            base_store = []
-            for its in enumerate(pre_store):
-                base_store.append(its[i])
-            results_store.append(base_store)
+    results_store = []
+    for i, iteration in enumerate(pre_store[0]):
+        base_store = []
+        for j, its in enumerate(pre_store):
+            base_store.append(its[i])
+        results_store.append(base_store)
 
-        return np.asarray(results_store)
+    return np.asarray(results_store)
