@@ -118,6 +118,10 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
                       ttheta_centroid_ax, chi_centroid_ax, med_blur_distance,
                       med_blur_height, stdev_min, row, column):
 
+    spot_dif_ax.cla()
+    ttheta_centroid_ax.cla()
+    chi_centroid_ax.cla()
+
     return_dic = pixel_analysis_return(results, row, column)
 
     spot_dif = return_dic['summed_dif']
@@ -138,17 +142,34 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
                                                            med_blur_distance,
                                                            med_blur_height,
                                                            stdev_min)
-
+        #centroid is val
+        #centroid finder is corr
+        #ttheta is raw
         ttheta_centroid_ax.plot(ttheta, color = 'blue')
-        ttheta_centroid_ax.plot(ttheta_centroid, color = 'red')
-        ttheta_centroid_ax.axvline(x = ttheta_centroid_finder, color = 'black')
+        ttheta_centroid_ax.plot(ttheta_centroid_finder, color = 'red')
+        ttheta_centroid_ax.axvline(x = ttheta_centroid, color = 'black')
 
         chi_centroid_ax.plot(chi, color = 'blue')
-        chi_centroid_ax.plot(chi_centroid, color = 'red')
-        chi_centroid_ax.axvline(x = chi_centroid_finder)
+        chi_centroid_ax.plot(chi_centroid_finder, color = 'red')
+        chi_centroid_ax.axvline(x = chi_centroid)
 
     except:
-        pass
+        ttheta = return_dic['ttheta']
+        ttheta_centroid_finder = return_dic['ttheta_corr']
+        ttheta_centroid = return_dic['ttheta_cent']
+
+        chi = return_dic['chi']
+        chi_centroid_finder = return_dic['chi_corr']
+        chi_centroid = return_dic['chi_cent']
+
+        ttheta_centroid_ax.plot(ttheta, color = 'blue')
+        ttheta_centroid_ax.plot(ttheta_centroid_finder, color = 'red')
+        ttheta_centroid_ax.axvline(x = ttheta_centroid, color = 'black')
+
+        chi_centroid_ax.plot(chi, color = 'blue')
+        chi_centroid_ax.plot(chi_centroid_finder, color = 'red')
+        chi_centroid_ax.axvline(chi_centroid, color = 'black')
+
 
 
 
