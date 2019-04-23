@@ -161,8 +161,8 @@ def saved_return(file, group, summed_dif_return = False):
                          'chi_centroid', 'full_roi']
     pre_store = []
     for value in tqdm(acceptable_values):
+        data = h5grab_data(file, '{}/{}'.format(group, value))
         if value != 'summed_dif':
-            data = h5grab_data(file, '{}/{}'.format(group, value))
 
             rc_appender = []
             if value == 'row_column':

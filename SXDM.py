@@ -71,6 +71,7 @@ class SXDMFrameset():
 
     def save(self):
         save_filename = self.file[0:-3] + '_savedata.h5'
+        self.save_file = save_filename
         acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi', 'ttheta_corr', 'ttheta_centroid','chi_corr',
                          'chi_centroid', 'full_roi']
         for value in tqdm(acceptable_values):
