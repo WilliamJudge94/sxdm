@@ -161,9 +161,9 @@ def saved_return(file, group, summed_dif_return = False):
                          'chi_centroid', 'full_roi']
     pre_store = []
     for value in tqdm(acceptable_values):
-        data = h5grab_data(file, '{}/{}'.format(group, value))
-        if value != 'summed_dif':
 
+        if value != 'summed_dif':
+            data = h5grab_data(file, '{}/{}'.format(group, value))
             rc_appender = []
             if value == 'row_column':
                 length_data = len(data)
@@ -175,10 +175,11 @@ def saved_return(file, group, summed_dif_return = False):
                 pre_store.append(data)
 
         elif value == 'summed_dif' and summed_dif_return == True:
+            data = h5grab_data(file, '{}/{}'.format(group, value))
             pre_store.append(data)
 
-        elif value == 'summed_dif' and summed_dif_return == False:
-            pre_store.append(np.ones(length_data))
+        elif value == 'summed_dif' and summed_dif_return == False:         
+            pre_store.append(np.zeros(length_data))
 
     results_store = []
     for i, iteration in enumerate(pre_store[0]):

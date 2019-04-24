@@ -241,6 +241,7 @@ def run_viewer(user_class, fluor_image):
 
     p_spot_change = partial(spot_change, self = current_figure)
     p_reprocessbtn_click = partial(reprocessbtn_click, user_class = user_class, figure_class = current_figure )
+    p_savingbtn_click = partial(savingbtn_click, user_class = user_class, figure_class = current_figure )
 
     current_figure.vmin_spot_tb.on_submit(p_spot_change)
     current_figure.vmax_spot_tb.on_submit(p_spot_change)
@@ -252,7 +253,7 @@ def run_viewer(user_class, fluor_image):
     current_figure.multiplier_tb.on_submit(p_analysis_change)
 
     current_figure.reproocessbtn.on_clicked(p_reprocessbtn_click)
-
+    current_figure.savingbtn.on_clicked(p_savingbtn_click)
 
 def spot_change(text, self):
 
@@ -284,6 +285,7 @@ def spot_change(text, self):
         self.spot_diff_ax.set_yticks = []
 
 def analysis_change(text, self):
+    make_red(self)
     self.med_blur_dis_val = int(self.med_blur_dis_tb.text)
     self.med_blur_h_val = int(self.med_blur_h_tb.text)
     self.stdev_val = float(self.stdev_tb.text)
@@ -297,6 +299,35 @@ def analysis_change(text, self):
 
 class FiguresClass():
     pass
+
+def make_red(self):
+    axes = [self.ttheta_map_ax, self.chi_map_ax,
+            self.reprocessbtn_ax]
+    sides = ['left', 'right', 'top', 'bottom']
+    for ax in axes:
+        for side in sides:
+            ax.spines[side].set_color('red')
+    plt.draw() 
+
+def make_pink(self):
+    axes = [self.ttheta_map_ax, self.chi_map_ax,
+            self.savingbtn_ax]
+    sides = ['left', 'right', 'top', 'bottom']
+    for ax in axes:
+        for side in sides:
+            ax.spines[side].set_color('pink')
+    for side in sides:
+        self.reprocessbtn_ax.spines[side].set_color('black')
+    plt.draw()
+
+def make_black(self):
+    axes = [self.ttheta_map_ax, self.chi_map_ax,
+            self.reprocessbtn_ax, self.savingbtn_ax]
+    sides = ['left', 'right', 'top', 'bottom']
+    for ax in axes:
+        for side in sides:
+            ax.spines[side].set_color('black')
+    plt.draw() 
 
 
 def viewer_mouse_click(event, self):
@@ -337,11 +368,14 @@ def viewer_mouse_click(event, self):
 
 
 def reprocessbtn_click(event,user_class, figure_class):
+    make_pink(figure_class)
     user_class.total_rows = 34
     user_class.total_columns = 27
-    user_class.analysis(user_class.total_rows, user_class.total_columns, med_blur_distance = figure_class.med_blur_dis_val,
-                        med_blur_height = figure_class.med_blur_h_val,
-                        stdev_min = figure_class.stdev_val, bkg_multiplier = figure_class.bkgx_val)
+    #user_class.analysis(user_class.total_rows, user_class.total_columns, med_blur_distance = figure_class.med_blur_dis_val,
+    #                    med_blur_height = figure_class.med_blur_h_val,
+    #                    stdev_min = figure_class.stdev_val, bkg_multiplier = figure_class.bkgx_val)
 
 
+def savingbtn_click(event, user_class, figure_class):
+    make_black(figure_class)
 

@@ -1,3 +1,5 @@
+import warnings
+
 from h5 import *
 from det_chan import *
 from importer import *
@@ -18,17 +20,29 @@ class SXDMFrameset():
 
         self.file = file
         self.dataset_name = dataset_name
-
+        try:
+        	initialize_scans(self, scan_numbers = scan_numbers, fill_num = fill_num)
+        except:
+            warnings.warn("Cannot Import Scans")
+        try:
+            initialize_group(self)
+        except:
+            warnings.warn("Cannot Import Group")
         initialize_zoneplate_data(self, reset = restart_zoneplate)
         initialize_experimental_attrs(self)
         initialize_saving(self)
         initialize_logging(self)
-        initialize_scans(self, scan_numbers = scan_numbers, fill_num = fill_num)
 
 
-        shape_check(self)
-        resolution_check(self)
-        initialize_group(self)
+        try:
+            shape_check(self)
+        except:
+            warnings.warn("Cannot Check Shape")
+        try:
+            resolution_check(self)
+        except:
+            warnings.warn("Cannot Check Resolution")
+
 
     def alignment(self):
         """Allows the user to align all scans based on Fluorescence Maps or ROI Maps
