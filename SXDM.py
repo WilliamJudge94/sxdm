@@ -20,28 +20,20 @@ class SXDMFrameset():
 
         self.file = file
         self.dataset_name = dataset_name
-        try:
-        	initialize_scans(self, scan_numbers = scan_numbers, fill_num = fill_num)
-        except:
-            warnings.warn("Cannot Import Scans")
-        try:
-            initialize_group(self)
-        except:
-            warnings.warn("Cannot Import Group")
+
+        initialize_scans(self, scan_numbers = scan_numbers, fill_num = fill_num)
+        initialize_group(self)
+
+
         initialize_zoneplate_data(self, reset = restart_zoneplate)
         initialize_experimental_attrs(self)
         initialize_saving(self)
         initialize_logging(self)
 
 
-        try:
-            shape_check(self)
-        except:
-            warnings.warn("Cannot Check Shape")
-        try:
-            resolution_check(self)
-        except:
-            warnings.warn("Cannot Check Resolution")
+        shape_check(self)
+        resolution_check(self)
+
 
 
     def alignment(self):

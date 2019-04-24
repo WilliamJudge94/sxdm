@@ -62,19 +62,22 @@ def scan_num_convert(scan_numbers, fill_num = 4):
     return scan_numbers
 
 def shape_check(self):
-    hybrid_x = return_det(self.file, self.scan_numbers, group='hybrid_x')[0]
-    hybrid_y = return_det(self.file, self.scan_numbers, group='hybrid_y')[0]
+    try:
+        hybrid_x = return_det(self.file, self.scan_numbers, group='hybrid_x')[0]
+        hybrid_y = return_det(self.file, self.scan_numbers, group='hybrid_y')[0]
 
-    shape_hybrid_x = np.shape(hybrid_x)
-    shape_hybrid_y = np.shape(hybrid_y)
+        shape_hybrid_x = np.shape(hybrid_x)
+        shape_hybrid_y = np.shape(hybrid_y)
 
-    len_x = len(shape_hybrid_x)
-    len_y = len(shape_hybrid_y)
+        len_x = len(shape_hybrid_x)
+        len_y = len(shape_hybrid_y)
 
-    if len_x != 3 and len_y != 3:
-        warnings.warn('Scan Shapes Are Not The Same!')
-    else:
-        print('Scan Dimensions Are Equivalent')
+        if len_x != 3 and len_y != 3:
+            warnings.warn('Scan Shapes Are Not The Same!')
+        else:
+            print('Scan Dimensions Are Equivalent')
+    except:
+        warnings.warn('Cannot Check Shape. Some .mda Files Might Be Missing...')
 
 def val_check(array, resolution):
     min_res = array[0] - resolution
@@ -90,23 +93,26 @@ def val_check(array, resolution):
 
 
 def resolution_check(self, user_resolution_um = 0.0005):
-    hybrid_x = return_det(self.file, self.scan_numbers, group='hybrid_x')[0]
-    hybrid_y = return_det(self.file, self.scan_numbers, group='hybrid_y')[0]
+    try:
+        hybrid_x = return_det(self.file, self.scan_numbers, group='hybrid_x')[0]
+        hybrid_y = return_det(self.file, self.scan_numbers, group='hybrid_y')[0]
 
-    shape_hybrid_x = np.asarray([np.shape(scan) for scan in hybrid_x]) - [1, 1]
-    shape_hybrid_y = np.asarray([np.shape(scan) for scan in hybrid_y]) - [1, 1]
+        shape_hybrid_x = np.asarray([np.shape(scan) for scan in hybrid_x]) - [1, 1]
+        shape_hybrid_y = np.asarray([np.shape(scan) for scan in hybrid_y]) - [1, 1]
 
-    max_x = np.asarray([np.max(scan, axis=(0, 1)) for scan in hybrid_x])
-    min_x = np.asarray([np.min(scan, axis=(0, 1)) for scan in hybrid_x])
+        max_x = np.asarray([np.max(scan, axis=(0, 1)) for scan in hybrid_x])
+        min_x = np.asarray([np.min(scan, axis=(0, 1)) for scan in hybrid_x])
 
-    max_y = np.asarray([np.max(scan, axis=(0, 1)) for scan in hybrid_y])
-    min_y = np.asarray([np.min(scan, axis=(0, 1)) for scan in hybrid_y])
+        max_y = np.asarray([np.max(scan, axis=(0, 1)) for scan in hybrid_y])
+        min_y = np.asarray([np.min(scan, axis=(0, 1)) for scan in hybrid_y])
 
-    dif_x = max_x - min_x
-    dif_y = max_y - min_y
+        dif_x = max_x - min_x
+        dif_y = max_y - min_y
 
-    res_x = []
-    res_y = []
+        res_x = []
+        res_y = []
+    except:
+        warnings.warn('Cannot Check Resolution. Some .mda Files Might Be Missing...')
 
     for i, value in enumerate(dif_x):
         len_hybrid_x = shape_hybrid_x[i][1]

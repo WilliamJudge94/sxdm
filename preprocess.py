@@ -13,38 +13,41 @@ def initialize_group(self):
     settings have already been imported. If so the program reloads saved settings
 
     """
-    if h5path_exists(self.file,self.dataset_name) == False:
-        h5create_group(self.file,self.dataset_name)
-        scan_numbers = scan_num_convert(self.scan_numbers)
-        h5create_dataset(self.file,self.dataset_name+'/scan_numbers', scan_numbers)
-        h5create_dataset(self.file,self.dataset_name+'/scan_theta', np.asarray(self.scan_theta))
+    try:
+        if h5path_exists(self.file,self.dataset_name) == False:
+            h5create_group(self.file,self.dataset_name)
+            scan_numbers = scan_num_convert(self.scan_numbers)
+            h5create_dataset(self.file,self.dataset_name+'/scan_numbers', scan_numbers)
+            h5create_dataset(self.file,self.dataset_name+'/scan_theta', np.asarray(self.scan_theta))
 
-    else:
-
-        old_scan_nums = h5grab_data(self.file,self.dataset_name+'/scan_numbers')
-        new_scan_nums = self.scan_numbers
-        new_scan_nums = np.asarray(scan_num_convert(new_scan_nums))
-        print('Saved Scans: '+ str(old_scan_nums))
-        print('Current User Input: '+str(new_scan_nums))
-
-        try:
-            checker = self.dxdy_store
-        except:
-            try:
-                self.dxdy_store = grab_dxdy(self)
-            except:
-                pass
-
-        if np.array_equal(old_scan_nums,new_scan_nums) == True  :
-            print('Importing Identical Scans. Reloading Saved Data...')
         else:
-            user_val = input('New Scans Detected. Would You Like To Delete Current Group And Start Again? y/n ')
 
-            if user_val == 'n':
-                print('Importing Saved Scans...')
+            old_scan_nums = h5grab_data(self.file,self.dataset_name+'/scan_numbers')
+            new_scan_nums = self.scan_numbers
+            new_scan_nums = np.asarray(scan_num_convert(new_scan_nums))
+            print('Saved Scans: '+ str(old_scan_nums))
+            print('Current User Input: '+str(new_scan_nums))
 
-            elif user_val == 'y':
-                print('Replacing - '+self.dataset_name+' - Group')
+            try:
+                checker = self.dxdy_store
+            except:
+                try:
+                    self.dxdy_store = grab_dxdy(self)
+                except:
+                    pass
+
+            if np.array_equal(old_scan_nums,new_scan_nums) == True  :
+                print('Importing Identical Scans. Reloading Saved Data...')
+            else:
+                user_val = input('New Scans Detected. Would You Like To Delete Current Group And Start Again? y/n ')
+
+                if user_val == 'n':
+                    print('Importing Saved Scans...')
+
+                elif user_val == 'y':
+                    print('Replacing - '+self.dataset_name+' - Group')
+    except:
+        warnings.warn('Cannot Initialize Group. Some .mda Files Might Be Missing...')
 
 def initialize_zoneplate_data(self, reset = False):
     """Initialize values for the zoneplate used as well as detector pixel size.
@@ -184,25 +187,28 @@ def initialize_saving(self):
         pass
 
 def initialize_scans(self, scan_numbers = False, fill_num = 4):
-    if scan_numbers != False:
-        self.scan_numbers = scan_num_convert(scan_numbers, fill_num=fill_num)
-    else:
-        import_scans = h5grab_data(self.file, self.dataset_name + '/scan_numbers')
-        import_scans = [int(scan) for scan in import_scans]
-        self.scan_numbers = scan_num_convert(list(import_scans), fill_num=fill_num)
-    self.det_smpl_theta = str(h5grab_data(self.file, 'detector_channels/sample_theta')[0]).zfill(2)
+    try:
+        if scan_numbers != False:
+            self.scan_numbers = scan_num_convert(scan_numbers, fill_num=fill_num)
+        else:
+            import_scans = h5grab_data(self.file, self.dataset_name + '/scan_numbers')
+            import_scans = [int(scan) for scan in import_scans]
+            self.scan_numbers = scan_num_convert(list(import_scans), fill_num=fill_num)
+        self.det_smpl_theta = str(h5grab_data(self.file, 'detector_channels/sample_theta')[0]).zfill(2)
 
-    # Determine Shape of all the imported files
+        # Determine Shape of all the imported files
 
-    # Determine the resolution of all the imported files
-    # If different resolution tell user that certain files have different resolution
-    # set limit for resolution difference
-    # will be addressed in new version
+        # Determine the resolution of all the imported files
+        # If different resolution tell user that certain files have different resolution
+        # set limit for resolution difference
+        # will be addressed in new version
 
-    # If the same resolution but different shapes then store how many rows and columns to add to the
-    # small arrays
+        # If the same resolution but different shapes then store how many rows and columns to add to the
+        # small arrays
 
-    scan_theta_grab = [h5grab_data(self.file, 'mda/' + scan + '/D' + self.det_smpl_theta)
-                       for scan in self.scan_numbers]
+        scan_theta_grab = [h5grab_data(self.file, 'mda/' + scan + '/D' + self.det_smpl_theta)
+                           for scan in self.scan_numbers]
 
-    self.scan_theta = [np.mean(scan, axis=(0, 1)) for scan in scan_theta_grab]
+        self.scan_theta = [np.mean(scan, axis=(0, 1)) for scan in scan_theta_grab]
+    except:
+        warnings.warn('Cannot Initialize Scans. Some .mda Files Might Be Missing...')
