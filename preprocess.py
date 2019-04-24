@@ -13,6 +13,7 @@ def initialize_group(self):
     settings have already been imported. If so the program reloads saved settings
 
     """
+    # When .mda files are missing this function cannot import /scan_theta
     try:
         if h5path_exists(self.file,self.dataset_name) == False:
             h5create_group(self.file,self.dataset_name)
@@ -37,7 +38,7 @@ def initialize_group(self):
                     pass
 
             if np.array_equal(old_scan_nums,new_scan_nums) == True  :
-                print('Importing Identical Scans. Reloading Saved Data...')
+                print('Importing Identical Scans. Reloading Saved Data...\n')
             else:
                 user_val = input('New Scans Detected. Would You Like To Delete Current Group And Start Again? y/n ')
 
@@ -45,7 +46,7 @@ def initialize_group(self):
                     print('Importing Saved Scans...')
 
                 elif user_val == 'y':
-                    print('Replacing - '+self.dataset_name+' - Group')
+                    print('Replacing - '+self.dataset_name+' - Group\n')
     except:
         warnings.warn('Cannot Initialize Group. Some .mda Files Might Be Missing...')
 
@@ -77,7 +78,7 @@ def initialize_zoneplate_data(self, reset = False):
             detector_pixel_size_val = input('What Pixel Size Of The Detector In Microns? (Typically 15)')
             h5create_dataset(self.file,'zone_plate/detector_pixel_size',detector_pixel_size_val)
         else:
-            print('The Size Of Your Detector Pixels Is Set To {} Microns\n'.format(h5grab_data(self.file,'zone_plate/detector_pixel_size')))
+            print('The Size Of Your Detector Pixels Is Set To {} microns\n'.format(h5grab_data(self.file,'zone_plate/detector_pixel_size')))
 
     elif reset == True:
         D_um_val = input('What Is The Diameter Of The Zone Plate Used In Microns? (Typically 150)')
@@ -187,6 +188,7 @@ def initialize_saving(self):
         pass
 
 def initialize_scans(self, scan_numbers = False, fill_num = 4):
+    # When .mda files are missing this script cannot pull scan information
     try:
         if scan_numbers != False:
             self.scan_numbers = scan_num_convert(scan_numbers, fill_num=fill_num)

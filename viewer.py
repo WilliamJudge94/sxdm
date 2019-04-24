@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 from matplotlib.widgets import Button, TextBox
 import imageio
@@ -16,7 +17,7 @@ from clicks import check_mouse_ax, fig_leave
 def figure_setup():
 
     fig = plt.figure(figsize = (12,6))
-
+    mpl.rcParams['axes.linewidth'] = 2
     fluor_ax = plt.subplot2grid((4,5),(1,0), colspan=1, rowspan=2)
     roi_ax = plt.subplot2grid((4, 5), (1, 4), colspan=1, rowspan=2)
     spot_diff_ax = plt.subplot2grid((4, 5), (0, 1), colspan=1, rowspan=1)
@@ -86,10 +87,10 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
     vmax_spot_tb = TextBox(vmax_spot_ax, 'vmax', initial='2')
     vmin_sum_tb = TextBox(vmin_sum_ax, 'vmin', initial='0')
     vmax_sum_tb = TextBox(vmax_sum_ax, 'vmax', initial='1200')
-    med_blur_dis_tb = TextBox(med_blur_dis_ax, 'med_dis', initial='4')
-    med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial='10')
-    stdev_tb = TextBox(stdev_ax, 'stdev_min', initial='35')
-    multiplier_tb = TextBox(multiplier_ax, 'bkgx', initial='1')
+    med_blur_dis_tb = TextBox(med_blur_dis_ax, 'med_dis', initial='2')
+    med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial='1')
+    stdev_tb = TextBox(stdev_ax, 'stdev_min', initial='25')
+    multiplier_tb = TextBox(multiplier_ax, 'bkgx', initial='0')
     plt.draw()
 
     return vmin_spot_tb, vmax_spot_tb, vmin_sum_tb, vmax_sum_tb,\
@@ -311,18 +312,22 @@ def make_red(self):
 
 def make_pink(self):
     axes = [self.ttheta_map_ax, self.chi_map_ax,
-            self.savingbtn_ax]
+            self.savingbtn_ax, self.med_blur_dis_ax,
+            self.med_blur_h_ax, self.stdev_ax,
+            self.multiplier_ax]
     sides = ['left', 'right', 'top', 'bottom']
     for ax in axes:
         for side in sides:
-            ax.spines[side].set_color('pink')
+            ax.spines[side].set_color('fuchsia')
     for side in sides:
         self.reprocessbtn_ax.spines[side].set_color('black')
     plt.draw()
 
 def make_black(self):
     axes = [self.ttheta_map_ax, self.chi_map_ax,
-            self.reprocessbtn_ax, self.savingbtn_ax]
+            self.reprocessbtn_ax, self.savingbtn_ax,self.med_blur_dis_ax,
+            self.med_blur_h_ax, self.stdev_ax,
+            self.multiplier_ax]
     sides = ['left', 'right', 'top', 'bottom']
     for ax in axes:
         for side in sides:

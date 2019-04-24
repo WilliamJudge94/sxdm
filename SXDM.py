@@ -11,6 +11,7 @@ from pixel import *
 from alignment import *
 from logger import *
 from viewer import *
+from postprocess import *
 
 from tqdm import tqdm
 
@@ -104,4 +105,8 @@ class SXDMFrameset():
             fluor_image = sum_error()
 
         run_viewer(self, fluor_image)
+
+    def reload_save(self, summed_dif_return = True):
+        self.save_filename = self.file[0:-3] + '_savedata.h5'
+        self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return = summed_dif_return)
 
