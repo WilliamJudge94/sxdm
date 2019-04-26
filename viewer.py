@@ -178,7 +178,12 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         chi_centroid_ax.axvline(chi_centroid, color = 'black')
 
 def run_viewer(user_class, fluor_image):
-    results = user_class.results
+    try:
+        results = user_class.results
+    except:
+        print('No Results Found. Importing From Saved File...')
+        user_class.reload_save()
+        results = user_class.results
     #make buttons and tb do something
     #make clicking figures do something
     current_figure = FiguresClass()
@@ -383,4 +388,6 @@ def reprocessbtn_click(event,user_class, figure_class):
 
 def savingbtn_click(event, user_class, figure_class):
     make_black(figure_class)
+
+    
 

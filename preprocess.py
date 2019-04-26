@@ -66,19 +66,19 @@ def initialize_zoneplate_data(self, reset = False):
             D_um_val = input('What Is The Diameter Of The Zone Plate Used In Microns? (Typically 150)')
             h5create_dataset(self.file,'zone_plate/D_um',D_um_val)
         else:
-            print('Diameter Of The Zone Plate Is Set To {} microns\n'.format(h5grab_data(self.file,'zone_plate/D_um')))
+            print('Diameter Of The Zone Plate Is Set To {} microns'.format(h5grab_data(self.file,'zone_plate/D_um')))
 
         if h5path_exists(self.file, 'zone_plate/d_rN_nm') == False:
             d_rN_nm_val = input('What Is The Outer Most d Spacing Is For The Zone Plate Used In Nanometers? (Typically 20)')
             h5create_dataset(self.file,'zone_plate/d_rN_nm',d_rN_nm_val)
         else:
-            print('Outermost Zone Plate d Spacing Is Set To {} nanometers\n'.format(h5grab_data(self.file,'zone_plate/d_rN_nm')))
+            print('Outermost Zone Plate d Spacing Is Set To {} nanometers'.format(h5grab_data(self.file,'zone_plate/d_rN_nm')))
 
         if h5path_exists(self.file, 'zone_plate/detector_pixel_size') == False:
             detector_pixel_size_val = input('What Pixel Size Of The Detector In Microns? (Typically 15)')
             h5create_dataset(self.file,'zone_plate/detector_pixel_size',detector_pixel_size_val)
         else:
-            print('The Size Of Your Detector Pixels Is Set To {} microns\n'.format(h5grab_data(self.file,'zone_plate/detector_pixel_size')))
+            print('The Size Of Your Detector Pixels Is Set To {} microns'.format(h5grab_data(self.file,'zone_plate/detector_pixel_size')))
 
     elif reset == True:
         D_um_val = input('What Is The Diameter Of The Zone Plate Used In Microns? (Typically 150)')
