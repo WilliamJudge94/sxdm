@@ -125,7 +125,7 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
 
 def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
                       ttheta_centroid_ax, chi_centroid_ax, med_blur_distance,
-                      med_blur_height, stdev_min, row, column):
+                      med_blur_height, stdev_min, row, column, self):
 
     spot_dif_ax.cla()
     ttheta_centroid_ax.cla()
@@ -133,7 +133,31 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
 
     return_dic = pixel_analysis_return(results, row, column)
 
-    spot_dif = return_dic['summed_dif']
+    #spot_dif = return_dic['summed_dif']
+
+
+    try:
+        if self.diffraction_load == True:
+            spot_dif = return_dic['summed_dif']
+        elif self.diffraction_load == False:
+            #print(self.diffraction_load)
+            f = h5py.File(self.save_filename, 'r')
+            finder = False
+            new_idx = 0
+            while finder == False:
+                position = f['{}/row_column'.format(self.dataset_name)][new_idx]
+                if position[0] == self.row and position[1] == self.column:
+                    finder = True
+                else:
+                    new_idx = new_idx + 1
+            spot_dif = f['{}/summed_dif'.format(self.dataset_name) ][new_idx]
+            #print('Row: {}, Column: {}, L_Row_column: {}'.format(self.row, self.column,
+                                                                 #f['{}/row_column'.format(self.dataset_name)][new_idx]))
+            f.close()
+    except:
+        pass
+
+
     try:
         spot_dif_ax.imshow(spot_dif, vmin=vmin_spot, vmax=vmax_spot)
     except:
@@ -180,20 +204,15 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         chi_centroid_ax.axvline(chi_centroid, color = 'black')
 
 def run_viewer(user_class, fluor_image):
-    user_class.diffraction_load = False
+
     try:
         results = user_class.results
+
     except:
         print('No Results Found. Importing From Saved File...')
-        import_summed_q = input('Would You Like To Import Diffraction? y/n ','s')
-        if import_summed_q == 'y':
-            user_val = True
-            user_class.diffraction_load = True
-        else:
-            user_val = False
-            user_class.diffraction_load = False
-            print("Not Importing Diffraction")
-        user_class.reload_save(summed_dif_return=user_val)
+    if user_class.diffraction_load == False:
+        print("Not Importing Diffraction")
+        user_class.reload_save(summed_dif_return=user_class.diffraction_load)
         results = user_class.results
     #make buttons and tb do something
     #make clicking figures do something
@@ -247,7 +266,7 @@ def run_viewer(user_class, fluor_image):
     load_dynamic_data(current_figure.results, current_figure.vmin_spot_val, current_figure.vmax_spot_val,
                       current_figure.spot_diff_ax, current_figure.ttheta_centroid_ax, current_figure.chi_centroid_ax,
                       current_figure.med_blur_dis_val, current_figure.med_blur_h_val, current_figure.stdev_val,
-                      current_figure.row, current_figure.column)
+                      current_figure.row, current_figure.column, user_class)
 
 
     p_check_mouse_ax = partial(check_mouse_ax,self = current_figure)
@@ -281,11 +300,10 @@ def spot_change(text, self):
     self.summed_dif_ax.cla()
 
     return_dic = pixel_analysis_return(self.results, self.row, self.column)
-    print(self.diffraction_load)
     if self.diffraction_load == True:
         spot_dif = return_dic['summed_dif']
     elif self.diffraction_load == False:
-        print(self.diffraction_load)
+        #print(self.diffraction_load)
         f = h5py.File(self.save_filename, 'r')
         finder = False
         new_idx = 0
@@ -296,8 +314,8 @@ def spot_change(text, self):
             else:
                 new_idx = new_idx + 1
         spot_dif = f['{}/summed_dif'.format(self.dataset_name) ][new_idx]
-        print('Row: {}, Column: {}, L_Row_column: {}'.format(self.row, self.column,
-                                                             f['{}/row_column'.format(self.dataset_name)][new_idx]))
+        #print('Row: {}, Column: {}, L_Row_column: {}'.format(self.row, self.column,
+                                                             #f['{}/row_column'.format(self.dataset_name)][new_idx]))
         f.close()
     self.vmin_spot_val = int(self.vmin_spot_tb.text)
     self.vmax_spot_val = int(self.vmax_spot_tb.text)
@@ -329,7 +347,7 @@ def analysis_change(text, self):
     load_dynamic_data(self.results, self.vmin_spot_val, self.vmax_spot_val,
                       self.spot_diff_ax, self.ttheta_centroid_ax, self.chi_centroid_ax,
                       self.med_blur_dis_val, self.med_blur_h_val, self.stdev_val,
-                      self.row, self.column)
+                      self.row, self.column, self)
 
 
 
@@ -400,7 +418,7 @@ def viewer_mouse_click(event, self):
 
         load_dynamic_data(self.results, self.vmin_spot_val, self.vmax_spot_val, self.spot_diff_ax,
                               self.ttheta_centroid_ax, self.chi_centroid_ax, self.med_blur_dis_val,
-                              self.med_blur_h_val, self.stdev_val, self.row, self.column)
+                              self.med_blur_h_val, self.stdev_val, self.row, self.column, self)
 
         plt.draw()
     else:

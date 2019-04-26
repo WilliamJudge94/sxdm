@@ -97,13 +97,13 @@ class SXDMFrameset():
             except:
                 h5replace_data(save_filename, self.dataset_name + '/{}'.format(value), np.asarray(readable_results2))
 
-    def viewer(self):
+    def viewer(self, diffraction_load = False):
         try:
             fluor_image = centering_det(self)
             fluor_image = fluor_image[0]
         except:
             fluor_image = sum_error()
-
+        self.diffraction_load = diffraction_load
         run_viewer(self, fluor_image)
 
     def reload_save(self, summed_dif_return = True):
