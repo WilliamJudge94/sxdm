@@ -8,6 +8,8 @@ import os
 import sys
 from functools import partial
 
+import h5py
+
 from postprocess import pixel_analysis_return
 from mis import  median_blur, centering_det
 from postprocess import centroid_roi_map, pooled_return
@@ -178,15 +180,27 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         chi_centroid_ax.axvline(chi_centroid, color = 'black')
 
 def run_viewer(user_class, fluor_image):
+    user_class.diffraction_load = False
     try:
         results = user_class.results
     except:
         print('No Results Found. Importing From Saved File...')
-        user_class.reload_save()
+        import_summed_q = input('Would You Like To Import Diffraction? y/n ','s')
+        if import_summed_q == 'y':
+            user_val = True
+            user_class.diffraction_load = True
+        else:
+            user_val = False
+            user_class.diffraction_load = False
+            print("Not Importing Diffraction")
+        user_class.reload_save(summed_dif_return=user_val)
         results = user_class.results
     #make buttons and tb do something
     #make clicking figures do something
     current_figure = FiguresClass()
+    current_figure.diffraction_load = user_class.diffraction_load
+    current_figure.save_filename = user_class.save_filename
+    current_figure.dataset_name = user_class.dataset_name
     try:
         dummy = current_figure.row
     except:
@@ -267,8 +281,24 @@ def spot_change(text, self):
     self.summed_dif_ax.cla()
 
     return_dic = pixel_analysis_return(self.results, self.row, self.column)
-    spot_dif = return_dic['summed_dif']
-
+    print(self.diffraction_load)
+    if self.diffraction_load == True:
+        spot_dif = return_dic['summed_dif']
+    elif self.diffraction_load == False:
+        print(self.diffraction_load)
+        f = h5py.File(self.save_filename, 'r')
+        finder = False
+        new_idx = 0
+        while finder == False:
+            position = f['{}/row_column'.format(self.dataset_name)][new_idx]
+            if position[0] == self.row and position[1] == self.column:
+                finder = True
+            else:
+                new_idx = new_idx + 1
+        spot_dif = f['{}/summed_dif'.format(self.dataset_name) ][new_idx]
+        print('Row: {}, Column: {}, L_Row_column: {}'.format(self.row, self.column,
+                                                             f['{}/row_column'.format(self.dataset_name)][new_idx]))
+        f.close()
     self.vmin_spot_val = int(self.vmin_spot_tb.text)
     self.vmax_spot_val = int(self.vmax_spot_tb.text)
     self.vmin_sum_val = int(self.vmin_sum_tb.text)

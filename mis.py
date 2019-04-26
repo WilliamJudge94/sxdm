@@ -111,33 +111,33 @@ def resolution_check(self, user_resolution_um = 0.0005):
 
         res_x = []
         res_y = []
+
+        for i, value in enumerate(dif_x):
+            len_hybrid_x = shape_hybrid_x[i][1]
+            len_hybrid_y = shape_hybrid_y[i][0]
+            current_x = dif_x[i]
+            current_y = dif_y[i]
+            res_x.append(current_x / len_hybrid_x)
+            res_y.append(current_y / len_hybrid_y)
+
+        dif_res_x = [res_x[0] - step for step in res_x]
+        dif_res_y = [res_y[0] - step for step in res_y]
+
+
+        validation_x = val_check(dif_res_x, user_resolution_um)
+        validation_y = val_check(dif_res_y, user_resolution_um)
+
+        if validation_x == True and validation_y == True:
+            print('X and Y Resolutions are within ' +str(user_resolution_um *1000)+' nanometers from eachother')
+        else:
+            if validation_x != True and validation_y != True:
+                warnings.warn('Resolution in X and Y Differ Between Scans')
+            elif validation_x == True and validation_y != True:
+                warnings.warn('Resolution in Y Differ Between Scans')
+            elif validation_x != True and validation_y == True:
+                warnings.warn('Resolution in X Differ Between Scans')
     except:
         warnings.warn('Cannot Check Resolution. Some .mda Files Might Be Missing...')
-
-    for i, value in enumerate(dif_x):
-        len_hybrid_x = shape_hybrid_x[i][1]
-        len_hybrid_y = shape_hybrid_y[i][0]
-        current_x = dif_x[i]
-        current_y = dif_y[i]
-        res_x.append(current_x / len_hybrid_x)
-        res_y.append(current_y / len_hybrid_y)
-
-    dif_res_x = [res_x[0] - step for step in res_x]
-    dif_res_y = [res_y[0] - step for step in res_y]
-
-
-    validation_x = val_check(dif_res_x, user_resolution_um)
-    validation_y = val_check(dif_res_y, user_resolution_um)
-
-    if validation_x == True and validation_y == True:
-        print('X and Y Resolutions are within ' +str(user_resolution_um *1000)+' nanometers from eachother')
-    else:
-        if validation_x != True and validation_y != True:
-            warnings.warn('Resolution in X and Y Differ Between Scans')
-        elif validation_x == True and validation_y != True:
-            warnings.warn('Resolution in Y Differ Between Scans')
-        elif validation_x != True and validation_y == True:
-            warnings.warn('Resolution in X Differ Between Scans')
 
 
 def image_numbers(self):
