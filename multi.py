@@ -219,8 +219,8 @@ def best_analysis(self, rows, columns, med_blur_distance = 4, med_blur_height = 
     self.stdev_min = stdev_min
     background_dic_basic = scan_background(self, multiplier=multiplier)
 
-    image_array = centering_det(self, group='filenumber', center_around = center_around)
-    self.image_array = np.asarray(image_array)
+    create_imagearray(self, center_around = center_around)
+
     row, column = initialize_vectorize(self,rows, columns)
     vectorize_pixel_analysis = np.vectorize(pixel_analysis_v2,
                                             excluded=['self','median_blur_distance', 'median_blur_height', 'stdev_min'])
@@ -238,5 +238,6 @@ def best_analysis(self, rows, columns, med_blur_distance = 4, med_blur_height = 
 
     return readable_results
 
-
-
+def create_imagearray(self, center_around = False):
+    image_array = centering_det(self, group='filenumber', center_around = center_around)
+    self.image_array = np.asarray(image_array)

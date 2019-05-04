@@ -113,9 +113,11 @@ def pixel_analysis(self, row, column, image_array, median_blur_distance, median_
 
 def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_height, stdev_min):
     image_array = self.image_array
-    self.pbar_val = self.pbar_val + 1
-    self.pbar.update(self.pbar_val)
-
+    try:
+        self.pbar_val = self.pbar_val + 1
+        self.pbar.update(self.pbar_val)
+    except:
+        pass
     if column == 0:
         if ram_check() > 90:
             return False
@@ -136,4 +138,7 @@ def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_heigh
 
     full_roi = np.sum(ttheta2)
 
-    return [(row, column), summed_dif, ttheta, chi, ttheta_centroid_finder, ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi]
+
+    results = [(row, column), summed_dif, ttheta, chi, ttheta_centroid_finder, ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi]
+
+    return results

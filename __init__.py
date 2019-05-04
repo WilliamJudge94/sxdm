@@ -20,6 +20,7 @@ sys.path.append(os.path.dirname(__file__))
 from alignment import *
 from background import *
 from clicks import *
+from chi_determination import *
 from det_chan import *
 from h5 import *
 from importer import *
