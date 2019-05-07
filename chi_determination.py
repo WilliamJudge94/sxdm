@@ -229,37 +229,3 @@ def pos_tb_setup(pos1_ax, pos2_ax):
     pos2_ax_tb = TextBox(pos2_ax, '', initial='0')
     plt.draw()
     return pos1_ax_tb, pos2_ax_tb
-
-
-
-
-
-
-
-def chi_setp2(self):
-    fig2, axs2 = plt.subplots(1, 1, figsize=(10, 10), facecolor='w', edgecolor='k')
-    plt.imshow(images[self.clicks['ax']])
-    plt.suptitle('Select A Spot To Center On')
-
-    click2 = partial(onclick_2, self=self)
-
-    fig2.canvas.mpl_connect('button_press_event', click2)
-
-    plt.waitforbuttonpress(0)
-
-    self.dxdy_store[self.clicks['ax']] = self.clicks['loc']
-
-    circ = Circle((self.clicks['loc'][0], self.clicks['loc'][1]), 0.3, color='r')
-
-    try:
-        [p.remove() for p in reversed(self.loc_axs[self.clicks['ax']].patches)]
-    except:
-        pass
-
-    self.loc_axs[self.clicks['ax']].add_patch(circ)
-    plt.close(fig2)
-    fig_count = len(self.scan_numbers)
-    spot_count = len(self.dxdy_store)
-    if spot_count >= fig_count:
-        fig.suptitle('Once Complete You May Close This Window')
-    fig.canvas.draw()
