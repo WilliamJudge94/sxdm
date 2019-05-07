@@ -132,10 +132,7 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
     chi_centroid_ax.cla()
 
     return_dic = pixel_analysis_return(results, row, column)
-
     #spot_dif = return_dic['summed_dif']
-
-
     try:
         if self.diffraction_load == True:
             spot_dif = return_dic['summed_dif']
@@ -337,6 +334,8 @@ def spot_change(text, self):
         self.spot_diff_ax.imshow(sum_error())
         self.spot_diff_ax.set_xticks = []
         self.spot_diff_ax.set_yticks = []
+
+
 
 def analysis_change(text, self):
     make_red(self)

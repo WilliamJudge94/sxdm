@@ -18,7 +18,6 @@ from viewer import sum_error
 class Chi_FiguresClass():
     pass
 
-
 def return_chi_images_loc(file,
                           chi_figures,
                           detector_channel_loc = 'detector_channels/detector_scan/Main_Scan',
