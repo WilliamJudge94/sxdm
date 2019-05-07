@@ -11,7 +11,8 @@ from matplotlib.widgets import Button, TextBox
 from functools import partial
 import warnings
 
-from h5 import h5grab_data
+from h5 import h5grab_data, h5path_exists
+from det_chan import return_det
 from viewer import sum_error
 
 class Chi_FiguresClass():
@@ -23,16 +24,29 @@ def return_chi_images_loc(file,
                           detector_channel_loc = 'detector_channels/detector_scan/Main_Scan',
                           zfill_num = 4,
                           ):
+
     try:
         scan = h5grab_data(file, detector_channel_loc)
         scan_str = str(scan).zfill(zfill_num)
         im_loc = h5grab_data(file, 'images/{}'.format(scan_str))
+        mda_loc = h5grab_data(file, 'mda/{}'.format(scan_str))
+
+        im_check = h5path_exists(file,'images/{}'.format(scan_str) )
+        mda_check = h5path_exists(file, 'mda/{}'.format(scan_str))
         images_loc = ['images/{}/{}'.format(scan_str,
                                             loc) for loc in im_loc]
         chi_figures.images_location = images_loc
+        theta = return_det(file, [scan_str], group='sample_theta')
+        chi_figures.scan_theta = theta[0]
+
     except:
         warnings.warn('You Have Failed To Load In The Correct Detector Channel. '
                       'Correct The detector_channel_loc or Import Correct Data')
+        chi_figures.images_location = None
+    if im_check == False or mda_check == False:
+        warnings.warn('You Have Failed To Load In The Correct Detector Channel. '
+                      'Correct The detector_channel_loc or Import Correct Data '
+                      'im_check: {} - mda_check: {}'.format(im_check, mda_check))
         chi_figures.images_location = None
 
 def return_chi_images(file, chi_figures):
@@ -81,6 +95,7 @@ def display_first_images(chi_figures):
         try:
             ax.cla()
             ax.imshow(ims[i], vmin = vmin, vmax = vmax)
+            ax.set_title('IDX {}'.format(i))
             ax.set_xticks([])
             ax.set_yticks([])
         except:
@@ -89,21 +104,21 @@ def display_first_images(chi_figures):
         plt.draw()
 
 def second_chi_figure_setup(chi_figures):
-    fig, axs = plt.subplots(1, 2, figsize=(10, 10), facecolor='w',
+    fig, axs = plt.subplots(1, 2, figsize=(10, 6), facecolor='w',
                             edgecolor='k')
     fig.subplots_adjust(hspace=.55, wspace=.11)
     axs = axs.ravel()
     sides = ['left', 'right', 'top', 'bottom']
     for side in sides:
         axs[0].spines[side].set_color('red')
-        axs[1].spines[side].set_color('green')
+        axs[1].spines[side].set_color('magenta')
 
     small_idx_ax = plt.axes([0.15, 0.90, 0.1, 0.05])
-    small_idx_ax.set_title('Index 1')
+    small_idx_ax.set_title('First IDX')
     small_idx_ax.set_xticks([])
     small_idx_ax.set_yticks([])
     large_idx_ax = plt.axes([0.3, 0.90, 0.1, 0.05])
-    large_idx_ax.set_title('Index 2')
+    large_idx_ax.set_title('Second IDX')
     large_idx_ax.set_xticks([])
     large_idx_ax.set_yticks([])
     small_idx_tb, large_idx_tb = idx_tb_setup(small_idx_ax, large_idx_ax)
@@ -118,12 +133,23 @@ def second_chi_figure_setup(chi_figures):
     pos2_ax.set_yticks([])
     pos1_tb, pos2_tb = pos_tb_setup(pos1_ax, pos2_ax)
 
+
+    close_button_ax = plt.axes([0.15, 0.05, 0.1, 0.05])
+    closebtn_start(chi_figures, close_button_ax)
+
     chi_figures.second_fig = fig
     chi_figures.second_axs = axs
     chi_figures.small_idx_tb = small_idx_tb
     chi_figures.large_idx_tb = large_idx_tb
     chi_figures.pos1_tb = pos1_tb
     chi_figures.pos2_tb = pos2_tb
+
+def closebtn_start(chi_figures, btn_ax):
+    closebtn = Button(ax = btn_ax,
+                           label = 'Finish',
+                           color = 'teal',
+                           hovercolor = 'tomato')
+    chi_figures.closebtn = closebtn
 
 def display_second_images(chi_figures):
     axs = chi_figures.second_axs
@@ -134,21 +160,33 @@ def display_second_images(chi_figures):
     pos2 = int(chi_figures.pos2_tb.text)
     vmin = int(chi_figures.vmin_spot_tb.text)
     vmax = int(chi_figures.vmax_spot_tb.text)
+    idx1 = int(small_idx_tb.text)
+    idx2 = int(large_idx_tb.text)
+    angle1 = np.round(chi_figures.scan_theta[0][idx1][0], 5)
+    angle2 = np.round(chi_figures.scan_theta[0][idx2][0], 5)
+    chi_figures.angle1 = angle1
+    chi_figures.angle2 = angle2
     axs[0].cla()
     axs[1].cla()
-    axs[0].imshow(ims[int(small_idx_tb.text)], vmin = vmin, vmax = vmax)
+    axs[0].imshow(ims[idx1], vmin = vmin, vmax = vmax)
     axs[0].axvline(x = pos1)
-    axs[1].imshow(ims[int(large_idx_tb.text)], vmin = vmin, vmax = vmax)
+    axs[0].set_title('IDX {}  Angle {}'.format(idx1, angle1))
+    axs[1].imshow(ims[idx2], vmin = vmin, vmax = vmax)
     axs[1].axvline(x = pos2)
+    axs[1].set_title('IDX {}  Angle {}'.format(idx2, angle2))
     chi_figures.pos1 = pos1
     chi_figures.pos2 = pos2
+
+def closebtn_press(event, self, chi_figures):
+    self.chi_angle_difference = abs(chi_figures.angle1 - chi_figures.angle2)
+    plt.close('all')
 
 def vs_change(event,chi_figures):
     axs = chi_figures.first_axs
     ims = chi_figures.images
     vmin_spot_tb = chi_figures.vmin_spot_tb
     vmax_spot_tb = chi_figures.vmax_spot_tb
-    display_images(axs, ims, int(vmin_spot_tb.text), int(vmax_spot_tb.text))
+    display_first_images(chi_figures)
 
 def second_change(event, chi_figures):
     display_second_images(chi_figures)
@@ -161,13 +199,18 @@ def chi_function(self):
 
     p_display_images = partial(vs_change,chi_figures = chi_figures)
     p_display_second_images = partial(second_change, chi_figures = chi_figures)
+    p_closebtn = partial(closebtn_press, self = self, chi_figures = chi_figures)
 
     chi_figures.vmin_spot_tb.on_submit(p_display_images)
+    chi_figures.vmin_spot_tb.on_submit(p_display_second_images)
     chi_figures.vmax_spot_tb.on_submit(p_display_images)
+    chi_figures.vmax_spot_tb.on_submit(p_display_second_images)
+
     chi_figures.small_idx_tb.on_submit(p_display_second_images)
     chi_figures.large_idx_tb.on_submit(p_display_second_images)
     chi_figures.pos1_tb.on_submit(p_display_second_images)
     chi_figures.pos2_tb.on_submit(p_display_second_images)
+    chi_figures.closebtn.on_clicked(p_closebtn)
 
 def minmax_tb_setup(vmin_spot_ax, vmax_spot_ax):
     vmin_spot_tb = TextBox(vmin_spot_ax, 'vmin', initial='0')
@@ -176,14 +219,14 @@ def minmax_tb_setup(vmin_spot_ax, vmax_spot_ax):
     return vmin_spot_tb, vmax_spot_tb
 
 def idx_tb_setup(vmin_spot_ax, vmax_spot_ax):
-    vmin_spot_tb = TextBox(vmin_spot_ax, 'idx_1', initial='0')
-    vmax_spot_tb = TextBox(vmax_spot_ax, 'idx_2', initial='1')
+    vmin_spot_tb = TextBox(vmin_spot_ax, '', initial='0')
+    vmax_spot_tb = TextBox(vmax_spot_ax, '', initial='1')
     plt.draw()
     return vmin_spot_tb, vmax_spot_tb
 
 def pos_tb_setup(pos1_ax, pos2_ax):
-    pos1_ax_tb = TextBox(pos1_ax, 'pos_1', initial='0')
-    pos2_ax_tb = TextBox(pos2_ax, 'pos_2', initial='0')
+    pos1_ax_tb = TextBox(pos1_ax, '', initial='0')
+    pos2_ax_tb = TextBox(pos2_ax, '', initial='0')
     plt.draw()
     return pos1_ax_tb, pos2_ax_tb
 

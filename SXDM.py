@@ -12,6 +12,7 @@ from alignment import *
 from logger import *
 from viewer import *
 from postprocess import *
+from chi_determination import *
 
 from tqdm import tqdm
 
@@ -55,7 +56,7 @@ class SXDMFrameset():
         plt.ylabel('Relative Intensity')
 
     def chi_determination(self):
-        pass
+        chi_function(self)
 
     def analysis(self, rows, columns, med_blur_distance = 4,
                  med_blur_height = 10, stdev_min = 35, bkg_multiplier = 1):
