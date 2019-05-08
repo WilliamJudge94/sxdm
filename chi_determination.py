@@ -10,8 +10,9 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Button, TextBox
 from functools import partial
 import warnings
+import math
 
-from h5 import h5grab_data, h5path_exists
+from h5 import h5grab_data, h5path_exists, h5read_attr
 from det_chan import return_det
 from viewer import sum_error
 
@@ -90,6 +91,7 @@ def display_first_images(chi_figures):
     ims = chi_figures.images
     vmin = int(chi_figures.vmin_spot_tb.text)
     vmax = int(chi_figures.vmax_spot_tb.text)
+    chi_figures.image_dimensions = np.shape(ims[0])
     for i,ax in enumerate(axs):
         try:
             ax.cla()
@@ -178,7 +180,10 @@ def display_second_images(chi_figures):
 
 def closebtn_press(event, self, chi_figures):
     self.chi_angle_difference = abs(chi_figures.angle1 - chi_figures.angle2)
+    self.chi_position_difference = abs(chi_figures.pos1 - chi_figures.pos2)
+    self.chi_image_dimensions = chi_figures.image_dimensions
     plt.close('all')
+    chis(self)
 
 def vs_change(event,chi_figures):
     axs = chi_figures.first_axs
@@ -228,3 +233,50 @@ def pos_tb_setup(pos1_ax, pos2_ax):
     pos2_ax_tb = TextBox(pos2_ax, '', initial='0')
     plt.draw()
     return pos1_ax_tb, pos2_ax_tb
+
+def chis(self):
+    pix_size_um = float(h5grab_data(self.file, 'zone_plate/detector_pixel_size'))
+    self.pix_size_um = pix_size_um
+    tot_angle_diff = self.chi_angle_difference
+    dimensions = self.chi_image_dimensions
+    pixel_diff = self.chi_position_difference
+    angle_rads = math.radians(tot_angle_diff)
+
+    length = (pixel_diff * pix_size_um)
+
+    r = ((length)/math.tan(angle_rads))/1000
+    self.r_mm = r
+
+    Chi=math.degrees(math.atan((((((dimensions[0])/2)*pix_size_um)/1000))/r))
+    self.chi = Chi
+    broadening_in_pixles(self)
+
+    print('Chi bound is: {} Degrees\nFocal Length is : {} mm\nNumberical Aperature is: {} mrads\n'
+          'Radius of Broadening is: {} pixels'.format(self.chi, self.focal_length, self.NA_mrads, self.broadening_in_pix))
+
+def broadening_in_pixles(self):
+    Kev = float(h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='Kev'))
+    detector_theta_center = float(h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='detector_theta'))
+    D_um = float(h5grab_data(self.file, 'zone_plate/D_um'))
+    d_rN_nm = float(h5grab_data(self.file, 'zone_plate/d_rN_nm'))
+    r_mm = self.r_mm
+    pix_size_um = self.pix_size_um
+
+    D_nm = D_um * 1000
+    r_nm = r_mm * 1000000
+    r_um = r_mm * 1000
+    pixel_width_nm = pix_size_um * 1000
+    half_zp_nm = D_nm/2
+
+    plancks_constant=(6.62607004*10**-34)/(1.60217662*10**-19)
+    speed_of_light=299792458
+    hc=(plancks_constant)*(speed_of_light)*10**9
+    wavelength_nm=hc/(Kev*1000)
+
+    f_nm = (D_nm * d_rN_nm)/wavelength_nm
+    fraction = half_zp_nm/f_nm
+    len_in_pix = r_um/pix_size_um
+
+    self.focal_length_mm = f_nm/1000000
+    self.NA_mrads = fraction * 1000
+    self.broadening_in_pix = (half_zp_nm/f_nm) * len_in_pix
