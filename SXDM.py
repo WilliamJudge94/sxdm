@@ -37,7 +37,6 @@ class SXDMFrameset():
         resolution_check(self)
 
 
-
     def alignment(self):
         """Allows the user to align all scans based on Fluorescence Maps or ROI Maps
 
@@ -77,9 +76,6 @@ class SXDMFrameset():
                                      center_around = 1)
 
         print('Results Stored As self.results')
-
-    def viewer(self):
-        pass
 
     def save(self):
         save_filename = self.file[0:-3] + '_savedata.h5'

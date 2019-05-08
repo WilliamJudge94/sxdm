@@ -256,16 +256,14 @@ def chis(self):
 
 def broadening_in_pixles(self):
     Kev = float(h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='Kev'))
-    detector_theta_center = float(h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='detector_theta'))
     D_um = float(h5grab_data(self.file, 'zone_plate/D_um'))
     d_rN_nm = float(h5grab_data(self.file, 'zone_plate/d_rN_nm'))
     r_mm = self.r_mm
     pix_size_um = self.pix_size_um
 
     D_nm = D_um * 1000
-    r_nm = r_mm * 1000000
     r_um = r_mm * 1000
-    pixel_width_nm = pix_size_um * 1000
+
     half_zp_nm = D_nm/2
 
     plancks_constant=(6.62607004*10**-34)/(1.60217662*10**-19)

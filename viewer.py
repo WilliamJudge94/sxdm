@@ -7,14 +7,16 @@ from pathlib import Path
 import os
 import sys
 from functools import partial
+from time import time
 
 import h5py
 
-from postprocess import pixel_analysis_return
+from postprocess import pixel_analysis_return, saved_return
 from mis import  median_blur, centering_det
 from postprocess import centroid_roi_map, pooled_return
 from pixel import theta_maths, chi_maths
 from clicks import check_mouse_ax, fig_leave
+
 
 def figure_setup():
 
@@ -201,10 +203,13 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         chi_centroid_ax.axvline(chi_centroid, color = 'black')
 
 def run_viewer(user_class, fluor_image):
-
     try:
-        results = user_class.results
 
+        results = user_class.results
+        return_dic = pixel_analysis_return(user_class.results, 0, 0)
+        if np.shape(return_dic['summed_dif']) == () and user_class.diffraction_load == True:
+            user_class.reload_save(summed_dif_return=user_class.diffraction_load)
+            results = user_class.results
     except:
         print('No Results Found. Importing From Saved File...')
     if user_class.diffraction_load == False:

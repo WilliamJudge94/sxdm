@@ -180,6 +180,7 @@ def gaus_check(self):
 
 def initialize_saving(self):
     saved_filename = self.file[0:-3] + '_savedata.h5'
+    self.save_filename = saved_filename
     if os.path.isfile(saved_filename) == False:
         f = open(saved_filename, "w+")
         f.close()
