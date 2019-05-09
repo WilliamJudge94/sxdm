@@ -2,7 +2,7 @@ import numpy as np
 import os
 import warnings
 
-from h5 import h5create_dataset, h5create_group,h5path_exists, h5grab_data, h5read_attr, h5set_attr, h5replace_data
+from h5 import h5create_dataset, h5create_group,h5path_exists, h5grab_data, h5read_attr, h5set_attr, h5replace_data, h5del_group
 from mis import scan_num_convert, centering_det, grab_dxdy
 from det_chan import return_det
 
@@ -24,7 +24,7 @@ def initialize_group(self):
 
         else:
 
-            old_scan_nums = h5grab_data(self.file,self.dataset_name+'/scan_numbers')
+            old_scan_nums = h5grab_data(self.file, self.dataset_name+'/scan_numbers')
             new_scan_nums = self.scan_numbers
             new_scan_nums = np.asarray(scan_num_convert(new_scan_nums))
             print('Saved Scans: '+ str(old_scan_nums))
@@ -38,7 +38,7 @@ def initialize_group(self):
                 except:
                     pass
 
-            if np.array_equal(old_scan_nums,new_scan_nums) == True  :
+            if np.array_equal(old_scan_nums,new_scan_nums) == True:
                 print('Importing Identical Scans. Reloading Saved Data...\n')
             else:
                 user_val = input('New Scans Detected. Would You Like To Delete Current Group And Start Again? y/n ')
@@ -48,6 +48,11 @@ def initialize_group(self):
 
                 elif user_val == 'y':
                     print('Replacing - '+self.dataset_name+' - Group\n')
+                    scan_numbers = scan_num_convert(self.scan_numbers)
+                    h5del_group(self.file, self.dataset_name + '/scan_numbers')
+                    h5del_group(self.file, self.dataset_name + '/scan_theta')
+                    h5create_dataset(self.file, self.dataset_name + '/scan_numbers', scan_numbers)
+                    h5create_dataset(self.file, self.dataset_name + '/scan_theta', np.asarray(self.scan_theta))
     except:
         warnings.warn('Cannot Initialize Group. Some .mda Files Might Be Missing...')
 
