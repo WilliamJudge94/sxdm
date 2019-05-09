@@ -57,8 +57,8 @@ class SXDMFrameset():
     def chi_determination(self):
         chi_function(self)
 
-    def analysis(self, rows, columns, med_blur_distance = 4,
-                 med_blur_height = 10, stdev_min = 35, bkg_multiplier = 1):
+    def analysis(self, rows, columns, med_blur_distance = 2,
+                 med_blur_height = 1, stdev_min = 25, bkg_multiplier = 0):
         """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
 
         :param rows: (int) the total number of rows you want to iterate through
@@ -67,7 +67,7 @@ class SXDMFrameset():
         :param med_blur_height:  (int) the height cut off for the median blur
         :param stdev_min: (int) standard deviation above the mean of signal to ignore
         :param bkg_multiplier: (int) multiplier for the background signal to be subtracted
-        :return:
+        :return: the analysis results in the form of self.results
         """
         self.total_rows = rows
         self.total_columns = columns
@@ -80,7 +80,7 @@ class SXDMFrameset():
     def save(self):
         save_filename = self.file[0:-3] + '_savedata.h5'
         self.save_file = save_filename
-        acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi', 'ttheta_corr', 'ttheta_centroid','chi_corr',
+        acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi', 'ttheta_corr', 'ttheta_centroid', 'chi_corr',
                          'chi_centroid', 'full_roi']
         for value in tqdm(acceptable_values):
             pre_data = pooled_return(self.results, value)
@@ -95,6 +95,7 @@ class SXDMFrameset():
                 h5replace_data(save_filename, self.dataset_name + '/{}'.format(value), np.asarray(readable_results2))
 
     def viewer(self, diffraction_load = False):
+        warnings.warn('The Starting Parameters In The Viewer May Not Be Identical The Parameters Used For The Analysis')
         try:
             fluor_image = centering_det(self)
             fluor_image = fluor_image[0]

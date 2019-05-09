@@ -151,10 +151,6 @@ def maps_correct(user_map, new_bounds):
                 pass
     return output
 
-def signal_broadening(self):
-    pass
-
-
 def saved_return(file, group, summed_dif_return = False):
     acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi',
                          'ttheta_corr', 'ttheta_centroid', 'chi_corr',
