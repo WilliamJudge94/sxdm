@@ -30,14 +30,21 @@ def return_chi_images_loc(file,
         scan_str = str(scan).zfill(zfill_num)
         im_loc = h5grab_data(file, 'images/{}'.format(scan_str))
         mda_loc = h5grab_data(file, 'mda/{}'.format(scan_str))
-
-        im_check = h5path_exists(file,'images/{}'.format(scan_str) )
+        im_check = h5path_exists(file,'images/{}'.format(scan_str))
         mda_check = h5path_exists(file, 'mda/{}'.format(scan_str))
         images_loc = ['images/{}/{}'.format(scan_str,
                                             loc) for loc in im_loc]
         chi_figures.images_location = images_loc
-        theta = return_det(file, [scan_str], group='sample_theta')
-        chi_figures.scan_theta = theta[0]
+        if chi_figures.user_rocking == 'spl':
+            theta = return_det(file, [scan_str], group='sample_theta')
+            chi_figures.scan_theta = theta[0]
+        elif chi_figures.user_rocking == 'det':
+            #chi_figures.scan_theta = chi_figures.user_det_theta
+            det_find = 'D'+str(h5grab_data(file,'detector_channels/mis/2Theta')).zfill(2)
+            theta = h5grab_data(file, '/mda/{}/{}'.format(scan_str, det_find))
+            sh = np.shape(theta)
+            theta = np.reshape(theta, (1, sh[0]*sh[1]))[0]
+            chi_figures.scan_theta = theta
 
     except:
         warnings.warn('You Have Failed To Load In The Correct Detector Channel. '
@@ -61,6 +68,8 @@ def return_chi_images(file, chi_figures):
 
 def first_chi_figure_setup(self):
     chi_figures = Chi_FiguresClass()
+    chi_figures.user_rocking = self.user_rocking
+    chi_figures.user_det_theta = self.scan_theta
     return_chi_images_loc(self.file, chi_figures)
     return_chi_images(self.file, chi_figures)
     ims = chi_figures.images
@@ -163,8 +172,12 @@ def display_second_images(chi_figures):
     vmax = int(chi_figures.vmax_spot_tb.text)
     idx1 = int(small_idx_tb.text)
     idx2 = int(large_idx_tb.text)
-    angle1 = np.round(chi_figures.scan_theta[0][idx1][0], 5)
-    angle2 = np.round(chi_figures.scan_theta[0][idx2][0], 5)
+    if chi_figures.user_rocking == 'spl':
+        angle1 = np.round(chi_figures.scan_theta[0][idx1][0], 5)
+        angle2 = np.round(chi_figures.scan_theta[0][idx2][0], 5)
+    elif chi_figures.user_rocking == 'det':
+        angle1 = float(np.round(chi_figures.scan_theta[idx1], 5))
+        angle2 = float(np.round(chi_figures.scan_theta[idx2], 5))
     chi_figures.angle1 = angle1
     chi_figures.angle2 = angle2
     axs[0].cla()
@@ -179,9 +192,11 @@ def display_second_images(chi_figures):
     chi_figures.pos2 = pos2
 
 def closebtn_press(event, self, chi_figures):
-    self.chi_angle_difference = abs(chi_figures.angle1 - chi_figures.angle2)
-    self.chi_position_difference = abs(chi_figures.pos1 - chi_figures.pos2)
+
+    self.chi_angle_difference = abs(np.subtract(chi_figures.angle1, chi_figures.angle2))
+    self.chi_position_difference = abs(np.subtract(chi_figures.pos1, chi_figures.pos2))
     self.chi_image_dimensions = chi_figures.image_dimensions
+
     plt.close('all')
     chis(self)
 
@@ -197,6 +212,8 @@ def second_change(event, chi_figures):
 
 def chi_function(self):
     chi_figures = first_chi_figure_setup(self)
+    chi_figures.user_rocking = self.user_rocking
+    chi_figures.user_det_theta = self.scan_theta
     display_first_images(chi_figures)
     second_chi_figure_setup(chi_figures)
     display_second_images(chi_figures)
@@ -241,7 +258,6 @@ def chis(self):
     dimensions = self.chi_image_dimensions
     pixel_diff = self.chi_position_difference
     angle_rads = math.radians(tot_angle_diff)
-
     length = (pixel_diff * pix_size_um)
 
     r = ((length)/math.tan(angle_rads))/1000
@@ -252,13 +268,14 @@ def chis(self):
     broadening_in_pixles(self)
 
     print('Chi bound is: {} Degrees\nFocal Length is : {} mm\nNumberical Aperature is: {} mrads\n'
-          'Radius of Broadening is: {} pixels'.format(self.chi, self.focal_length, self.NA_mrads, self.broadening_in_pix))
+          'Radius of Broadening is: {} pixels'.format(self.chi, self.focal_length_mm, self.NA_mrads, self.broadening_in_pix))
 
 def broadening_in_pixles(self):
     Kev = float(h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='Kev'))
     D_um = float(h5grab_data(self.file, 'zone_plate/D_um'))
     d_rN_nm = float(h5grab_data(self.file, 'zone_plate/d_rN_nm'))
     r_mm = self.r_mm
+
     pix_size_um = self.pix_size_um
 
     D_nm = D_um * 1000

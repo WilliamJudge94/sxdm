@@ -55,6 +55,7 @@ class SXDMFrameset():
         plt.ylabel('Relative Intensity')
 
     def chi_determination(self):
+        self.user_rocking = str(input("What Are You Rocking For The Chi Determination? The Sample or Detector? spl/det - "))
         chi_function(self)
 
     def analysis(self, rows, columns, med_blur_distance = 2,
