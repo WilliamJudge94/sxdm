@@ -70,11 +70,12 @@ class SXDMFrameset():
         :param bkg_multiplier: (int) multiplier for the background signal to be subtracted
         :return: the analysis results in the form of self.results
         """
-        self.total_rows = rows
-        self.total_columns = columns
+        self.analysis_total_rows = rows
+        self.analysis_total_columns = columns
         self.results = best_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
                                      med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier,
                                      center_around = 1)
+        #Set Attrs For Analysis
 
         print('Results Stored As self.results')
 

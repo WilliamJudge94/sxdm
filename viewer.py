@@ -76,7 +76,7 @@ def btn_setup(reproocessbtn_ax, savingbtn_ax):
                            color = 'teal',
                            hovercolor = 'tomato')
     savingbtn = Button(ax = savingbtn_ax,
-                       label = 'Save',
+                       label = 'Save/Reload',
                        color = 'teal',
                        hovercolor = 'tomato')
     plt.draw()
@@ -123,6 +123,20 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
     chi_map_ax.imshow(chi_centroid, cmap = 'magma')
     roi_ax.imshow(roi_im, cmap = 'inferno')
     fluor_ax.imshow(fluor_image, cmap = 'inferno')
+
+def reload_some_static_data(results,roi_ax,
+                     ttheta_map_ax, chi_map_ax):
+    roi_ax.cla()
+    ttheta_map_ax.cla()
+    chi_map_ax.cla()
+    roi_im = centroid_roi_map(results, 'full_roi')
+    chi_centroid = centroid_roi_map(results, 'chi_centroid')
+    ttheta_centroid = centroid_roi_map(results, 'ttheta_centroid')
+
+    ttheta_map_ax.imshow(ttheta_centroid)
+    chi_map_ax.imshow(chi_centroid, cmap = 'magma')
+    roi_ax.imshow(roi_im, cmap = 'inferno')
+
 
 
 def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
@@ -431,15 +445,19 @@ def viewer_mouse_click(event, self):
 
 def reprocessbtn_click(event,user_class, figure_class):
     make_pink(figure_class)
-    user_class.total_rows = 34
-    user_class.total_columns = 27
-    #user_class.analysis(user_class.total_rows, user_class.total_columns, med_blur_distance = figure_class.med_blur_dis_val,
-    #                    med_blur_height = figure_class.med_blur_h_val,
-    #                    stdev_min = figure_class.stdev_val, bkg_multiplier = figure_class.bkgx_val)
-
+    user_class.analysis(user_class.analysis_total_rows,
+                        user_class.analysis_total_columns,
+                        med_blur_distance = figure_class.med_blur_dis_val,
+                        med_blur_height = figure_class.med_blur_h_val,
+                        stdev_min = figure_class.stdev_val,
+                        bkg_multiplier = figure_class.bkgx_val)
+    #Set Attrs For reprocessbtn
 
 def savingbtn_click(event, user_class, figure_class):
     make_black(figure_class)
+    user_class.save()
+    reload_some_static_data(user_class.results, figure_class.roi_ax,
+                            figure_class.ttheta_map_ax, figure_class.chi_map_ax)
 
     
 
