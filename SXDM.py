@@ -74,8 +74,8 @@ class SXDMFrameset():
         self.analysis_total_columns = columns
         self.results = best_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
                                      med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier,
-                                     center_around = 1)
-        #Set Attrs For Analysis
+                                     center_around=1)
+        self.analysis_params = [med_blur_distance, med_blur_height, stdev_min, bkg_multiplier]
 
         print('Results Stored As self.results')
 
@@ -84,6 +84,9 @@ class SXDMFrameset():
         self.save_file = save_filename
         acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi', 'ttheta_corr', 'ttheta_centroid', 'chi_corr',
                          'chi_centroid', 'full_roi']
+
+        h5save_attr(save_filename, self.dataset_name, 'Analysis Parameters', self.analysis_params)
+
         for value in tqdm(acceptable_values):
             pre_data = pooled_return(self.results, value)
             readable_results = []
@@ -109,4 +112,4 @@ class SXDMFrameset():
     def reload_save(self, summed_dif_return = True):
         self.save_filename = self.file[0:-3] + '_savedata.h5'
         self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return = summed_dif_return)
-
+        self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')

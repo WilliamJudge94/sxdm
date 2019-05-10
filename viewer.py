@@ -85,16 +85,21 @@ def btn_setup(reproocessbtn_ax, savingbtn_ax):
 def tb_setup(vmin_spot_ax, vmax_spot_ax,
              vmin_sum_ax,vmax_sum_ax,
              med_blur_dis_ax, med_blur_h_ax,
-             stdev_ax, multiplier_ax):
+             stdev_ax, multiplier_ax, self):
+
+    med_blur_dis = str(self.analysis_params[0])
+    med_blur_hei = str(self.analysis_params[1])
+    stdev = str(self.analysis_params[2])
+    bkg_x = str(self.analysis_params[3])
 
     vmin_spot_tb = TextBox(vmin_spot_ax, 'vmin', initial='0')
     vmax_spot_tb = TextBox(vmax_spot_ax, 'vmax', initial='2')
     vmin_sum_tb = TextBox(vmin_sum_ax, 'vmin', initial='0')
     vmax_sum_tb = TextBox(vmax_sum_ax, 'vmax', initial='1200')
-    med_blur_dis_tb = TextBox(med_blur_dis_ax, 'med_dis', initial='2')
-    med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial='1')
-    stdev_tb = TextBox(stdev_ax, 'stdev_min', initial='25')
-    multiplier_tb = TextBox(multiplier_ax, 'bkgx', initial='0')
+    med_blur_dis_tb = TextBox(med_blur_dis_ax, 'med_dis', initial=med_blur_dis)
+    med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei)
+    stdev_tb = TextBox(stdev_ax, 'stdev_min', initial=stdev)
+    multiplier_tb = TextBox(multiplier_ax, 'bkgx', initial=bkg_x)
     plt.draw()
 
     return vmin_spot_tb, vmax_spot_tb, vmin_sum_tb, vmax_sum_tb,\
@@ -262,7 +267,7 @@ def run_viewer(user_class, fluor_image):
     current_figure.multiplier_tb = \
         tb_setup(current_figure.vmin_spot_ax, current_figure.vmax_spot_ax, current_figure.vmin_sum_ax,
                  current_figure.vmax_sum_ax, current_figure.med_blur_dis_ax,
-                 current_figure.med_blur_h_ax, current_figure.stdev_ax, current_figure.multiplier_ax)
+                 current_figure.med_blur_h_ax, current_figure.stdev_ax, current_figure.multiplier_ax, user_class)
 
     current_figure.vmin_spot_val = int(current_figure.vmin_spot_tb.text)
     current_figure.vmax_spot_val = int(current_figure.vmax_spot_tb.text)
