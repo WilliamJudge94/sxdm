@@ -87,10 +87,16 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
              med_blur_dis_ax, med_blur_h_ax,
              stdev_ax, multiplier_ax, self):
 
-    med_blur_dis = str(self.analysis_params[0])
-    med_blur_hei = str(self.analysis_params[1])
-    stdev = str(self.analysis_params[2])
-    bkg_x = str(self.analysis_params[3])
+    try:
+    	med_blur_dis = str(self.analysis_params[0])
+    	med_blur_hei = str(self.analysis_params[1])
+    	stdev = str(self.analysis_params[2])
+    	bkg_x = str(self.analysis_params[3])
+    except:
+        med_blur_dis = '2'
+        med_blur_hei = '1' 
+        stdev = '25'
+        bkg_x = '0'
 
     vmin_spot_tb = TextBox(vmin_spot_ax, 'vmin', initial='0')
     vmax_spot_tb = TextBox(vmax_spot_ax, 'vmax', initial='2')

@@ -112,4 +112,7 @@ class SXDMFrameset():
     def reload_save(self, summed_dif_return = True):
         self.save_filename = self.file[0:-3] + '_savedata.h5'
         self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return = summed_dif_return)
-        self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')
+        try:
+            self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')
+        except:
+            warnings.warn('Failed Importing Analysis Parameters')
