@@ -85,7 +85,7 @@ class SXDMFrameset():
         acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi', 'ttheta_corr', 'ttheta_centroid', 'chi_corr',
                          'chi_centroid', 'full_roi']
 
-        h5save_attr(save_filename, self.dataset_name, 'Analysis Parameters', self.analysis_params)
+        h5set_attr(save_filename, self.dataset_name, 'Analysis Parameters', self.analysis_params)
 
         for value in tqdm(acceptable_values):
             pre_data = pooled_return(self.results, value)
@@ -112,7 +112,4 @@ class SXDMFrameset():
     def reload_save(self, summed_dif_return = True):
         self.save_filename = self.file[0:-3] + '_savedata.h5'
         self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return = summed_dif_return)
-        try:
-            self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')
-        except:
-            warnings.warn('Failed Importing Analysis Parameters')
+        self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')
