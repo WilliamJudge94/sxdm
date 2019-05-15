@@ -17,6 +17,10 @@ from det_chan import return_det
 from viewer import sum_error
 
 class Chi_FiguresClass():
+    """A class function that allows the code to store figure data.
+    Makes it easier to transfer data between figures
+
+    """
     pass
 
 def return_chi_images_loc(file,
@@ -25,6 +29,30 @@ def return_chi_images_loc(file,
                           zfill_num = 4,
                           ):
 
+    """Grabs the image location for the detector sweep scan
+
+    Parameters
+    ----------
+
+    file: (str)
+        the .h5 file associated with the dataset
+
+    chi_figures: (Chi_FigureClass)
+        the Chi_FigureClass allowing transfer of data from figure to figure
+
+    detector_channel_loc: (str)
+        the h5 group location to the detector sweep scan used for chi bounds determination
+
+    zfill_num: (int)
+        the integer value for how many digits the scan number must have
+
+
+    Returns
+    -------
+    Nothing - sets the chi_figures.scan_theta and chi_figures.images_location valuess
+    """
+
+    # Attempt to pull chi determination scan information
     try:
         scan = h5grab_data(file, detector_channel_loc)
         scan_str = str(scan).zfill(zfill_num)
@@ -46,6 +74,7 @@ def return_chi_images_loc(file,
             theta = np.reshape(theta, (1, sh[0]*sh[1]))[0]
             chi_figures.scan_theta = theta
 
+    # Throw error if the program cannot pull info
     except:
         warnings.warn('You Have Failed To Load In The Correct Detector Channel. '
                       'Correct The detector_channel_loc or Import Correct Data')

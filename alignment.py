@@ -21,8 +21,6 @@ def alignment_function(self):
     -------
     Nothing
     """
-
-
     # Check to see if /dxdy group exsists if not make it and set attributes
     if h5path_exists(self.file, self.dataset_name + '/dxdy') == True:
         warnings.warn('Previous Data Found')
@@ -67,6 +65,7 @@ def alignment_function(self):
         starting = figure_size_finder(images)
 
         plt.close('all')
+        #Setting up initial figure for alignment
         fig, axs = plt.subplots(starting, starting,
                                 figsize=(10, 10),
                                 facecolor='w',

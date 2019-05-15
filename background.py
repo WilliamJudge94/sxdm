@@ -68,7 +68,9 @@ def scan_background_finder(destination, background_dic):
     Parameters
     ----------
     destination: (numpy array)
+        the output of h5get_image_destination(self, pixel)
         list of scan numbers which the user wants to get the background images for
+
     background_dic: (dic)
         the dictionary otuput from the scan_background() function
 
@@ -76,6 +78,8 @@ def scan_background_finder(destination, background_dic):
     -------
     A numpy array of background images corresponding to the scans in the destination input
     """
+
+    #Take the destination and convert it into something readable for the dictionary entry
     scans = [value.split('/')[1] for value in destination]
     background = []
     for scan in scans:

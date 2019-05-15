@@ -143,6 +143,12 @@ def save_alignment(event, self):
             print('Deleted Group 2')
 
 def check_mouse_ax(event, self):
+    """Grabs the mouse axes position
+
+    :param event:
+    :param self:
+    :return:
+    """
 
     if event.inaxes == self.fluor_ax:
         self.viewer_currentax = self.fluor_ax
@@ -150,5 +156,11 @@ def check_mouse_ax(event, self):
         self.viewer_currentax = self.roi_ax
 
 def fig_leave(event, self):
+    """If the user leaves an axis set the self.viewer_currentax to None
+
+    :param event:
+    :param self:
+    :return:
+    """
     self.viewer_currentax = None
 
