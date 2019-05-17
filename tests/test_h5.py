@@ -1,14 +1,32 @@
 import unittest
-from unittest import TestCase, mock
 import os
+import sys
 
-from h5 import *
+sys.path.append(os.path.dirname(__file__))
+sys.path.append('../..')
 
-class H5TestCase(TestCase):
+from sxdm import *
+
+test_path = os.path.dirname(__file__)
+main_path = '{}/'.format(test_path)
+test_file_path = main_path+'test.h5'
+
+class H5TestCase(unittest.TestCase):
     def test_h5create_file(self):
-        h5create_file('./')
-        file_check = os.path.isfile('./test.h5')
+
+        h5create_file(main_path, 'test')
+        file_check = os.path.isfile('{}/test.h5'.format(test_path))
         self.assertTrue(file_check)
 
     def test_h5create_group(self):
-        h5create_group('./test.h5','group1/group2')
+        file = test_file_path
+        h5create_group(file,'group1/group2')
+        result1 =  h5path_exists(file, '/group1/')
+        result2 = h5path_exists(file, '/group1/group2')
+        self.assertTrue(result1)
+        self.assertTrue(result2)
+
+
+
+if __name__ == '__main__':
+    unittest.main()

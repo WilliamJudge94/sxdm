@@ -7,8 +7,8 @@ import warnings
 
 import h5py
 
-def h5create_file(loc):
-    hf = h5py.File('{}/data.h5'.format(loc), 'w')
+def h5create_file(loc, name):
+    hf = h5py.File('{}/{}.h5'.format(loc, name), 'w')
     hf.close()
 
 def h5read(file,data_loc):
