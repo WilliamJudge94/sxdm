@@ -8,17 +8,27 @@ import warnings
 import h5py
 
 def h5create_file(loc, name):
-    hf = h5py.File('{}/{}.h5'.format(loc, name), 'w')
-    hf.close()
+    """Creates hdf5 file
 
+    Parameters
+    ==========
+
+    loc (str)
+        the location of the hdf5 file
+    name (str)
+        the name of the hdf5 file
+
+    Returns
+    =======
+
+    Nothing
+    """
+
+    with h5py.File('{}/{}.h5'.format(loc, name), "w") as f:
+        pass
 def h5read(file,data_loc):
-    """Reads .h5 files
+    """Reads .h5 file data at a set location in the file
 
-    :param file:
-    :param data_loc:
-    :return:
-    """
-    """
     Parameters
     ==========
     
@@ -32,6 +42,22 @@ def h5read(file,data_loc):
         g1 = hdf.get(data_loc)
         g1_data = list(g1)
     return g1_data
+
+def h5delete_file(file):
+    """Deletes the file set by the user
+
+    Parameters
+    ==========
+
+    file (str)
+        the full location of the hdf5 file the user would like to delete
+
+    Returns
+    =======
+
+    Nothing
+    """
+    os.remove(file)
 
 def h5list_group(file,group='base'):
     """Displays all group members for a user defined group

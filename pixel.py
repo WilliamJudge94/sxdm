@@ -30,7 +30,6 @@ def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,q 
         else:
             q.put([chi, chi_centroid, chi_centroid_finder])
 
-
 def centroid_finder(oneDarray_start, stdev_min = 35):
     oneDarray = oneDarray_start.copy()
 
