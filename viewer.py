@@ -19,9 +19,17 @@ from clicks import check_mouse_ax, fig_leave
 
 
 def figure_setup():
+    """Set up the viewer figure
+
+    Returns
+    =======
+    All axes for the figure
+    """
 
     fig = plt.figure(figsize = (12,6))
     mpl.rcParams['axes.linewidth'] = 2
+
+    # Initiate the axes
     fluor_ax = plt.subplot2grid((4,5),(1,0), colspan=1, rowspan=2)
     roi_ax = plt.subplot2grid((4, 5), (1, 4), colspan=1, rowspan=2)
     spot_diff_ax = plt.subplot2grid((4, 5), (0, 1), colspan=1, rowspan=1)
@@ -63,6 +71,14 @@ def figure_setup():
            med_blur_dis_ax, med_blur_h_ax, stdev_ax, multiplier_ax
 
 def sum_error():
+    """If there is an error loading data, import psyduck
+
+    Return
+    ======
+
+    psyduck image
+
+    """
     full_path = os.path.realpath(__file__)
     new = full_path.split('/')[0:-1]
     new2 = np.append(new,['templates','psy.png'])
@@ -71,6 +87,15 @@ def sum_error():
     return im
 
 def btn_setup(reproocessbtn_ax, savingbtn_ax):
+    """Set up the reprocess and saving button
+
+    Return
+    ======
+
+    reprocess and saving button
+
+    """
+
     reproocessbtn = Button(ax = reproocessbtn_ax,
                            label = 'Reprocess',
                            color = 'teal',
@@ -86,6 +111,10 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
              vmin_sum_ax,vmax_sum_ax,
              med_blur_dis_ax, med_blur_h_ax,
              stdev_ax, multiplier_ax, self):
+
+    """Set up all textboxes
+
+    """
 
     try:
     	med_blur_dis = str(self.analysis_params[0])
@@ -113,6 +142,9 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
 
 def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
                      summed_dif_ax, ttheta_map_ax, chi_map_ax, fluor_image):
+    """Load all the static data for the viewer
+
+    """
 
     roi_im = centroid_roi_map(results, 'full_roi')
     chi_centroid = centroid_roi_map(results, 'chi_centroid')
@@ -137,6 +169,9 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
 
 def reload_some_static_data(results,roi_ax,
                      ttheta_map_ax, chi_map_ax):
+    """Reloading some of the static data when you save/reload image
+
+    """
     roi_ax.cla()
     ttheta_map_ax.cla()
     chi_map_ax.cla()
@@ -153,6 +188,9 @@ def reload_some_static_data(results,roi_ax,
 def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
                       ttheta_centroid_ax, chi_centroid_ax, med_blur_distance,
                       med_blur_height, stdev_min, row, column, self):
+    """Load the dynamic data in the viewer based on the user inputs
+
+    """
 
     spot_dif_ax.cla()
     ttheta_centroid_ax.cla()
@@ -228,6 +266,9 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         chi_centroid_ax.axvline(chi_centroid, color = 'black')
 
 def run_viewer(user_class, fluor_image):
+    """Function that compiles functions to get the viewer working
+
+    """
     try:
 
         results = user_class.results
@@ -322,6 +363,12 @@ def run_viewer(user_class, fluor_image):
     current_figure.savingbtn.on_clicked(p_savingbtn_click)
 
 def spot_change(text, self):
+    """
+
+    :param text:
+    :param self:
+    :return:
+    """
 
     self.spot_diff_ax.cla()
     self.summed_dif_ax.cla()
@@ -368,6 +415,12 @@ def spot_change(text, self):
 
 
 def analysis_change(text, self):
+    """
+
+    :param text:
+    :param self:
+    :return:
+    """
     make_red(self)
     self.med_blur_dis_val = int(self.med_blur_dis_tb.text)
     self.med_blur_h_val = int(self.med_blur_h_tb.text)
@@ -381,9 +434,15 @@ def analysis_change(text, self):
 
 
 class FiguresClass():
+    """A class function which will make it easier to move variable in and out of functions
+
+    """
     pass
 
 def make_red(self):
+    """Show the user which figures are not current by turning them red
+
+    """
     axes = [self.ttheta_map_ax, self.chi_map_ax,
             self.reprocessbtn_ax]
     sides = ['left', 'right', 'top', 'bottom']
@@ -393,6 +452,11 @@ def make_red(self):
     plt.draw() 
 
 def make_pink(self):
+    """Show the user which values have not been saved by turning them pink
+
+    :param self:
+    :return:
+    """
     axes = [self.ttheta_map_ax, self.chi_map_ax,
             self.savingbtn_ax, self.med_blur_dis_ax,
             self.med_blur_h_ax, self.stdev_ax,
@@ -406,6 +470,11 @@ def make_pink(self):
     plt.draw()
 
 def make_black(self):
+    """Reset figures to black when everything is up to date
+
+    :param self:
+    :return:
+    """
     axes = [self.ttheta_map_ax, self.chi_map_ax,
             self.reprocessbtn_ax, self.savingbtn_ax,self.med_blur_dis_ax,
             self.med_blur_h_ax, self.stdev_ax,
@@ -418,6 +487,12 @@ def make_black(self):
 
 
 def viewer_mouse_click(event, self):
+    """Based on what is clicked in the figure change the viewer accordingly
+
+    :param event:
+    :param self:
+    :return:
+    """
     if self.viewer_currentax in [self.fluor_ax, self.roi_ax] and self.viewer_currentax != None:
         self.row = int(np.floor(event.ydata))
         self.column = int(np.floor(event.xdata))
@@ -455,6 +530,13 @@ def viewer_mouse_click(event, self):
 
 
 def reprocessbtn_click(event,user_class, figure_class):
+    """Calls the self.analysis function once the reprocessed button is clicked
+
+    :param event:
+    :param user_class:
+    :param figure_class:
+    :return:
+    """
     make_pink(figure_class)
     user_class.analysis(user_class.analysis_total_rows,
                         user_class.analysis_total_columns,
@@ -465,6 +547,13 @@ def reprocessbtn_click(event,user_class, figure_class):
     #Set Attrs For reprocessbtn
 
 def savingbtn_click(event, user_class, figure_class):
+    """Calls the self.save function and reloads data to the viewer
+
+    :param event:
+    :param user_class:
+    :param figure_class:
+    :return:
+    """
     make_black(figure_class)
     user_class.save()
     reload_some_static_data(user_class.results, figure_class.roi_ax,

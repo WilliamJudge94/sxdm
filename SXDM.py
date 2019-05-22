@@ -44,7 +44,7 @@ class SXDMFrameset():
         alignment_function(self)
 
     def gaus_checker(self):
-        """Plots total diffraction intensity vs scan angle
+        """Plots total diffraction intensity vs scan angle for a set ROI
 
         """
         x, y = gaus_check(self)
@@ -63,24 +63,35 @@ class SXDMFrameset():
                  med_blur_height = 1, stdev_min = 25, bkg_multiplier = 0):
         """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
 
-        :param rows: (int) the total number of rows you want to iterate through
-        :param columns: (int) the total number of columns you want to iterate through
-        :param med_blur_distance: (int) the amount of values to scan for median blur
-        :param med_blur_height:  (int) the height cut off for the median blur
-        :param stdev_min: (int) standard deviation above the mean of signal to ignore
-        :param bkg_multiplier: (int) multiplier for the background signal to be subtracted
-        :return: the analysis results in the form of self.results
+        Parameters
+        ==========
+
+        rows: (int) the total number of rows you want to iterate through
+        columns: (int) the total number of columns you want to iterate through
+        med_blur_distance: (int) the amount of values to scan for median blur
+        med_blur_height:  (int) the height cut off for the median blur
+        stdev_min: (int) standard deviation above the mean of signal to ignore
+        bkg_multiplier: (int) multiplier for the background signal to be subtracted
+
+        Returns
+        =======
+        the analysis results in the form of self.results
         """
         self.analysis_total_rows = rows
         self.analysis_total_columns = columns
         self.results = best_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
                                      med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier,
                                      center_around=1)
+        if False in self.results:
+            warnings.warn('RAM Usage Too High. Analysis Stopped')
         self.analysis_params = [med_blur_distance, med_blur_height, stdev_min, bkg_multiplier]
 
         print('Results Stored As self.results')
 
     def save(self):
+        """Save self.results to _savedata.h5
+
+        """
         save_filename = self.file[0:-3] + '_savedata.h5'
         self.save_file = save_filename
         acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi', 'ttheta_corr', 'ttheta_centroid', 'chi_corr',
@@ -103,8 +114,13 @@ class SXDMFrameset():
     def viewer(self, diffraction_load = False):
         """Allow the user to view the data in a convenient format
 
-        :param diffraction_load:
-        :return:
+        Parameters
+        ==========
+
+        diffraction_load (bool)
+            if True this will load all necessary data for the diffraction
+            will take up at least 2gb of RAM
+
         """
         warnings.warn('The Starting Parameters In The Viewer May Not Be Identical The Parameters Used For The Analysis')
         try:
@@ -118,8 +134,13 @@ class SXDMFrameset():
     def reload_save(self, summed_dif_return = True):
         """Allow the user to reload saved data
 
-        :param summed_dif_return:
-        :return:
+        Parameters
+        ==========
+
+        summed_dif_return (bool)
+            if True this will load all necessary data for the diffraction
+            will take up at least 2gb of RAM
+
         """
         self.save_filename = self.file[0:-3] + '_savedata.h5'
         self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return = summed_dif_return)

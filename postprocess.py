@@ -10,9 +10,15 @@ from h5 import h5grab_data
 def centroid_roi_map(results, map_type = 'chi_centroid'):
     """Returns the centroid or roi
 
-    :param results:
-    :param map_type:
-    :return:
+    Parameters
+    ==========
+
+    results (nd.array)
+        self.results or the output of self.analysis
+    map_type (str)
+        the value the user would like to return
+        acceptable values are chi_centroid, ttheta_centroid, or full_roi
+
     """
     row_col = pooled_return(results, 'row_column')
     new_row_col = []
@@ -35,14 +41,35 @@ def centroid_roi_map(results, map_type = 'chi_centroid'):
 def twodsummed(results):
     """Returns the summed diffraction pattern for the analysis output
 
-    :param results:
-    :return:
+    Parameters
+    ==========
+    results (nd.array)
+        the self.results or output of self.analysis
+
+    Returns
+    =======
+    the summed diffraction patter from the analysis output
     """
     return np.sum(pooled_return(results, 'summed_dif'), axis = 0)
 
 
 def pixel_analysis_return(results, row, column, show_accep_vals=False):
-    """ Dictionary Output Entries Are:
+    """Easy return of the results based on the input row and column value
+
+    Parameters
+    ==========
+
+    results (nd.array)
+        self.results or output of self.analysis
+    row (int)
+        the row the user would like to look at
+    column (int)
+        the column the user would like to look at
+
+    Returns
+    =======
+    A dictionary with entries:
+
     'row_column',
     'summed_dif',
     'ttheta',
@@ -52,7 +79,8 @@ def pixel_analysis_return(results, row, column, show_accep_vals=False):
     'ttheta_cent',
     'chi_cent',
     'roi'
-"""
+
+    """
     acceptable_values = ['row_column', 'summed_dif', 'ttheta',
                          'chi', 'ttheta_corr', 'ttheta_cent', 'chi_corr',
                          'chi_cent', 'roi']
@@ -91,7 +119,7 @@ def pixel_analysis_return(results, row, column, show_accep_vals=False):
 
 def make_video(image_folder, output_folder=False, outimg=None, fps=23, size=None,
                is_color=True, format="XVID"):
-    """
+    """DEPRECIATED
     Create a video from a list of images.
 
     @param      outvid      output video
@@ -133,9 +161,14 @@ def make_video(image_folder, output_folder=False, outimg=None, fps=23, size=None
 def maps_correct(user_map, new_bounds):
     """Takes the centroid_rou_map() function output and gives it new bounds
 
-    :param user_map:
-    :param new_bounds: np.linspace(min, max, detector_dimensions)
-    :return:
+    Parameters
+    ==========
+
+    user_map (nd.array)
+        the output of the centroid_roi_map function
+    new_bounds (np.linspace)
+        np.linspace(lowerbound, higherbound, dim of image)
+
     """
     shape = np.shape(user_map)
     row = shape[0]
@@ -152,6 +185,24 @@ def maps_correct(user_map, new_bounds):
     return output
 
 def saved_return(file, group, summed_dif_return = False):
+    """Load saved data
+
+    Parameters
+    ==========
+
+    file (str)
+        a user defined hdf5 file
+    group (str)
+        the group the user would like to import
+    summed_dif_return (bool)
+        if True this will import all data. it is set to False because
+        this import take up a lot of RAM
+
+    Returns
+    =======
+    a nd.array thay can be set to the self.results value
+
+    """
     acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi',
                          'ttheta_corr', 'ttheta_centroid', 'chi_corr',
                          'chi_centroid', 'full_roi']

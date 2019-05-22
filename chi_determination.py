@@ -96,11 +96,13 @@ def return_chi_images(file, chi_figures):
     chi_figures (Chi_FigureClass):
         the figure class. used to make it easier to move data around
     """
+    # Obtain the images for the figure
     images_loc = chi_figures.images_location
     image_array = []
     if images_loc != None:
         for image in images_loc:
             image_array.append(h5grab_data(file,image))
+    # If it errors then load psyduck
     elif images_loc == None:
         image_array = [sum_error(),sum_error()]
     chi_figures.images = image_array
@@ -108,7 +110,11 @@ def return_chi_images(file, chi_figures):
 def first_chi_figure_setup(self):
     """Setting up the chi figure GUI
 
+    Returns
+    =======
+    The Chi_FigureClass created by the function
     """
+    # Initiate the figure
     chi_figures = Chi_FiguresClass()
     chi_figures.user_rocking = self.user_rocking
     chi_figures.user_det_theta = self.scan_theta
@@ -116,11 +122,14 @@ def first_chi_figure_setup(self):
     return_chi_images(self.file, chi_figures)
     ims = chi_figures.images
     tot_ims = int(np.ceil(np.sqrt(len(ims))))
+
+    # Create the figure
     fig, axs = plt.subplots(tot_ims, tot_ims, figsize=(10, 10), facecolor='w',
                             edgecolor='k')
     fig.subplots_adjust(hspace=.55, wspace=.11)
     axs = axs.ravel()
 
+    # Initiate the axes for textboxes and input boxes
     vmin_spot_ax = plt.axes([0.15, 0.92, 0.1, 0.05])
     vmin_spot_ax.set_title('vmin')
     vmin_spot_ax.set_xticks([])
@@ -140,12 +149,19 @@ def first_chi_figure_setup(self):
 def display_first_images(chi_figures):
     """From the chi figure class set up the first set of figures
 
+    Returns
+    =======
+    Nothing
     """
+
+    #Get all image data
     axs = chi_figures.first_axs
     ims = chi_figures.images
     vmin = int(chi_figures.vmin_spot_tb.text)
     vmax = int(chi_figures.vmax_spot_tb.text)
     chi_figures.image_dimensions = np.shape(ims[0])
+
+    # Show all images in appropriate axis
     for i,ax in enumerate(axs):
         try:
             ax.cla()
@@ -161,7 +177,12 @@ def display_first_images(chi_figures):
 def second_chi_figure_setup(chi_figures):
     """Setting up the second figure
 
+    Returns
+    =======
+    Nothing
     """
+
+    # Initiate figure
     fig, axs = plt.subplots(1, 2, figsize=(10, 6), facecolor='w',
                             edgecolor='k')
     fig.subplots_adjust(hspace=.55, wspace=.11)
@@ -171,6 +192,7 @@ def second_chi_figure_setup(chi_figures):
         axs[0].spines[side].set_color('red')
         axs[1].spines[side].set_color('magenta')
 
+    # Initiate all axes
     small_idx_ax = plt.axes([0.15, 0.90, 0.1, 0.05])
     small_idx_ax.set_title('First IDX')
     small_idx_ax.set_xticks([])
@@ -181,6 +203,7 @@ def second_chi_figure_setup(chi_figures):
     large_idx_ax.set_yticks([])
     small_idx_tb, large_idx_tb = idx_tb_setup(small_idx_ax, large_idx_ax)
 
+    # Initiate textboxes
     pos1_ax = plt.axes([0.65, 0.90, 0.1, 0.05])
     pos1_ax.set_title('Position 1')
     pos1_ax.set_xticks([])
@@ -191,7 +214,7 @@ def second_chi_figure_setup(chi_figures):
     pos2_ax.set_yticks([])
     pos1_tb, pos2_tb = pos_tb_setup(pos1_ax, pos2_ax)
 
-
+    # Initiate Buttons
     close_button_ax = plt.axes([0.15, 0.05, 0.1, 0.05])
     closebtn_start(chi_figures, close_button_ax)
 
@@ -216,8 +239,12 @@ def display_second_images(chi_figures):
     """Display the second figure
 
     """
+
+    # Grab image axes
     axs = chi_figures.second_axs
     ims = chi_figures.images
+
+    # Set initial tb-input vals
     small_idx_tb = chi_figures.small_idx_tb
     large_idx_tb = chi_figures.large_idx_tb
     pos1 = int(chi_figures.pos1_tb.text)
@@ -226,12 +253,17 @@ def display_second_images(chi_figures):
     vmax = int(chi_figures.vmax_spot_tb.text)
     idx1 = int(small_idx_tb.text)
     idx2 = int(large_idx_tb.text)
+
+    # Ask user what kind of scan they are running through
+    # spl rock vs det rock have difference theta positions on detectors
     if chi_figures.user_rocking == 'spl':
         angle1 = np.round(chi_figures.scan_theta[0][idx1][0], 5)
         angle2 = np.round(chi_figures.scan_theta[0][idx2][0], 5)
     elif chi_figures.user_rocking == 'det':
         angle1 = float(np.round(chi_figures.scan_theta[idx1], 5))
         angle2 = float(np.round(chi_figures.scan_theta[idx2], 5))
+
+    # Reset image values
     chi_figures.angle1 = angle1
     chi_figures.angle2 = angle2
     axs[0].cla()
@@ -250,7 +282,6 @@ def closebtn_press(event, self, chi_figures):
     upon closing the figure
 
     """
-
     self.chi_angle_difference = abs(np.subtract(chi_figures.angle1, chi_figures.angle2))
     self.chi_position_difference = abs(np.subtract(chi_figures.pos1, chi_figures.pos2))
     self.chi_image_dimensions = chi_figures.image_dimensions
@@ -302,6 +333,10 @@ def chi_function(self):
 
 def minmax_tb_setup(vmin_spot_ax, vmax_spot_ax):
     """Set up the minmax textboxes
+
+    Returns
+    =======
+    vmin and vmax textboxes
     """
     vmin_spot_tb = TextBox(vmin_spot_ax, 'vmin', initial='0')
     vmax_spot_tb = TextBox(vmax_spot_ax, 'vmax', initial='2')
@@ -310,16 +345,23 @@ def minmax_tb_setup(vmin_spot_ax, vmax_spot_ax):
 
 def idx_tb_setup(vmin_spot_ax, vmax_spot_ax):
     """Set up the index textboxes
+    DEPRECIATED
 
+    Returns
+    =======
+    position 1 and position 2 textboxes for index values
     """
-    vmin_spot_tb = TextBox(vmin_spot_ax, '', initial='0')
-    vmax_spot_tb = TextBox(vmax_spot_ax, '', initial='1')
+    pos1_tb = TextBox(vmin_spot_ax, '', initial='0')
+    pos2_tb = TextBox(vmax_spot_ax, '', initial='1')
     plt.draw()
-    return vmin_spot_tb, vmax_spot_tb
+    return pos1_tb, pos2_tb
 
 def pos_tb_setup(pos1_ax, pos2_ax):
     """Set up the position text boxes
 
+    Returns
+    =======
+    position 1 and position 2 textboxes for index values
     """
     pos1_ax_tb = TextBox(pos1_ax, '', initial='0')
     pos2_ax_tb = TextBox(pos2_ax, '', initial='0')
@@ -327,6 +369,16 @@ def pos_tb_setup(pos1_ax, pos2_ax):
     return pos1_ax_tb, pos2_ax_tb
 
 def chis(self):
+    """Calculates the bounds for the detector
+
+    Returns
+    =======
+    Nothing
+
+    Prints
+    ======
+    Chi value, focal length, numberical aperature, and broadening in pixels of the detector
+    """
     pix_size_um = float(h5grab_data(self.file, 'zone_plate/detector_pixel_size'))
     self.pix_size_um = pix_size_um
     tot_angle_diff = self.chi_angle_difference
@@ -349,6 +401,15 @@ def broadening_in_pixles(self):
     """Determine the instrumental broadening in pixels as well as the focal length
     and numberical aperature
 
+    Returns
+    =======
+    Nothing
+
+    Sets
+    ====
+    self.focal_length_mm
+    self.NA_mrads
+    self.broadening_in_pix
     """
     Kev = float(h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='Kev'))
     D_um = float(h5grab_data(self.file, 'zone_plate/D_um'))

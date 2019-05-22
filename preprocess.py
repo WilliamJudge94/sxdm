@@ -184,6 +184,11 @@ def gaus_check(self):
     return x, y
 
 def initialize_saving(self):
+    """Initialize the ability to save data
+
+    :param self:
+    :return:
+    """
     saved_filename = self.file[0:-3] + '_savedata.h5'
     self.save_filename = saved_filename
     if os.path.isfile(saved_filename) == False:
@@ -195,6 +200,13 @@ def initialize_saving(self):
         pass
 
 def initialize_scans(self, scan_numbers = False, fill_num = 4):
+    """Initialize all necessities for each scan
+
+    :param self:
+    :param scan_numbers:
+    :param fill_num:
+    :return:
+    """
     # When .mda files are missing this script cannot pull scan information
     try:
         if scan_numbers != False:

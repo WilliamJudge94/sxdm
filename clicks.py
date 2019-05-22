@@ -143,9 +143,9 @@ def save_alignment(event, self):
 def check_mouse_ax(event, self):
     """Grabs the mouse axes position
 
-    :param event:
-    :param self:
-    :return:
+    Returns
+    =======
+    Nothing
     """
 
     if event.inaxes == self.fluor_ax:
@@ -156,9 +156,9 @@ def check_mouse_ax(event, self):
 def fig_leave(event, self):
     """If the user leaves an axis set the self.viewer_currentax to None
 
-    :param event:
-    :param self:
-    :return:
+    Returns
+    =======
+    Nothing
     """
     self.viewer_currentax = None
 
