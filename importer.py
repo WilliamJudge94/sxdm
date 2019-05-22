@@ -10,13 +10,30 @@ def import_images(file, images_loc, scans = False, fill_num = 4, delete = False,
                   import_type = 'uint32', delimeter_function = delimeter_func, force_reimport = False):
 
     """Allows the user to import all .tif images into the .h5 file
-    :param file:
-    :param images_loc:
-    :param fill_num:
-    :param delete:
-    :param import_type:
-    :param delimeter_function:
-    :return:
+
+    Parameters
+    ==========
+
+    file (str)
+        the user defined hdf5 file
+    image_loc (str)
+        the location of the images folder from the beamline
+    scans (nd.array)
+        the scans the user would like to import
+    fill_num (int)
+        the amount of numbers in the images folders names
+    delete (bool)
+        if True all the data from the selected scans will be set to zero
+    import_type (str)
+        a string value passed into imageio.imread().astype(import_type)
+    delimeter_function (function)
+        a function which determines the image number. redefine this if 26 - ID -C naming scheme changes
+    force_reimport (bool)
+        set to True if you would like to force reimport images
+
+    Returns
+    =======
+    Nothing
     """
 
     #Give the user the option to select which scans they want to import
@@ -60,4 +77,6 @@ def import_images(file, images_loc, scans = False, fill_num = 4, delete = False,
 
 
 def images_group_exsist(file, scan):
+    """See if the images group exists.
+    """
     exists = h5path_exists(file, 'images/{}'.format(scan))

@@ -11,6 +11,15 @@ from datetime import datetime
 
 
 def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,q = False):
+    """Determine the centroid of the theta axis
+
+    :param summed_dif:
+    :param median_blur_distance:
+    :param median_blur_height:
+    :param stdev_min:
+    :param q:
+    :return:
+    """
     ttheta = np.sum(summed_dif, axis=0)
     ttheta = median_blur(ttheta, median_blur_distance, median_blur_height)
     ttheta2 = np.asarray(ttheta)
@@ -21,16 +30,31 @@ def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,
         q.put([ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2])
 
 def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,q = False):
-        chi = np.sum(summed_dif, axis=1)
-        chi = median_blur(chi, median_blur_distance, median_blur_height)
-        chi2 = np.asarray(chi)
-        chi_centroid_finder, chi_centroid = centroid_finder(chi2, stdev_min)
-        if q == False:
-            return chi, chi_centroid, chi_centroid_finder
-        else:
-            q.put([chi, chi_centroid, chi_centroid_finder])
+    """Determine the centroid of the chi axis
+
+    :param summed_dif:
+    :param median_blur_distance:
+    :param median_blur_height:
+    :param stdev_min:
+    :param q:
+    :return:
+    """
+    chi = np.sum(summed_dif, axis=1)
+    chi = median_blur(chi, median_blur_distance, median_blur_height)
+    chi2 = np.asarray(chi)
+    chi_centroid_finder, chi_centroid = centroid_finder(chi2, stdev_min)
+    if q == False:
+        return chi, chi_centroid, chi_centroid_finder
+    else:
+        q.put([chi, chi_centroid, chi_centroid_finder])
 
 def centroid_finder(oneDarray_start, stdev_min = 35):
+    """Determine the centroid function
+
+    :param oneDarray_start:
+    :param stdev_min:
+    :return:
+    """
     oneDarray = oneDarray_start.copy()
 
     xvals = np.arange(0, len(oneDarray))
@@ -48,6 +72,14 @@ def centroid_finder(oneDarray_start, stdev_min = 35):
     return oneDarray, centroid
 
 def grab_pix(array,row,column, int_convert = False):
+    """Return a pixel at a given row and column value
+
+    :param array:
+    :param row:
+    :param column:
+    :param int_convert:
+    :return:
+    """
     output = array[:, row, column]
     if int_convert == True:
         int_output = []
@@ -61,12 +93,29 @@ def grab_pix(array,row,column, int_convert = False):
         return np.asarray(output)
 
 def sum_pixel(self, images_loc):
+    """Sum a pixel
+
+    :param self:
+    :param images_loc:
+    :return:
+    """
     pixel_store = []
     for image in images_loc:
         pixel_store.append(h5grab_data(self.file, image))
     return pixel_store
 
 def pixel_analysis(self, row, column, image_array, median_blur_distance, median_blur_height, stdev_min):
+    """Depreciated for pixel_analysis_v2
+
+    :param self:
+    :param row:
+    :param column:
+    :param image_array:
+    :param median_blur_distance:
+    :param median_blur_height:
+    :param stdev_min:
+    :return:
+    """
     if column == 0:
         if ram_check() > 90:
             return False
@@ -111,6 +160,16 @@ def pixel_analysis(self, row, column, image_array, median_blur_distance, median_
 
 
 def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_height, stdev_min):
+    """The analysis done on a single pixel
+
+    :param self:
+    :param row:
+    :param column:
+    :param median_blur_distance:
+    :param median_blur_height:
+    :param stdev_min:
+    :return:
+    """
     image_array = self.image_array
     try:
         self.pbar_val = self.pbar_val + 1

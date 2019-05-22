@@ -70,12 +70,16 @@ def alignment_function(self):
                                 figsize=(10, 10),
                                 facecolor='w',
                                 edgecolor='k')
-        self.loc_axs = axs.ravel()
+        try:
+            self.loc_axs = axs.ravel()
+        except:
+            warnings.warn('Ravel Function Not Called. Possible 1D Image Trying To Load')
+            self.loc_axs = [axs]
         axs_store = []
 
+        saving = partial(save_alignment, self=self)
         initiate = partial(onclick_1, self=self)
         click1 = partial(fig1_click, self=self, fig=fig, images=images)
-        saving = partial(save_alignment, self=self)
 
         # Display circles for alignment
         for i, image in enumerate(images):

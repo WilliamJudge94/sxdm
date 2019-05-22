@@ -78,8 +78,7 @@ def scan_background_finder(destination, background_dic):
     -------
     A numpy array of background images corresponding to the scans in the destination input
     """
-
-    #Take the destination and convert it into something readable for the dictionary entry
+    # Take the destination and convert it into something readable for the dictionary entry
     scans = [value.split('/')[1] for value in destination]
     background = []
     for scan in scans:

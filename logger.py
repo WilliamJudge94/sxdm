@@ -2,6 +2,10 @@ import logging
 import os
 
 def initialize_logging(self):
+    """Inidiate logging
+
+    Not set up
+    """
     log_filename = './sxdm.log'
     if os.path.isfile(log_filename) == False:
         f = open(log_filename, "w+")

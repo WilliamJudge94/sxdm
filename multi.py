@@ -201,7 +201,8 @@ def better_multi(self, rows, columns, med_blur_distance = 4, med_blur_height = 1
 
     return master_results
 
-def best_analysis(self, rows, columns, med_blur_distance = 4, med_blur_height = 10, stdev_min = 35, multiplier = 1, center_around = False):
+def best_analysis(self, rows, columns, med_blur_distance = 4, med_blur_height = 10,
+                  stdev_min = 35, multiplier = 1, center_around = False):
     """
     :param self:
     :param rows:

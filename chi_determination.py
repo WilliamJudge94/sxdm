@@ -86,6 +86,16 @@ def return_chi_images_loc(file,
         chi_figures.images_location = None
 
 def return_chi_images(file, chi_figures):
+    """Return the detector movement data
+
+    Parameters
+    ==========
+
+    file (str):
+        the file the user would like to find the detector images from
+    chi_figures (Chi_FigureClass):
+        the figure class. used to make it easier to move data around
+    """
     images_loc = chi_figures.images_location
     image_array = []
     if images_loc != None:
@@ -96,6 +106,9 @@ def return_chi_images(file, chi_figures):
     chi_figures.images = image_array
 
 def first_chi_figure_setup(self):
+    """Setting up the chi figure GUI
+
+    """
     chi_figures = Chi_FiguresClass()
     chi_figures.user_rocking = self.user_rocking
     chi_figures.user_det_theta = self.scan_theta
@@ -125,6 +138,9 @@ def first_chi_figure_setup(self):
     return chi_figures
 
 def display_first_images(chi_figures):
+    """From the chi figure class set up the first set of figures
+
+    """
     axs = chi_figures.first_axs
     ims = chi_figures.images
     vmin = int(chi_figures.vmin_spot_tb.text)
@@ -143,6 +159,9 @@ def display_first_images(chi_figures):
         plt.draw()
 
 def second_chi_figure_setup(chi_figures):
+    """Setting up the second figure
+
+    """
     fig, axs = plt.subplots(1, 2, figsize=(10, 6), facecolor='w',
                             edgecolor='k')
     fig.subplots_adjust(hspace=.55, wspace=.11)
@@ -184,6 +203,9 @@ def second_chi_figure_setup(chi_figures):
     chi_figures.pos2_tb = pos2_tb
 
 def closebtn_start(chi_figures, btn_ax):
+    """Set up the close button
+
+    """
     closebtn = Button(ax = btn_ax,
                            label = 'Finish',
                            color = 'teal',
@@ -191,6 +213,9 @@ def closebtn_start(chi_figures, btn_ax):
     chi_figures.closebtn = closebtn
 
 def display_second_images(chi_figures):
+    """Display the second figure
+
+    """
     axs = chi_figures.second_axs
     ims = chi_figures.images
     small_idx_tb = chi_figures.small_idx_tb
@@ -221,6 +246,10 @@ def display_second_images(chi_figures):
     chi_figures.pos2 = pos2
 
 def closebtn_press(event, self, chi_figures):
+    """Set the chi angle difference, position difference, and image dimension
+    upon closing the figure
+
+    """
 
     self.chi_angle_difference = abs(np.subtract(chi_figures.angle1, chi_figures.angle2))
     self.chi_position_difference = abs(np.subtract(chi_figures.pos1, chi_figures.pos2))
@@ -230,6 +259,9 @@ def closebtn_press(event, self, chi_figures):
     chis(self)
 
 def vs_change(event,chi_figures):
+    """When the user changes the vmin or vmax update the figures
+
+    """
     axs = chi_figures.first_axs
     ims = chi_figures.images
     vmin_spot_tb = chi_figures.vmin_spot_tb
@@ -237,9 +269,15 @@ def vs_change(event,chi_figures):
     display_first_images(chi_figures)
 
 def second_change(event, chi_figures):
+    """When the second figure changes, update the second figure
+
+    """
     display_second_images(chi_figures)
 
 def chi_function(self):
+    """Runs all code necessary to determine the chi bounds
+
+    """
     chi_figures = first_chi_figure_setup(self)
     chi_figures.user_rocking = self.user_rocking
     chi_figures.user_det_theta = self.scan_theta
@@ -263,18 +301,26 @@ def chi_function(self):
     chi_figures.closebtn.on_clicked(p_closebtn)
 
 def minmax_tb_setup(vmin_spot_ax, vmax_spot_ax):
+    """Set up the minmax textboxes
+    """
     vmin_spot_tb = TextBox(vmin_spot_ax, 'vmin', initial='0')
     vmax_spot_tb = TextBox(vmax_spot_ax, 'vmax', initial='2')
     plt.draw()
     return vmin_spot_tb, vmax_spot_tb
 
 def idx_tb_setup(vmin_spot_ax, vmax_spot_ax):
+    """Set up the index textboxes
+
+    """
     vmin_spot_tb = TextBox(vmin_spot_ax, '', initial='0')
     vmax_spot_tb = TextBox(vmax_spot_ax, '', initial='1')
     plt.draw()
     return vmin_spot_tb, vmax_spot_tb
 
 def pos_tb_setup(pos1_ax, pos2_ax):
+    """Set up the position text boxes
+
+    """
     pos1_ax_tb = TextBox(pos1_ax, '', initial='0')
     pos2_ax_tb = TextBox(pos2_ax, '', initial='0')
     plt.draw()
@@ -300,6 +346,10 @@ def chis(self):
           'Radius of Broadening is: {} pixels'.format(self.chi, self.focal_length_mm, self.NA_mrads, self.broadening_in_pix))
 
 def broadening_in_pixles(self):
+    """Determine the instrumental broadening in pixels as well as the focal length
+    and numberical aperature
+
+    """
     Kev = float(h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='Kev'))
     D_um = float(h5grab_data(self.file, 'zone_plate/D_um'))
     d_rN_nm = float(h5grab_data(self.file, 'zone_plate/d_rN_nm'))

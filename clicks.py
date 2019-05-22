@@ -119,8 +119,6 @@ def save_alignment(event, self):
 
     Nothing. It just stores /dxdy to the self.file as well
     as adding alingment_group and alignment_subgroup attributes
-
-
     """
 
     # Save/Replace the dxdy data

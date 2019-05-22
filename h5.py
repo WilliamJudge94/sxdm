@@ -62,9 +62,18 @@ def h5delete_file(file):
 def h5list_group(file,group='base'):
     """Displays all group members for a user defined group
 
-    :param file:
-    :param group:
-    :return:
+    Parameters
+    ==========
+
+    file (str)
+        the file the user wishes to find the group list for
+    group (str)
+        the subgroup the user want to look at
+
+    Returns
+    =======
+
+    a list of groups within the specified hdf5 location
     """
     with h5py.File(file,'r') as hdf:
         if group == 'base':
@@ -78,9 +87,18 @@ def h5list_group(file,group='base'):
 def h5grab_data(file,data_loc):
     """Returns the data stored in the user defined group
 
-    :param file:
-    :param data_loc:
-    :return:
+    Parameters
+    ==========
+
+    file (str):
+        the user defined hdf5 file
+    data_loc (str):
+        the group the user would like to pull data from
+
+    Returns
+    =======
+
+    the data stored int the user defined location
     """
     with h5py.File(file,'r') as hdf:
         data = hdf.get(data_loc)
@@ -90,9 +108,18 @@ def h5grab_data(file,data_loc):
 def h5create_group(file,group):
     """Creates a group based on the Users group input
 
-    :param file:
-    :param group:
-    :return:
+    Parameters
+    ==========
+
+    file (str):
+        the user defined hdf5 file
+    group (str):
+        the group the user would like to create inside the file
+
+    Returns
+    =======
+    Nothing
+
     """
     with h5py.File(file,'a') as hdf:
         hdf.create_group(group)
@@ -100,10 +127,19 @@ def h5create_group(file,group):
 def h5create_dataset(file,ds_path,ds_data):
     """Creates a dataset in the user defined group with data equal to the user defined data
 
-    :param file:
-    :param ds_path:
-    :param ds_data:
-    :return:
+    Parameters
+    ==========
+
+    file (str)
+        the user defined hdf5 file
+    ds_path (str)
+        the group path to the dataset inside the hdf5 file
+    ds_data (nd.array)
+        a numpy array the user would like to store
+
+    Returns
+    =======
+    Nothing
     """
     with h5py.File(file,'a') as hdf:
         #g1 = hdf.create_group(group)
@@ -112,10 +148,7 @@ def h5create_dataset(file,ds_path,ds_data):
 def h5create_subgroup(file,group,subgroup):
     """Allows user to create a subgroup - Kinda useless
 
-    :param file:
-    :param group:
-    :param subgroup:
-    :return:
+    Useless
     """
     with h5py.File(file,'a') as hdf:
         hdf.create_group(group+'/'+subgroup)
@@ -123,9 +156,17 @@ def h5create_subgroup(file,group,subgroup):
 def h5del_group(file,group):
     """Deletes the user defined group. DOES NOT REDUCE FILE SIZE
 
-    :param file:
-    :param group:
-    :return:
+    Parameters
+    ==========
+
+    file (str)
+        the user defined hdf5 file
+    group (str)
+        the group inside the hdf5 file the user would like to delete
+
+    Returns
+    =======
+    Nothing
     """
     with h5py.File(file,'a') as hdf:
         del hdf[group]
@@ -133,9 +174,6 @@ def h5del_group(file,group):
 def h5del_data(file,group):
     """Sets all data equal to zero for a given dataset.
 
-    :param file:
-    :param group:
-    :return:
     """
     with h5py.File(file,"a") as hdf:
         init_data = hdf[group]
@@ -144,13 +182,22 @@ def h5del_data(file,group):
 def h5images_wra(file,scan,im_loc,im_name,delete = False, import_type = 'uint32'):
     """Used to import/delete .tif images into the .h5 file
 
-    :param file:
-    :param scan:
-    :param im_loc:
-    :param im_name:
-    :param delete:
-    :param import_type:
-    :return:
+    Parameters
+    ==========
+
+    file (str)
+        the user defined hdf5 file
+    scan (nd.array)
+        the scan numbers the user wants to import
+    im_loc (str)
+        the location of the image file
+    delete (bool)
+        set to True if the user would like to delete the data in the hdf5 file
+    import_type (str)
+        string passed into imageio.imread(image).astype(import_type)
+    Returns
+    =======
+    Nothing
     """
     for idx,image in enumerate(im_loc):
         if delete == False:
@@ -169,10 +216,18 @@ def h5replace_data(file,group,data):
 
     Helps with space savings since deleting groups does not decrease the file size. Easier to replace data
 
-    :param file:
-    :param group:
-    :param data:
-    :return:
+    Parameters
+    ==========
+
+    file (str)
+        the user defined hdf5 file
+    group (str)
+        the user defined group in the hdf5 file
+    data (nd.array)
+        the data the user would like to sub in
+    Returns
+    =======
+    Nothing
     """
     with h5py.File(file,"a") as hdf:
         init_data = hdf[group]

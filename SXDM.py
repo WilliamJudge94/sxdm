@@ -40,14 +40,12 @@ class SXDMFrameset():
     def alignment(self):
         """Allows the user to align all scans based on Fluorescence Maps or ROI Maps
 
-        :return:
         """
         alignment_function(self)
 
     def gaus_checker(self):
         """Plots total diffraction intensity vs scan angle
 
-        :return:
         """
         x, y = gaus_check(self)
         plt.plot(x,y)
@@ -55,6 +53,9 @@ class SXDMFrameset():
         plt.ylabel('Relative Intensity')
 
     def chi_determination(self):
+        """Determine the axis bounds for the diffraction images
+
+        """
         self.user_rocking = str(input("What Are You Rocking For The Chi Determination? The Sample or Detector? spl/det - "))
         chi_function(self)
 
@@ -100,6 +101,11 @@ class SXDMFrameset():
                 h5replace_data(save_filename, self.dataset_name + '/{}'.format(value), np.asarray(readable_results2))
 
     def viewer(self, diffraction_load = False):
+        """Allow the user to view the data in a convenient format
+
+        :param diffraction_load:
+        :return:
+        """
         warnings.warn('The Starting Parameters In The Viewer May Not Be Identical The Parameters Used For The Analysis')
         try:
             fluor_image = centering_det(self)
@@ -110,6 +116,11 @@ class SXDMFrameset():
         run_viewer(self, fluor_image)
 
     def reload_save(self, summed_dif_return = True):
+        """Allow the user to reload saved data
+
+        :param summed_dif_return:
+        :return:
+        """
         self.save_filename = self.file[0:-3] + '_savedata.h5'
         self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return = summed_dif_return)
         self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')
