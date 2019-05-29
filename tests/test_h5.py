@@ -42,9 +42,6 @@ class H5TestCase(unittest.TestCase):
         file = test_file_path
         h5create_dataset(file, 'group1/group2/test_data', [0])
 
-
-
-
     @classmethod
     def tearDownClass(cls):
         file = test_file_path

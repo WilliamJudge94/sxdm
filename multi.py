@@ -12,13 +12,13 @@ from tqdm import tqdm
 
 from progressbar import *
 
+
 def iterations(self, num_rows, num_columns):
     """ Places the row and column number next to each other in an iterable array.
         Used for starmap multiprocessing pixels.
 
     Parameters
     ==========
-
     self: (SXDMFrameset)
     num_rows: (int)
         Total number of rows the user wants to calculate
@@ -34,7 +34,8 @@ def iterations(self, num_rows, num_columns):
     if isinstance(num_rows, int) and isinstance(num_columns, int):
         for i in range(0, num_rows):
             for j in range(0, num_columns):
-                its.append((self,i, j,self.image_array, self.median_blur_distance, self.median_blur_height, self.stdev_min))
+                its.append((self, i, j, self.image_array, self.median_blur_distance,
+                            self.median_blur_height, self.stdev_min))
     elif isinstance(num_rows, tuple) and isinstance(num_columns, tuple):
         first_row = num_rows[0]
         last_row = num_rows[1]
@@ -42,7 +43,8 @@ def iterations(self, num_rows, num_columns):
         last_column = num_columns[1]
         for i in range(first_row, last_row):
             for j in range(first_column, last_column):
-                its.append((self,i, j,self.image_array, self.median_blur_distance, self.median_blur_height, self.stdev_min))
+                its.append((self, i, j, self.image_array, self.median_blur_distance,
+                            self.median_blur_height, self.stdev_min))
     return its
 
 
@@ -52,7 +54,6 @@ def initialize_vectorize(self, num_rows, num_columns):
 
     Parameters
     ==========
-
     self: (SXDMFrameset)
     num_rows: (int)
         Total number of rows the user wants to calculate
@@ -75,17 +76,30 @@ def initialize_vectorize(self, num_rows, num_columns):
 
     return its
 
-def analysis(self, rows, columns, default_cores = True,
-             stdev_min = 35, med_blur_distance = 4, med_blur_height = 10, multiplier = 1):
+
+def analysis(self, rows, columns, default_cores=True,
+             stdev_min=35, med_blur_distance=4,
+             med_blur_height=10, multiplier=1):
     """Runs the pixel_analysis function defined in pixel.py through starmap multiprocessing
 
     Paramters
     =========
 
-    :param self:
-    :param rows:
-    :param columns:
-    :param default_cores:
+    self
+
+    rows
+
+    columns
+
+    default_cores
+
+    stdev_min
+
+    med_blur_distance
+
+    med_blur_height
+
+    multiplier
 
     Return
     ======
@@ -101,40 +115,39 @@ def analysis(self, rows, columns, default_cores = True,
     full_roi - a corrected region of interest on the current selection
     """
 
-    #Add background correction to analysis
+    # Add background correction to analysis
 
     self.median_blur_distance = med_blur_distance
     self.median_blur_height = med_blur_height
     self.stdev_min = stdev_min
-    background_dic_basic = scan_background(self, multiplier = multiplier)
+    background_dic_basic = scan_background(self, multiplier=multiplier)
 
-    if default_cores == True:
+    if default_cores is True:
         core_count = int(cpu_count()/2)
     else:
         core_count = default_cores
     image_array = centering_det(self, group='filenumber')
     self.image_array = np.asarray(image_array)
-    its = iterations(self,rows, columns)
+    its = iterations(self, rows, columns)
     pool = Pool(core_count)
 
-    #Run multiprocessing on pixel iterations
-    results = parallel_progbar(pixel_analysis, its, nprocs = default_cores, starmap = True)
+    # Run multiprocessing on pixel iterations
+    results = parallel_progbar(pixel_analysis, its, nprocs=default_cores, starmap=True)
 
     pool.close()
     pool.join()
-
 
     if False in results:
         warnings.warn('Not Enough RAM For Batch Processing. Program Auto Quit. Please Use Slower Functionality')
     self.results = results
     print('Results Saved As self.results')
 
-def pooled_return(results, user_val ):
+
+def pooled_return(results, user_val):
     """Makes it easy to return values from the pooled results from the multi.analysis function
 
     Parameters
     ==========
-
     results (n dimensional array)
         the output from the analysis function
 
@@ -146,7 +159,9 @@ def pooled_return(results, user_val ):
     An n dimensional array consisting of the user selected data output from the multi.analysis function
     """
 
-    acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi', 'ttheta_corr', 'ttheta_centroid','chi_corr',
+    acceptable_values = ['row_column', 'summed_dif',
+                         'ttheta', 'chi', 'ttheta_corr',
+                         'ttheta_centroid', 'chi_corr',
                          'chi_centroid', 'full_roi']
     if user_val in acceptable_values:
         acceptable_values = np.asarray(acceptable_values)
@@ -155,11 +170,13 @@ def pooled_return(results, user_val ):
 
         return np.asarray(results[:, finder])
 
-
     else:
         warnings.warn('Acceptable Values Are: ' + ', '.join(acceptable_values))
 
-def better_multi(self, rows, columns, med_blur_distance = 4, med_blur_height = 10, stdev_min = 35, nprocs = 1):
+
+def better_multi(self, rows, columns, med_blur_distance=4,
+                 med_blur_height=10, stdev_min=35, nprocs=1):
+
     def worker(its, out_q):
         major_out = []
         for chunk in its:
@@ -174,13 +191,13 @@ def better_multi(self, rows, columns, med_blur_distance = 4, med_blur_height = 1
     background_dic_basic = scan_background(self, multiplier = 0)
     image_array = centering_det(self, group='filenumber')
     self.image_array = np.asarray(image_array)
-    its = iterations(self,rows, columns)
+    its = iterations(self, rows, columns)
     chunksize = int(math.ceil(len(its) / float(nprocs)))
 
     out_q = Queue()
     procs = []
 
-    for i in tqdm(range(nprocs), desc = "Procs"):
+    for i in tqdm(range(nprocs), desc="Procs"):
         chunk_its = its[chunksize * i:chunksize * (i + 1)]
         p = Process(
             target=worker, args=(chunk_its, out_q))
@@ -188,11 +205,10 @@ def better_multi(self, rows, columns, med_blur_distance = 4, med_blur_height = 1
         p.start()
 
     resultdict = []
-    for i in tqdm(range(nprocs), desc = "Results"):
+    for i in tqdm(range(nprocs), desc="Results"):
         resultdict.append(out_q.get())
 
-
-    for pr in tqdm(procs, desc = "Join"):
+    for pr in tqdm(procs, desc="Join"):
         pr.join()
 
     master_results = []
@@ -201,44 +217,83 @@ def better_multi(self, rows, columns, med_blur_distance = 4, med_blur_height = 1
 
     return master_results
 
-def best_analysis(self, rows, columns, med_blur_distance = 4, med_blur_height = 10,
-                  stdev_min = 35, multiplier = 1, center_around = False):
-    """
-    :param self:
-    :param rows:
-    :param columns:
-    :param med_blur_distance:
-    :param med_blur_height:
-    :param stdev_min:
-    :param multiplier:
-    :return: A numpy matrix of every pixel asked. Each pixel contains row_column,
-    (row, column), summed_dif, ttheta, chi, ttheta_centroid_finder, ttheta_centroid,
+
+def best_analysis(self, rows, columns, med_blur_distance=4,
+                  med_blur_height=10,
+                  stdev_min=35, multiplier=1,
+                  center_around=False):
+
+    """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
+
+    Parameters
+    ==========
+    self: (SXDMFramset)
+        the sxdmframset
+    rows: (int)
+        the total number of rows you want to iterate through
+    columns: (int)
+        the total number of columns you want to iterate through
+    med_blur_distance: (int)
+        the amount of values to scan for median blur
+    med_blur_height:
+        (int) the height cut off for the median blur
+    stdev_min: (int)
+        standard deviation above the mean of signal to ignore
+    multiplier: (int)
+        multiplier for the background signal to be subtracted
+    center_around: (int)
+        the index of the scan you would like to center around
+
+    Returns
+    =======
+    A numpy matrix of every pixel asked. Each pixel contains
+
+    row_column,(row, column), summed_dif, ttheta, chi,
+    ttheta_centroid_finder, ttheta_centroid,
     chi_centroid_finder, chi_centroid, full_roi
     """
     self.median_blur_distance = med_blur_distance
     self.median_blur_height = med_blur_height
     self.stdev_min = stdev_min
+
+    # Create a background for the scans
     background_dic_basic = scan_background(self, multiplier=multiplier)
 
-    create_imagearray(self, center_around = center_around)
+    # Grab all your images
+    create_imagearray(self, center_around=center_around)
 
-    row, column = initialize_vectorize(self,rows, columns)
+    # Initialize verctorization
+    row, column = initialize_vectorize(self, rows, columns)
     vectorize_pixel_analysis = np.vectorize(pixel_analysis_v2,
-                                            excluded=['self','median_blur_distance', 'median_blur_height', 'stdev_min'])
+                                            excluded=['self', 'median_blur_distance',
+                                                      'median_blur_height', 'stdev_min'])
+    # Create progress bar
     self.pbar_val = 0
     widgets = ['Progress: ', Percentage(), ' ', Bar(marker='-', left='[', right=']'),
                ' ', Timer(), '  ', ETA(), ' ', FileTransferSpeed()]  # see docs for other options
     self.pbar = ProgressBar(widgets=widgets, maxval=len(row)+1)
     self.pbar.start()
 
-    results = vectorize_pixel_analysis(self,row,column,self.median_blur_distance, self.median_blur_height, self.stdev_min)
+    results = vectorize_pixel_analysis(self, row, column,
+                                       self.median_blur_distance,
+                                       self.median_blur_height,
+                                       self.stdev_min)
     readable_results = []
+
+    # Make the results readable
     for re in results:
         readable_results.append(np.asarray(re))
     readable_results = np.asarray(readable_results)
 
     return readable_results
 
-def create_imagearray(self, center_around = False):
-    image_array = centering_det(self, group='filenumber', center_around = center_around)
+
+def create_imagearray(self, center_around=False):
+    """Creates the self.image_array variable needed for pixel_analysis
+
+    :param self:
+    :param center_around:
+    :return:
+    """
+    image_array = centering_det(self, group='filenumber', center_around=center_around)
     self.image_array = np.asarray(image_array)

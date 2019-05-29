@@ -9,16 +9,28 @@ from background import scan_background, scan_background_finder
 from datetime import datetime
 
 
-
-def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,q = False):
+def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q=False):
     """Determine the centroid of the theta axis
 
-    :param summed_dif:
-    :param median_blur_distance:
-    :param median_blur_height:
-    :param stdev_min:
-    :param q:
-    :return:
+    Parameters
+    ==========
+    summed_dif (nd.array image)
+        a 2D summed diffraction image
+    median_blur_distance (int)
+        the amount of values to take the median of
+    median_blur_height (int)
+        the value above the median to replace with the median value
+    stdev_min (int)
+        the standard deviation above the noise to consider the signal valid
+    q (bool)
+        used for an old multi processing function - unused now - might be put in at a later date
+
+    Returns
+    =======
+    the edited (median blured) sum down the y axis
+    the centroid of the data
+    the cropped data to find the centroid
+    the edited (median blured) sum down the y axis as a numpy array
     """
     ttheta = np.sum(summed_dif, axis=0)
     ttheta = median_blur(ttheta, median_blur_distance, median_blur_height)
@@ -29,31 +41,53 @@ def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,
     else:
         q.put([ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2])
 
-def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,q = False):
+
+def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q=False):
     """Determine the centroid of the chi axis
 
-    :param summed_dif:
-    :param median_blur_distance:
-    :param median_blur_height:
-    :param stdev_min:
-    :param q:
-    :return:
+    Parameters
+    ==========
+    summed_dif (nd.array image)
+        a 2D summed diffraction image
+    median_blur_distance (int)
+        the amount of values to take the median of
+    median_blur_height (int)
+        the value above the median to replace with the median value
+    stdev_min (int)
+        the standard deviation above the noise to consider the signal valid
+    q (bool)
+        used for an old multi processing function - unused now - might be put in at a later date
+
+    Returns
+    =======
+    the edited (median blured) sum down the x axis
+    the centroid of the data
+    the cropped data to find the centroid
+    the edited (median blured) sum down the x axis as a numpy array
     """
     chi = np.sum(summed_dif, axis=1)
     chi = median_blur(chi, median_blur_distance, median_blur_height)
     chi2 = np.asarray(chi)
     chi_centroid_finder, chi_centroid = centroid_finder(chi2, stdev_min)
-    if q == False:
+    if q is False:
         return chi, chi_centroid, chi_centroid_finder
     else:
         q.put([chi, chi_centroid, chi_centroid_finder])
 
-def centroid_finder(oneDarray_start, stdev_min = 35):
+
+def centroid_finder(oneDarray_start, stdev_min=35):
     """Determine the centroid function
 
-    :param oneDarray_start:
-    :param stdev_min:
-    :return:
+    Parameters
+    ==========
+    oneDarray_start (numpy array)
+        a one dimensions numpy array
+    stdev_min (int)
+        the standard deviation minimum the user would like to section the data off with
+
+    Returns
+    =======
+    the corrected one dimensional array and the centroid of the array
     """
     oneDarray = oneDarray_start.copy()
 
@@ -71,40 +105,60 @@ def centroid_finder(oneDarray_start, stdev_min = 35):
 
     return oneDarray, centroid
 
-def grab_pix(array,row,column, int_convert = False):
+
+def grab_pix(array, row, column, int_convert=False):
     """Return a pixel at a given row and column value
 
-    :param array:
-    :param row:
-    :param column:
-    :param int_convert:
-    :return:
+    Parameters
+    ==========
+    array (nd.array)
+        a 3 dimensional numpy array
+    row (int)
+        the row the user would like to grab
+    column (int)
+        the column the user would like to grab
+    int_convert (bool)
+        if the user would like to change np.nans to integers set this to True
+
+    Returns
+    =======
+    All data associated with the set row and column for the 3 dimensional array
     """
     output = array[:, row, column]
     if int_convert == True:
         int_output = []
         for value in output:
             if np.isnan(value) == False:
-                int_output.append(int(np.round(value,0)))
+                int_output.append(int(np.round(value, 0)))
             else:
                 int_output.append(value)
         return int_output
     else:
         return np.asarray(output)
 
+
 def sum_pixel(self, images_loc):
     """Sum a pixel
 
-    :param self:
-    :param images_loc:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframset
+    image_loc (list of str)
+        the full image location in the hdf5 file
+
+    Returns
+    =======
+    all images set in the image_loc variable
     """
     pixel_store = []
     for image in images_loc:
         pixel_store.append(h5grab_data(self.file, image))
     return pixel_store
 
-def pixel_analysis(self, row, column, image_array, median_blur_distance, median_blur_height, stdev_min):
+
+def pixel_analysis(self, row, column, image_array,
+                   median_blur_distance, median_blur_height, stdev_min):
     """Depreciated for pixel_analysis_v2
 
     :param self:
@@ -119,56 +173,74 @@ def pixel_analysis(self, row, column, image_array, median_blur_distance, median_
     if column == 0:
         if ram_check() > 90:
             return False
-    pix = grab_pix(array = image_array, row = row, column = column, int_convert = True)
-    destination = h5get_image_destination(self = self, pixel = pix)
-    each_scan_diffraction = sum_pixel(self = self, images_loc = destination)
 
+    pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
+    destination = h5get_image_destination(self=self, pixel=pix)
+    each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
 
-    #Background Correction
-    backgrounds = scan_background_finder(destination = destination, background_dic = self.background_dic)
+    # Background Correction
+    backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
     each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
 
-    summed_dif = np.sum(each_scan_diffraction_post, axis = 0)
+    summed_dif = np.sum(each_scan_diffraction_post, axis=0)
 
+    # pooled: Work In Progress
+    # q_theta = Queue()
+    # q_chi = Queue()
 
-    #pooled: Work In Progress
-    #q_theta = Queue()
-    #q_chi = Queue()
+    # ttheta_pool_results = Process(target = theta_maths, args =
+    # (summed_dif, median_blur_distance, median_blur_height,stdev_min,q_theta))
+    # chi_pool_results = Process(target = chi_maths, args =
+    # (summed_dif, median_blur_distance, median_blur_height,stdev_min,q_chi))
 
-    #ttheta_pool_results = Process(target = theta_maths, args = (summed_dif, median_blur_distance, median_blur_height,stdev_min,q_theta))
-    #chi_pool_results = Process(target = chi_maths, args = (summed_dif, median_blur_distance, median_blur_height,stdev_min,q_chi))
+    # ttheta_pool_results.start()
+    # chi_pool_results.start()
 
-    #ttheta_pool_results.start()
-    #chi_pool_results.start()
+    # ttheta_pool_results.join()
+    # chi_pool_results.join()
 
-    #ttheta_pool_results.join()
-    #chi_pool_results.join()
+    # ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = q_theta.get()
+    # chi, chi_centroid, chi_centroid_finder = q_chi.get()
 
-    #ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = q_theta.get()
-    #chi, chi_centroid, chi_centroid_finder = q_chi.get()
+    # seperate analysis (SLOW)
 
-    #seperate analysis (SLOW)
-
-    ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min)
-    chi, chi_centroid, chi_centroid_finder = chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min)
+    ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = theta_maths(summed_dif,
+                                                                           median_blur_distance,
+                                                                           median_blur_height, stdev_min)
+    chi, chi_centroid, chi_centroid_finder = chi_maths(summed_dif,
+                                                       median_blur_distance,
+                                                       median_blur_height, stdev_min)
 
     full_roi = np.sum(ttheta2)
 
-
-    return (row, column), summed_dif, ttheta, chi, ttheta_centroid_finder, ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi
-
+    return (row, column), summed_dif, ttheta, chi,\
+           ttheta_centroid_finder, ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi
 
 
 def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_height, stdev_min):
     """The analysis done on a single pixel
 
-    :param self:
-    :param row:
-    :param column:
-    :param median_blur_distance:
-    :param median_blur_height:
-    :param stdev_min:
-    :return:
+    Parameters
+    ==========
+
+    self (SXDMFrameset)
+        the sxdmframset
+    rows: (int)
+        the total number of rows you want to iterate through
+    columns: (int)
+        the total number of columns you want to iterate through
+    med_blur_distance: (int)
+        the amount of values to scan for median blur
+    med_blur_height:  (int)
+        the height cut off for the median blur
+    stdev_min: (int)
+        standard deviation above the mean of signal to ignore
+    bkg_multiplier: (int)
+        multiplier for the background signal to be subtracted
+
+    Returns
+    =======
+    the analysis results as an nd.array
     """
     image_array = self.image_array
     try:
@@ -180,23 +252,27 @@ def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_heigh
         if ram_check() > 90:
             return False
     t = datetime.now()
-    pix = grab_pix(array = image_array, row = row, column = column, int_convert = True)
-    destination = h5get_image_destination(self = self, pixel = pix)
-    each_scan_diffraction = sum_pixel(self = self, images_loc = destination)
+    pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
+    destination = h5get_image_destination(self=self, pixel=pix)
+    each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
 
-    #Background Correction
-    backgrounds = scan_background_finder(destination = destination, background_dic = self.background_dic)
+    # Background Correction
+    backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
     each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
 
-    summed_dif = np.sum(each_scan_diffraction_post, axis = 0)
+    summed_dif = np.sum(each_scan_diffraction_post, axis=0)
 
-
-    ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min)
-    chi, chi_centroid, chi_centroid_finder = chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min)
+    ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = theta_maths(summed_dif,
+                                                                           median_blur_distance,
+                                                                           median_blur_height,
+                                                                           stdev_min)
+    chi, chi_centroid, chi_centroid_finder = chi_maths(summed_dif,
+                                                       median_blur_distance,
+                                                       median_blur_height, stdev_min)
 
     full_roi = np.sum(ttheta2)
 
-
-    results = [(row, column), summed_dif, ttheta, chi, ttheta_centroid_finder, ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi]
+    results = [(row, column), summed_dif, ttheta, chi, ttheta_centroid_finder,
+               ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi]
 
     return results

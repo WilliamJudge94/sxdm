@@ -7,9 +7,20 @@ import psutil
 from det_chan import return_det
 from h5 import h5grab_data, h5set_attr, h5read_attr
 
-def order_dir(path):
-    """For a selected path return the ordered filenames
 
+def order_dir(path):
+    """For a selected path return the ordered filenames.
+    Meant for ordering images inside of a folder
+
+    Parameters
+    ==========
+
+    path (str)
+        the path to the folder you would like to order the contence of
+
+    Returns
+    =======
+    the full image location, just the image name
     """
     images = sorted(os.listdir(path))
     im_loc = []
@@ -17,15 +28,24 @@ def order_dir(path):
     for i in images:
         im_loc.append(path+'/'+i)
         im_name.append(i)
-    return im_loc,im_name
+    return im_loc, im_name
 
         
 def zfill_scan(scan_list, fill_num):
     """Change int to str and fill them with the user set number of zeros
 
-    :param scan_list:
-    :param fill_num:
-    :return:
+    Parameters
+    ==========
+
+    scan_list (str):
+        a list string of the scans the user would like to import
+
+    fill_num (int):
+        the amount of numbers each number should have. fill_num=4 turns '40' into '0040'
+
+    Returns
+    =======
+    A list of scan numbers with corrected zfill values
     """
     new_scan = []
     for scan in scan_list:
@@ -36,53 +56,118 @@ def zfill_scan(scan_list, fill_num):
 def create_file(file):
     """Create an hdf5 file
 
+    Parameters
+    ==========
+
+    file (str)
+        the path of the hdf5 file the user would like to create
+
+    Returns
+    =======
+    Nothing
     """
     if (os.path.isfile(file)):
         pass
     else:
-        f = open(file,'w+')
+        f = open(file, 'w+')
         f.close()
-            
+
+
 def delimeter_func(string):
     """The delimeter function used in the image importer
+    Used to just get the number of the image inside of the image files
 
+    Parameters
+    ==========
+
+    string (str):
+        the string the user wants to place the delimeter function on
+
+    Returns
+    =======
+    a cropped string based on the delimeter function
     """
     return string.split('_')[-1][0:-4]
 
-def tif_separation(string,func = delimeter_func):
+
+def tif_separation(string, func=delimeter_func):
     """Seperating the image number from the full name stored in the images folder
 
+    Parameters
+    ==========
+
+    string (str):
+        the string the user wants to place the delimeter function on
+
+    func (function):
+        the delimeter function for the string. Makes it easier to change in later versions
+
+    Returns
+    =======
+    the image string name of just the number
     """
     return func(string)
+
 
 def figure_size_finder(images):
     """Determine the size of the imported diffraction images
 
+    Parameters
+    ==========
+
+    images (nd.array):
+        the numpy array of the images to take the dimensions of
+
+    Returns
+    =======
+    the image dimensions
     """
     im_shape = np.shape(images)
     im_len = len(im_shape)
     if im_len <= 2:
         return 1
     else:
-        start_values = np.arange(1,10)
-        starting_idx = np.where(np.arange(1,10)**2 >= len(images))[0][0]
+        start_values = np.arange(1, 10)
+        starting_idx = np.where(np.arange(1, 10)**2 >= len(images))[0][0]
         starting = start_values[starting_idx]
         return starting
 
-def scan_num_convert(scan_numbers, fill_num = 4):
+
+def scan_num_convert(scan_numbers, fill_num=4):
     """Convert the users int scan numbers into strings
 
+    Parameters
+    ==========
+
+    scan_numbers (str or int):
+        takes an array of str values or int values and zfills them accordingly
+    fill_num (int):
+        the string fill number the user would like to use
+
+    Returns
+    =======
+    the scan numbers in an array of strings with the user selected fill number
     """
-    if isinstance(scan_numbers[0],str):
+    if isinstance(scan_numbers[0], str):
         scan_numbers = [int(scan) for scan in scan_numbers]
-    elif isinstance(scan_numbers[0],int):
+    elif isinstance(scan_numbers[0], int):
         scan_numbers = [str(scan) for scan in scan_numbers]
-        scan_numbers = zfill_scan(scan_numbers,fill_num = fill_num)
+        scan_numbers = zfill_scan(scan_numbers, fill_num=fill_num)
     return scan_numbers
 
-def shape_check(self):
-    """Check to see if the pixel dimensions in the SXDM scan are equivilent
 
+def shape_check(self):
+    """Check to see if the imported hybrids have the same shape
+
+    Parameters
+    ==========
+
+    self (SXDMFrameset)
+        the sxdmframeset used
+
+    Returns
+    =======
+    Nothing. Prints Important Data
     """
     try:
         hybrid_x = return_det(self.file, self.scan_numbers, group='hybrid_x')[0]
@@ -96,17 +181,28 @@ def shape_check(self):
 
         if len_x != 3 and len_y != 3:
             warnings.warn('Scan Shapes Are Not The Same!')
+            self.shape_checker = False
         else:
-            print('Scan Dimensions Are Equivalent')
+            self.shape_checker = True
+            print('Hybrid Scan Shapes Are Equivalent')
     except:
         warnings.warn('Cannot Check Shape. Some .mda Files Might Be Missing...')
+
 
 def val_check(array, resolution):
     """Check the resolution of the x and y dimensions of the scans
 
-    :param array:
-    :param resolution:
-    :return:
+    Parameters
+    ==========
+    array (nd.array)
+        array of all the scan x or y dimensions
+
+    resolution (float)
+        a numbers in um that sets the resolution check of the x and y dimensions
+
+    Returns
+    =======
+    bool (True or False) on whether or not the scan dimensions are within the set resolution
     """
     min_res = array[0] - resolution
     max_res = array[0] + resolution
@@ -120,12 +216,22 @@ def val_check(array, resolution):
     return all(output)
 
 
-def resolution_check(self, user_resolution_um = 0.0005):
-    """Check the X and Y dimensions of the scans
+def resolution_check(self, user_resolution_um=0.0005):
+    """Check if all X dimensions for all scans are equal to each other.
+    Also checks in all y dimensions for all scans are equal to each other.
+    Then checks if the x and y are equal to one another.
 
-    :param self:
-    :param user_resolution_um:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFramset)
+        the sxdmframset
+
+    user_resolution_um (float)
+        the resolution in um the user would like the scan dimensions for
+
+    Returns
+    =======
+    Nothing - sets resolution values
     """
     try:
         hybrid_x = return_det(self.file, self.scan_numbers, group='hybrid_x')[0]
@@ -163,15 +269,30 @@ def resolution_check(self, user_resolution_um = 0.0005):
 
         print('Pixel X Dimension: {}nm\nPixel Y Dimension: {}nm'.format(np.median(res_x) * 1000,
                                                                         np.median(res_y) * 1000))
-        if validation_x == True and validation_y == True:
-            print('All X and All Y Resolutions are within ' +str(user_resolution_um *1000)+' nanometers from eachother')
+        # Store values for testing code
+        self.res_x = np.median(res_x) * 1000
+        self.res_y = np.median(res_y) * 1000
+        self.validation_x = validation_x
+        self.validation_y = validation_y
+
+        if validation_x is True and validation_y is True:
+            print('All X and All Y Resolutions are within ' +
+                  str(user_resolution_um * 1000) + ' nanometers from each other respectivley')
         else:
-            if validation_x != True and validation_y != True:
+            if validation_x is not True and validation_y is not True:
                 warnings.warn('Resolution in X and Y Differ Between Scans')
-            elif validation_x == True and validation_y != True:
+            elif validation_x is True and validation_y is not True:
                 warnings.warn('Resolution in Y Differ Between Scans')
-            elif validation_x != True and validation_y == True:
+            elif validation_x is not True and validation_y is True:
                 warnings.warn('Resolution in X Differ Between Scans')
+
+        res_difference = abs(self.res_x - self.res_y) <= (user_resolution_um * 1000)
+        if res_difference is True:
+            print('X And Y Resolutions Are Within {} nm Of Each Other'.format(user_resolution_um * 1000))
+        elif res_difference is False:
+            warnings.warn('X And Y Resolutions Are NOT Within {} nm Of Each Other\n'
+                          'Plots will need to be corrected'.format(user_resolution_um * 1000))
+
     except:
         warnings.warn('Cannot Check Resolution. Some .mda Files Might Be Missing...')
 
@@ -188,6 +309,7 @@ def image_numbers(self):
         int_filenumbers[self.scan_numbers[i]] = np.asarray(scan).astype(int)
 
     return int_filenumbers
+
 
 def dic2array(dic):
     """Turn a dictionary into a numpy array
@@ -208,8 +330,8 @@ def array2dic(array):
     :return:
     """
     new_dic = {}
-    for i,dot in enumerate(array):
-        new_dic[i] = (dot[0],dot[1])
+    for i, dot in enumerate(array):
+        new_dic[i] = (dot[0], dot[1])
     return new_dic
 
 
@@ -238,7 +360,7 @@ def array_shift(self, arrays2shift, centering_idx):
     return shifted_arrays
 
 
-def centering_det(self, group = 'fluor', center_around = False, summed = False):
+def centering_det(self, group='fluor', center_around=False, summed=False, default=False):
     """Return a detector that has been centered around a set value
 
     :param self:
@@ -247,20 +369,23 @@ def centering_det(self, group = 'fluor', center_around = False, summed = False):
     :param summed:
     :return:
     """
-    if center_around == False:
+    if center_around is False:
         center_around = set_centering(self)
     else:
         pass
-    array = return_det(self.file, self.scan_numbers, group=group)[0]
+    array = return_det(file=self.file,
+                       scan_numbers=self.scan_numbers,
+                       group=group,
+                       default=default)[0]
 
     if center_around != -1:
         ims = array_shift(self, array, center_around)
     else:
         ims = array
-    if summed == False:
+    if summed is False:
         return ims
-    elif summed == True:
-        return np.sum(ims, axis = 0)
+    elif summed is True:
+        return np.sum(ims, axis=0)
 
 
 def set_centering(self):
@@ -287,13 +412,14 @@ def set_centering(self):
 
     return int(center_around)
 
+
 def ram_check():
     """Check how much RAM is being used. If it's over 90% then stop program
 
     :return:
     """
-    mems=psutil.virtual_memory()
-    return round(mems[2],1)
+    mems = psutil.virtual_memory()
+    return round(mems[2], 1)
 
 
 def median_blur(input_array, median_blur_distance,
@@ -306,8 +432,8 @@ def median_blur(input_array, median_blur_distance,
     :param cut_off_value_above_mean:
     :return:
     """
-    iteration_number = np.shape(input_array)[
-        0]  # Finds out the length of the array you want to median blur. This equals the number of iterations you will perform
+    iteration_number = np.shape(input_array)[0]
+    # Finds out the length of the array you want to median blur. This equals the number of iterations you will perform
     median_array = []  # Create a blank array for the final output
     for j in range(0, iteration_number):
         median_array = []
@@ -330,6 +456,7 @@ def median_blur(input_array, median_blur_distance,
             pass
 
     return input_array
+
 
 def grab_dxdy(self):
     """Return the dxdy movements for each scan

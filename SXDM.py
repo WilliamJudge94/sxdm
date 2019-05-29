@@ -16,26 +16,25 @@ from chi_determination import *
 
 from tqdm import tqdm
 
+
 class SXDMFrameset():
 
-    def __init__ (self, file, dataset_name, scan_numbers = False, fill_num = 4, restart_zoneplate = False):
+    def __init__(self, file, dataset_name,
+                  scan_numbers=False, fill_num=4, restart_zoneplate=False):
 
         self.file = file
         self.dataset_name = dataset_name
 
-        initialize_scans(self, scan_numbers = scan_numbers, fill_num = fill_num)
+        initialize_scans(self, scan_numbers=scan_numbers, fill_num=fill_num)
         initialize_group(self)
 
-
-        initialize_zoneplate_data(self, reset = restart_zoneplate)
+        initialize_zoneplate_data(self, reset=restart_zoneplate)
         initialize_experimental_attrs(self)
         initialize_saving(self)
         initialize_logging(self)
 
-
         shape_check(self)
         resolution_check(self)
-
 
     def alignment(self):
         """Allows the user to align all scans based on Fluorescence Maps or ROI Maps
@@ -43,12 +42,12 @@ class SXDMFrameset():
         """
         alignment_function(self)
 
-    def gaus_checker(self):
+    def gaus_checker(self, center_around=False, default=False):
         """Plots total diffraction intensity vs scan angle for a set ROI
 
         """
-        x, y = gaus_check(self)
-        plt.plot(x,y)
+        x, y = gaus_check(self, center_around=center_around, default=default)
+        plt.plot(x, y)
         plt.xlabel('Sample Angle (Degrees)')
         plt.ylabel('Relative Intensity')
 
@@ -56,11 +55,15 @@ class SXDMFrameset():
         """Determine the axis bounds for the diffraction images
 
         """
-        self.user_rocking = str(input("What Are You Rocking For The Chi Determination? The Sample or Detector? spl/det - "))
+        self.user_rocking_check = False
+        while self.user_rocking_check is False:
+            self.user_rocking = str(input("What Are You Rocking For The Chi Determination? "
+                                          "The Sample or Detector? spl/det - "))
+            self.user_rocking_check = self.user_rocking in ['det', 'spl']
         chi_function(self)
 
-    def analysis(self, rows, columns, med_blur_distance = 2,
-                 med_blur_height = 1, stdev_min = 25, bkg_multiplier = 0):
+    def analysis(self, rows, columns, med_blur_distance=2,
+                 med_blur_height=1, stdev_min=25, bkg_multiplier=0):
         """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
 
         Parameters
@@ -111,7 +114,7 @@ class SXDMFrameset():
             except:
                 h5replace_data(save_filename, self.dataset_name + '/{}'.format(value), np.asarray(readable_results2))
 
-    def viewer(self, diffraction_load = False):
+    def viewer(self, diffraction_load=False):
         """Allow the user to view the data in a convenient format
 
         Parameters
@@ -131,7 +134,7 @@ class SXDMFrameset():
         self.diffraction_load = diffraction_load
         run_viewer(self, fluor_image)
 
-    def reload_save(self, summed_dif_return = True):
+    def reload_save(self, summed_dif_return=True):
         """Allow the user to reload saved data
 
         Parameters
@@ -143,5 +146,5 @@ class SXDMFrameset():
 
         """
         self.save_filename = self.file[0:-3] + '_savedata.h5'
-        self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return = summed_dif_return)
+        self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return=summed_dif_return)
         self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')

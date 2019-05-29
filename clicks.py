@@ -7,6 +7,7 @@ import time
 from h5 import h5create_dataset, h5set_attr, h5replace_data, h5del_group, h5path_exists
 from mis import dic2array
 
+
 def onclick_1(event, self):
     """Deal with click events for first figure. Only allows for 30 figures
 
@@ -14,14 +15,14 @@ def onclick_1(event, self):
 
     Parameters
     ==========
-    event: (?)
+    event: (matplotlib event)
         not 1100% sure. Needed to be the first param in a matplotlib event
 
     self: (SXDMFrameset)
         An SXDMFrameset which allows the function to store click values
 
     Returns
-    -------
+    =======
     Nothing
 
     """
@@ -40,6 +41,7 @@ def onclick_1(event, self):
         except:
             pass
 
+
 def onclick_2(event, self):
     """Determine the pixel location the user has clicked on.
 
@@ -48,7 +50,7 @@ def onclick_2(event, self):
     Parameters
     ==========
 
-    event (?)
+    event (matplotlib event)
         Unsure. Needed to be the first variable in a matplotlib event click
 
     self (SXDMFrameset)
@@ -79,6 +81,8 @@ def fig1_click(event, self, fig, images):
     =======
     Nothing
     """
+
+    # Set up figure
     fig2, axs2 = plt.subplots(1, 1, figsize=(10, 10), facecolor='w', edgecolor='k')
     plt.imshow(images[self.clicks['ax']])
     plt.suptitle('Select A Spot To Center On')
@@ -106,39 +110,71 @@ def fig1_click(event, self, fig, images):
         fig.suptitle('Once Complete You May Close This Window')
     fig.canvas.draw()
 
+
 def save_alignment(event, self):
     """Allow the alignment click information to be saved to self.file
 
     Parameters
     ==========
-
     self (SXDMFrameset)
 
     Returns
     =======
-
     Nothing. It just stores /dxdy to the self.file as well
     as adding alingment_group and alignment_subgroup attributes
     """
 
     # Save/Replace the dxdy data
-    if h5path_exists(self.file, self.dataset_name + '/dxdy') == False:
-        h5create_dataset(self.file, self.dataset_name + '/dxdy', dic2array(self.dxdy_store))
-        h5set_attr(self.file, self.dataset_name + '/dxdy', 'alignment_group', self.alignment_group)
-        h5set_attr(self.file, self.dataset_name + '/dxdy', 'alignment_subgroup', self.alignment_subgroup)
+    if h5path_exists(file=self.file,
+                     loc=self.dataset_name + '/dxdy') is False:
+        h5create_dataset(file=self.file,
+                         ds_path=self.dataset_name + '/dxdy',
+                         ds_data=dic2array(self.dxdy_store))
+        h5set_attr(file=self.file,
+                   loc=self.dataset_name + '/dxdy',
+                   attribute_name='alignment_group',
+                   attribute_val=self.alignment_group)
+
+        h5set_attr(file=self.file,
+                   loc=self.dataset_name + '/dxdy',
+                   attribute_name='alignment_subgroup',
+                   attribute_val=self.alignment_subgroup)
     else:
 
         try:
-            h5replace_data(self.file, self.dataset_name + '/dxdy', dic2array(self.dxdy_store))
-            h5set_attr(self.file, self.dataset_name + '/dxdy', 'alignment_group', self.alignment_group)
-            h5set_attr(self.file, self.dataset_name + '/dxdy', 'alignment_subgroup', self.alignment_subgroup)
+            h5replace_data(file=self.file,
+                           group=self.dataset_name + '/dxdy',
+                           data=dic2array(self.dxdy_store))
+
+            h5set_attr(file=self.file,
+                       loc=self.dataset_name + '/dxdy',
+                       attribute_name='alignment_group',
+                       attribute_val=self.alignment_group)
+
+            h5set_attr(file=self.file,
+                       loc=self.dataset_name + '/dxdy',
+                       attribute_name='alignment_subgroup',
+                       attribute_val=self.alignment_subgroup)
         except:
             print('Deleted Group')
-            h5del_group(self.file, self.dataset_name + '/dxdy')
-            h5create_dataset(self.file, self.dataset_name + '/dxdy', dic2array(self.dxdy_store))
-            h5set_attr(self.file, self.dataset_name + '/dxdy', 'alignment_group', self.alignment_group)
-            h5set_attr(self.file, self.dataset_name + '/dxdy', 'alignment_subgroup', self.alignment_subgroup)
+            h5del_group(file=self.file,
+                        group=self.dataset_name + '/dxdy')
+
+            h5create_dataset(file=self.file,
+                             ds_path=self.dataset_name + '/dxdy',
+                             ds_data=dic2array(self.dxdy_store))
+
+            h5set_attr(file=self.file,
+                       loc=self.dataset_name + '/dxdy',
+                       attribute_name='alignment_group',
+                       attribute_val=self.alignment_group)
+
+            h5set_attr(file=self.file,
+                       loc=self.dataset_name + '/dxdy',
+                       attribute_name='alignment_subgroup',
+                       attribute_val=self.alignment_subgroup)
             print('Deleted Group 2')
+
 
 def check_mouse_ax(event, self):
     """Grabs the mouse axes position
@@ -152,6 +188,7 @@ def check_mouse_ax(event, self):
         self.viewer_currentax = self.fluor_ax
     elif event.inaxes == self.roi_ax:
         self.viewer_currentax = self.roi_ax
+
 
 def fig_leave(event, self):
     """If the user leaves an axis set the self.viewer_currentax to None

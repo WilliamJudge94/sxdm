@@ -6,14 +6,13 @@ from mis import delimeter_func, tif_separation, zfill_scan, order_dir
 from h5 import h5images_wra, h5path_exists
 
 
-def import_images(file, images_loc, scans = False, fill_num = 4, delete = False,
-                  import_type = 'uint32', delimeter_function = delimeter_func, force_reimport = False):
+def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
+                  import_type='uint32', delimeter_function=delimeter_func, force_reimport=False):
 
     """Allows the user to import all .tif images into the .h5 file
 
     Parameters
     ==========
-
     file (str)
         the user defined hdf5 file
     image_loc (str)
@@ -36,13 +35,11 @@ def import_images(file, images_loc, scans = False, fill_num = 4, delete = False,
     Nothing
     """
 
-    #Give the user the option to select which scans they want to import
-    #If the scan already exsists as the user if they want to reimport this or skip
-    #Ask if they want to skip all repeats
-
+    # Get a list of files in directory
 
     sorted_images_loc = sorted(os.listdir(images_loc))
-    if scans != False:
+
+    if scans is not False:
         pre_scans = [str(s) for s in scans]
         master_scan = []
         for scan in pre_scans:
@@ -52,26 +49,30 @@ def import_images(file, images_loc, scans = False, fill_num = 4, delete = False,
                 print('{} Scan Not Found - Not Imported'.format(scan))
         sorted_images_loc = master_scan
         
-    zfill_sorted_images_loc = zfill_scan(sorted_images_loc,fill_num)
+    zfill_sorted_images_loc = zfill_scan(sorted_images_loc, fill_num)
+
     its = len(sorted_images_loc)
-    for i in tqdm(range(0,its)):
+
+    # For each of the sorted image folders import all the images
+    for i in tqdm(range(0, its)):
         folder = sorted_images_loc[i]
         directory = images_loc+'/'+folder
-        im_loc,im_name = order_dir(directory)
-        im_name = [tif_separation(string, func = delimeter_function ) for string in im_name]
+        im_loc, im_name = order_dir(directory)
+        im_name = [tif_separation(string, func=delimeter_function) for string in im_name]
 
         path2exsist = '/images/{}'.format(zfill_sorted_images_loc[i])
 
-        if h5path_exists(file, path2exsist) == True and force_reimport == False:
+        # If the path already exists do not import the images again
+        if h5path_exists(file, path2exsist) is True and force_reimport is False:
             print("Scan {} Already Imported. Will Not Continue. "
                   "Force Reimport With force_reimport = True".format(sorted_images_loc[i]))
 
-        elif h5path_exists(file, path2exsist) == True and force_reimport == True:
+        elif h5path_exists(file, path2exsist) is True and force_reimport is True:
             print("Deleting Scan {} And Reimporting".format(sorted_images_loc[i]))
             h5images_wra(file, zfill_sorted_images_loc[i], im_loc,
-                         im_name, delete = False, import_type = import_type)
+                         im_name, delete=False, import_type=import_type)
 
-        elif h5path_exists(file, path2exsist) == False:
+        elif h5path_exists(file, path2exsist) is False:
             h5images_wra(file, zfill_sorted_images_loc[i], im_loc,
                          im_name, delete=delete, import_type=import_type)
 

@@ -7,7 +7,7 @@ from multi import pooled_return
 from h5 import h5grab_data
 
 
-def centroid_roi_map(results, map_type = 'chi_centroid'):
+def centroid_roi_map(results, map_type='chi_centroid'):
     """Returns the centroid or roi
 
     Parameters
@@ -19,24 +19,32 @@ def centroid_roi_map(results, map_type = 'chi_centroid'):
         the value the user would like to return
         acceptable values are chi_centroid, ttheta_centroid, or full_roi
 
+    Returns
+    =======
+    the user selected map in an nd.array
     """
+
+    # Grab data
     row_col = pooled_return(results, 'row_column')
     new_row_col = []
+
+    # Reorder data into an array with correct pixel location
     for array in row_col:
-        new_row_col.append([array[0] ,array[1]])
+        new_row_col.append([array[0], array[1]])
     new_row_col = np.asarray(new_row_col)
-    max_x = np.max(new_row_col[: ,1] ) +1
-    max_y = np.max(new_row_col[: ,0] ) +1
+    max_x = np.max(new_row_col[:, 1]) + 1
+    max_y = np.max(new_row_col[:, 0]) + 1
 
     user_picker = pooled_return(results, map_type)
-    mapper =[[0 for x in range(max_x)] for y in range(max_y)]
+    mapper = [[0 for x in range(max_x)] for y in range(max_y)]
 
     for i, array in enumerate(row_col):
         row = array[0]
         col = array[1]
-
         mapper[row][col] = user_picker[i]
+
     return mapper
+
 
 def twodsummed(results):
     """Returns the summed diffraction pattern for the analysis output
@@ -50,7 +58,7 @@ def twodsummed(results):
     =======
     the summed diffraction patter from the analysis output
     """
-    return np.sum(pooled_return(results, 'summed_dif'), axis = 0)
+    return np.sum(pooled_return(results, 'summed_dif'), axis=0)
 
 
 def pixel_analysis_return(results, row, column, show_accep_vals=False):
@@ -87,10 +95,11 @@ def pixel_analysis_return(results, row, column, show_accep_vals=False):
     if False in results:
         warnings.warn('Not Enough RAM During Analysis - No Usable Results Output')
 
-    if show_accep_vals == True:
+    if show_accep_vals is True:
         print(acceptable_values)
     rs = np.asarray(results)
 
+    # Obtain the pixel results
     row_col = np.asarray(rs[:, 0])
     sumed = np.asarray(rs[:, 1])
     thetas = np.asarray(rs[:, 2])
@@ -101,15 +110,19 @@ def pixel_analysis_return(results, row, column, show_accep_vals=False):
     chi_val = np.asarray(rs[:, 7])
     roi = np.asarray(rs[:, 8])
 
+    # Find the right pixel an store index
     for i, value in enumerate(row_col):
         if value == (row, column):
             idx = i
         else:
             pass
 
+    # Store results
     master_array = [row_col[idx], sumed[idx], thetas[idx], chis[idx],
                     ttheta_corr[idx], ttheta_val[idx], chi_corr[idx],
                     chi_val[idx], roi[idx]]
+
+    # Create the dictionary
     output_dic = {}
     for j, array in enumerate(master_array):
         output_dic[acceptable_values[j]] = array
@@ -158,6 +171,7 @@ def make_video(image_folder, output_folder=False, outimg=None, fps=23, size=None
     vid.release()
     return vid
 
+
 def maps_correct(user_map, new_bounds):
     """Takes the centroid_rou_map() function output and gives it new bounds
 
@@ -169,13 +183,19 @@ def maps_correct(user_map, new_bounds):
     new_bounds (np.linspace)
         np.linspace(lowerbound, higherbound, dim of image)
 
+    Returns
+    =======
+    nd.array of the user_map, but with new bounds rather than with the dimensions
+    of the diffraction image
     """
     shape = np.shape(user_map)
     row = shape[0]
     column = shape[1]
     output = [[np.nan for x in range(column)] for y in range(row)]
+
+    # Replace map value with new values
     for i in range(0, row - 1):
-        for j in range(0, column -1):
+        for j in range(0, column - 1):
             try:
 
                 output[i][j] = new_bounds[int(user_map[i][j])]
@@ -184,7 +204,8 @@ def maps_correct(user_map, new_bounds):
                 pass
     return output
 
-def saved_return(file, group, summed_dif_return = False):
+
+def saved_return(file, group, summed_dif_return=False):
     """Load saved data
 
     Parameters
@@ -221,11 +242,11 @@ def saved_return(file, group, summed_dif_return = False):
             else:
                 pre_store.append(data)
 
-        elif value == 'summed_dif' and summed_dif_return == True:
+        elif value == 'summed_dif' and summed_dif_return is True:
             data = h5grab_data(file, '{}/{}'.format(group, value))
             pre_store.append(data)
 
-        elif value == 'summed_dif' and summed_dif_return == False:         
+        elif value == 'summed_dif' and summed_dif_return is False:
             pre_store.append(np.zeros(length_data))
 
     results_store = []
