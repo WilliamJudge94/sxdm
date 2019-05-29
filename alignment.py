@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import warnings
+from matplotlib.widgets import Button
 
 from h5 import h5path_exists, h5read_attr, h5grab_data
 from mis import array2dic, figure_size_finder
@@ -30,12 +31,15 @@ def alignment_function(self):
         # Determining if User wants to reload or redo alignment
         if redo_alignment == 'y':
             start_alignment = 'y'
-            self.alignment_group = h5read_attr(file=self.file,
-                                               loc=self.dataset_name + '/dxdy',
-                                               attribute_name='alignment_group')
-            self.alignment_subgroup = h5read_attr(file=self.file,
-                                                  loc=self.dataset_name + '/dxdy',
-                                                  attribute_name='alignment_subgroup')
+            try:
+                self.alignment_group = h5read_attr(file=self.file,
+                                                   loc=self.dataset_name + '/dxdy',
+                                                   attribute_name='alignment_group')
+                self.alignment_subgroup = h5read_attr(file=self.file,
+                                                      loc=self.dataset_name + '/dxdy',
+                                                      attribute_name='alignment_subgroup')
+            except:
+                pass
         else:
             start_alignment = 'n'
             redo_alignment = 'n'
@@ -48,8 +52,11 @@ def alignment_function(self):
         if start_alignment == 'y' and redo_alignment == 'n':
             init_dxdy(self)
         else:
-            print('Previous Alignment Done On - {} - {}'.format(self.alignment_group,
+            try:
+                print('Previous Alignment Done On - {} - {}'.format(self.alignment_group,
                                                                 self.alignment_subgroup))
+            except:
+                pass
 
             # Grabbing old alignment and setting alignment circles
             retrieve_old_data = array2dic(array=h5grab_data(file=self.file,
@@ -64,7 +71,7 @@ def alignment_function(self):
         cont = True
 
         # Ask which images the user wants to align to
-        while cont is True:
+        while cont == True:
             user_val = input('Would You Like To Align On fluor Or roi? ')
             if user_val == 'fluor' or user_val == 'roi':
                 cont = False
@@ -78,6 +85,7 @@ def alignment_function(self):
         images = det_return[0]
         self.alignment_subgroup = det_return[1]
         self.alignment_group = user_val
+        self.max_images = np.shape(images)[0]
         starting = figure_size_finder(images=images)
 
         plt.close('all')
@@ -121,3 +129,10 @@ def alignment_function(self):
 
     elif redo_alignment == 'n':
         print('Staying With Current Alignment Parameters')
+
+def reset_dxdy(self):
+    h5del_group(self.file, self.dataset_name + '/dxdy')
+    init_dxdy(self)
+    new_dic = self.dxdy_store
+    h5create_dataset(file=self.file, ds_path=self.dataset_name + '/dxdy',
+                     ds_data=dic2array(new_dic))

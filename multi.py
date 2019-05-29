@@ -122,7 +122,7 @@ def analysis(self, rows, columns, default_cores=True,
     self.stdev_min = stdev_min
     background_dic_basic = scan_background(self, multiplier=multiplier)
 
-    if default_cores is True:
+    if default_cores == True:
         core_count = int(cpu_count()/2)
     else:
         core_count = default_cores
@@ -176,6 +176,18 @@ def pooled_return(results, user_val):
 
 def better_multi(self, rows, columns, med_blur_distance=4,
                  med_blur_height=10, stdev_min=35, nprocs=1):
+
+    """DEPRECIATED
+
+    :param self:
+    :param rows:
+    :param columns:
+    :param med_blur_distance:
+    :param med_blur_height:
+    :param stdev_min:
+    :param nprocs:
+    :return:
+    """
 
     def worker(its, out_q):
         major_out = []
@@ -291,9 +303,16 @@ def best_analysis(self, rows, columns, med_blur_distance=4,
 def create_imagearray(self, center_around=False):
     """Creates the self.image_array variable needed for pixel_analysis
 
-    :param self:
-    :param center_around:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframset
+    center_around (bool)
+        setting this to True allows the user to default to the first image index to center around
+
+    Returns
+    =======
+    Nothing - sets the self.image_array value
     """
     image_array = centering_det(self, group='filenumber', center_around=center_around)
     self.image_array = np.asarray(image_array)

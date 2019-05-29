@@ -64,7 +64,9 @@ def return_chi_images_loc(file,
         chi_figures.images_location = images_loc
 
         if chi_figures.user_rocking == 'spl':
-            theta = return_det(file, [scan_str], group='sample_theta')
+            theta = return_det(file=file,
+                               scan_numbers=[scan_str],
+                               group='sample_theta')
             chi_figures.scan_theta = theta[0]
 
         elif chi_figures.user_rocking == 'det':
@@ -83,7 +85,7 @@ def return_chi_images_loc(file,
                       'Correct The detector_channel_loc or Import Correct Data')
         chi_figures.images_location = None
 
-    if im_check is False or mda_check is False:
+    if im_check == False or mda_check == False:
         warnings.warn('You Have Failed To Load In The Correct Detector Channel. '
                       'Correct The detector_channel_loc or Import Correct Data '
                       'im_check: {} - mda_check: {}'.format(im_check, mda_check))
@@ -107,13 +109,13 @@ def return_chi_images(file, chi_figures):
     images_loc = chi_figures.images_location
     image_array = []
 
-    if images_loc is not None:
+    if images_loc != None:
         for image in images_loc:
             image_array.append(h5grab_data(file=file,
                                            data_loc=image))
     # If it errors then load psyduck
 
-    elif images_loc is None:
+    elif images_loc == None:
         image_array = [sum_error(), sum_error()]
     chi_figures.images = image_array
 

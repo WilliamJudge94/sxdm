@@ -95,7 +95,7 @@ def pixel_analysis_return(results, row, column, show_accep_vals=False):
     if False in results:
         warnings.warn('Not Enough RAM During Analysis - No Usable Results Output')
 
-    if show_accep_vals is True:
+    if show_accep_vals == True:
         print(acceptable_values)
     rs = np.asarray(results)
 
@@ -161,8 +161,8 @@ def make_video(image_folder, output_folder=False, outimg=None, fps=23, size=None
         if not os.path.exists(image):
             raise FileNotFoundError(image)
         img = imread(image)
-        if vid is None:
-            if size is None:
+        if vid == None:
+            if size == None:
                 size = img.shape[1], img.shape[0]
             vid = VideoWriter(output_folder, fourcc, float(fps), size, is_color)
         if size[0] != img.shape[1] and size[1] != img.shape[0]:
@@ -242,11 +242,11 @@ def saved_return(file, group, summed_dif_return=False):
             else:
                 pre_store.append(data)
 
-        elif value == 'summed_dif' and summed_dif_return is True:
+        elif value == 'summed_dif' and summed_dif_return == True:
             data = h5grab_data(file, '{}/{}'.format(group, value))
             pre_store.append(data)
 
-        elif value == 'summed_dif' and summed_dif_return is False:
+        elif value == 'summed_dif' and summed_dif_return == False:
             pre_store.append(np.zeros(length_data))
 
     results_store = []

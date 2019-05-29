@@ -40,7 +40,44 @@ class H5TestCase(unittest.TestCase):
 
     def test_h5create_dataset(self):
         file = test_file_path
-        h5create_dataset(file, 'group1/group2/test_data', [0])
+        h5create_dataset(file, 'group1/group2/test_data1', [0])
+
+    def test_h5grab_data(self):
+        file = test_file_path
+        h5create_dataset(file, 'group1/group2/test_data2', [100])
+        data = h5grab_data(file, 'group1/group2/test_data2')
+        self.assertEqual(data, [100])
+
+    def test_h5del_data(self):
+        file = test_file_path
+        h5create_dataset(file, 'group1/group2/test_data3', [100])
+        h5del_data(file, 'group1/group2/test_data3')
+        data = h5grab_data(file, 'group1/group2/test_data3')
+        self.assertEqual(data, [0])
+
+    def test_h5replace_data(self):
+        file = test_file_path
+        h5create_dataset(file, 'group1/group2/test_data4', [400, 345])
+        h5replace_data(file, 'group1/group2/test_data4', [123, 999])
+        data = h5grab_data(file, 'group1/group2/test_data4')
+        equality = all(np.equal(data, [123, 999]))
+        self.assertTrue(equality)
+
+    def test_h5get_image_destination(self):
+        file = main_path +'test_data.h5'
+        scan_numbers = [178, 178]
+        dataset_name = 'test_178'
+        test_fs = SXDMFrameset(file, dataset_name, scan_numbers=scan_numbers)
+
+        row = 1
+        column = 1
+        create_imagearray(test_fs, True)
+
+        pix = grab_pix(array=test_fs.image_array, row=row, column=column, int_convert=True)
+        destination = h5get_image_destination(self=test_fs, pixel=pix)
+        equality = destination == ['images/0178/165140', 'images/0178/165136']
+        self.assertTrue(equality)
+
 
     @classmethod
     def tearDownClass(cls):

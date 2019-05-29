@@ -25,7 +25,7 @@ def initialize_group(self):
     """
     # When .mda files are missing this function cannot import /scan_theta
     try:
-        if h5path_exists(self.file, self.dataset_name) is False:
+        if h5path_exists(self.file, self.dataset_name) == False:
             h5create_group(self.file, self.dataset_name)
             scan_numbers = scan_num_convert(self.scan_numbers)
             h5create_dataset(self.file, self.dataset_name+'/scan_numbers', scan_numbers)
@@ -47,7 +47,7 @@ def initialize_group(self):
                 except:
                     pass
 
-            if np.array_equal(old_scan_nums, new_scan_nums) is True:
+            if np.array_equal(old_scan_nums, new_scan_nums) == True:
                 print('Importing Identical Scans. Reloading Saved Data...\n')
             else:
                 user_val = input('New Scans Detected. Would You Like To Delete Current Group And Start Again? y/n ')
@@ -96,14 +96,14 @@ def initialize_zoneplate_data(self, reset=False):
     =======
     Nothing - sets values inside /zone_plate/
     """
-    if reset is False:
-        if h5path_exists(self.file, 'zone_plate/D_um') is False:
+    if reset == False:
+        if h5path_exists(self.file, 'zone_plate/D_um') == False:
             D_um_val = input('What Is The Diameter Of The Zone Plate Used In Microns? (Typically 150)')
             h5create_dataset(self.file, 'zone_plate/D_um', D_um_val)
         else:
             print('Diameter Of The Zone Plate Is Set To {} microns'.format(h5grab_data(self.file, 'zone_plate/D_um')))
 
-        if h5path_exists(self.file, 'zone_plate/d_rN_nm') is False:
+        if h5path_exists(self.file, 'zone_plate/d_rN_nm') == False:
             d_rN_nm_val = input('What Is The Outer Most d Spacing Is '
                                 'For The Zone Plate Used In Nanometers? (Typically 20)')
             h5create_dataset(self.file, 'zone_plate/d_rN_nm', d_rN_nm_val)
@@ -111,7 +111,7 @@ def initialize_zoneplate_data(self, reset=False):
             print('Outermost Zone Plate d Spacing Is Set To {} nanometers'.format(h5grab_data(self.file,
                                                                                               'zone_plate/d_rN_nm')))
 
-        if h5path_exists(self.file, 'zone_plate/detector_pixel_size') is False:
+        if h5path_exists(self.file, 'zone_plate/detector_pixel_size') == False:
             detector_pixel_size_val = input('What Pixel Size Of The Detector In Microns? (Typically 15)')
             h5create_dataset(self.file, 'zone_plate/detector_pixel_size', detector_pixel_size_val)
         else:
@@ -165,7 +165,7 @@ def max_det_val(self, detector='fluor'):
     =======
     the max values for all scans for a given detector channel input
     """
-    if h5path_exists(self.file, 'detector_channels/'+detector) is True:
+    if h5path_exists(self.file, 'detector_channels/'+detector) == True:
         data = return_det(self.file, self.scan_numbers, group=detector)
         max_array = [np.max(array) for array in data[0]]
         return max_array
@@ -268,7 +268,7 @@ def initialize_saving(self):
     """
     saved_filename = self.file[0:-3] + '_savedata.h5'
     self.save_filename = saved_filename
-    if os.path.isfile(saved_filename) is False:
+    if os.path.isfile(saved_filename) == False:
         f = open(saved_filename, "w+")
         f.close()
     try:
@@ -295,7 +295,7 @@ def initialize_scans(self, scan_numbers=False, fill_num=4):
     """
     # When .mda files are missing this script cannot pull scan information
     try:
-        if scan_numbers is not False:
+        if scan_numbers != False:
             self.scan_numbers = scan_num_convert(scan_numbers, fill_num=fill_num)
         else:
             import_scans = h5grab_data(self.file, self.dataset_name + '/scan_numbers')

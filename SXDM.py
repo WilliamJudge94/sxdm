@@ -36,15 +36,29 @@ class SXDMFrameset():
         shape_check(self)
         resolution_check(self)
 
-    def alignment(self):
+    def alignment(self, reset=False):
         """Allows the user to align all scans based on Fluorescence Maps or ROI Maps
 
         """
+
+        if reset == True:
+            reset_dxdy(self)
+
         alignment_function(self)
 
     def gaus_checker(self, center_around=False, default=False):
         """Plots total diffraction intensity vs scan angle for a set ROI
 
+        Parameters
+        ==========
+        center_around (bool)
+            if True this will default the centerind index to the first index (0)
+        default (bool)
+            if True this will default the roi to check the gaus of to the first user defined ROI
+
+        Returns
+        =======
+        Nothing - displays the total intensity vs scan theta rocking curve
         """
         x, y = gaus_check(self, center_around=center_around, default=default)
         plt.plot(x, y)
@@ -56,7 +70,7 @@ class SXDMFrameset():
 
         """
         self.user_rocking_check = False
-        while self.user_rocking_check is False:
+        while self.user_rocking_check == False:
             self.user_rocking = str(input("What Are You Rocking For The Chi Determination? "
                                           "The Sample or Detector? spl/det - "))
             self.user_rocking_check = self.user_rocking in ['det', 'spl']
@@ -124,6 +138,9 @@ class SXDMFrameset():
             if True this will load all necessary data for the diffraction
             will take up at least 2gb of RAM
 
+        Returns
+        =======
+        Nothing - displays viewer
         """
         warnings.warn('The Starting Parameters In The Viewer May Not Be Identical The Parameters Used For The Analysis')
         try:
@@ -144,6 +161,9 @@ class SXDMFrameset():
             if True this will load all necessary data for the diffraction
             will take up at least 2gb of RAM
 
+        Returns
+        =======
+        Nothing
         """
         self.save_filename = self.file[0:-3] + '_savedata.h5'
         self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return=summed_dif_return)

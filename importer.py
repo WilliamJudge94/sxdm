@@ -39,7 +39,7 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
 
     sorted_images_loc = sorted(os.listdir(images_loc))
 
-    if scans is not False:
+    if scans != False:
         pre_scans = [str(s) for s in scans]
         master_scan = []
         for scan in pre_scans:
@@ -49,7 +49,8 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
                 print('{} Scan Not Found - Not Imported'.format(scan))
         sorted_images_loc = master_scan
         
-    zfill_sorted_images_loc = zfill_scan(sorted_images_loc, fill_num)
+    zfill_sorted_images_loc = zfill_scan(scan_list=sorted_images_loc,
+                                         fill_num=fill_num)
 
     its = len(sorted_images_loc)
 
@@ -57,27 +58,37 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
     for i in tqdm(range(0, its)):
         folder = sorted_images_loc[i]
         directory = images_loc+'/'+folder
-        im_loc, im_name = order_dir(directory)
-        im_name = [tif_separation(string, func=delimeter_function) for string in im_name]
+        im_loc, im_name = order_dir(path=directory)
+        im_name = [tif_separation(string=string,
+                                  func=delimeter_function) for string in im_name]
 
         path2exsist = '/images/{}'.format(zfill_sorted_images_loc[i])
 
         # If the path already exists do not import the images again
-        if h5path_exists(file, path2exsist) is True and force_reimport is False:
+        if h5path_exists(file, path2exsist) == True and force_reimport == False:
             print("Scan {} Already Imported. Will Not Continue. "
                   "Force Reimport With force_reimport = True".format(sorted_images_loc[i]))
 
-        elif h5path_exists(file, path2exsist) is True and force_reimport is True:
+        elif h5path_exists(file, path2exsist) == True and force_reimport == True:
             print("Deleting Scan {} And Reimporting".format(sorted_images_loc[i]))
-            h5images_wra(file, zfill_sorted_images_loc[i], im_loc,
-                         im_name, delete=False, import_type=import_type)
+            h5images_wra(file=file,
+                         scan=zfill_sorted_images_loc[i],
+                         im_loc=im_loc,
+                         im_name=im_name,
+                         delete=False,
+                         import_type=import_type)
 
-        elif h5path_exists(file, path2exsist) is False:
-            h5images_wra(file, zfill_sorted_images_loc[i], im_loc,
-                         im_name, delete=delete, import_type=import_type)
+        elif h5path_exists(file, path2exsist) == False:
+            h5images_wra(file=file,
+                         scan=zfill_sorted_images_loc[i],
+                         im_loc=im_loc,
+                         im_name=im_name,
+                         delete=delete,
+                         import_type=import_type)
 
 
 def images_group_exsist(file, scan):
     """See if the images group exists.
     """
-    exists = h5path_exists(file, 'images/{}'.format(scan))
+    exists = h5path_exists(file=file,
+                           loc='images/{}'.format(scan))

@@ -69,7 +69,7 @@ def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q
     chi = median_blur(chi, median_blur_distance, median_blur_height)
     chi2 = np.asarray(chi)
     chi_centroid_finder, chi_centroid = centroid_finder(chi2, stdev_min)
-    if q is False:
+    if q == False:
         return chi, chi_centroid, chi_centroid_finder
     else:
         q.put([chi, chi_centroid, chi_centroid_finder])
@@ -269,6 +269,16 @@ def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_heigh
     chi, chi_centroid, chi_centroid_finder = chi_maths(summed_dif,
                                                        median_blur_distance,
                                                        median_blur_height, stdev_min)
+
+    # add a way to segment areas of each diffraction signal into multiple rois
+
+    # look at summed diffraction
+
+    # set the rois in the diffraction pattern
+
+    # crop the summed diff for each segmentation and plot their summed values into an array
+
+    # return the final array
 
     full_roi = np.sum(ttheta2)
 

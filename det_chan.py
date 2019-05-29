@@ -55,12 +55,12 @@ def space_check(fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, h
             ints = True
 
     # Show the User where they are wrong
-    if dic is True:
+    if dic == True:
         warnings.warn('There Are Spaces In Your Dictionary Entries. Please Correct This')
-    if ints is True:
+    if ints == True:
         warnings.warn('filenumber And sample_theta Are In The Incorrect Format. Please Make Them Integers')
 
-    if ints is False and dic is False:
+    if ints == False and dic == False:
         return True
     else:
         warnings.warn('Will Not Continue Till Issues Are Fixed')
@@ -116,7 +116,7 @@ def setup_det_chan(file,
                        hybrid_y=hybrid_y,
                        mis=mis)
 
-    if cont is True:
+    if cont == True:
         total = [fluor,
                  roi,
                  detector_scan,
@@ -267,16 +267,17 @@ def return_det(file, scan_numbers, group='fluor', default=False):
         fluor_array = []
 
         # Keep asking the User for an acceptable value if it doesnt exsist
-        while end is False:
+        while end == False:
             if group not in ['filenumber', 'sample_theta', 'hybrid_x', 'hybrid_y']:
-                if default is False:
+                if default == False:
                     user_val = str(input('Which - ' + group + ' - Would You Like To Center To: ' + str(acceptable_values)))
-                elif default is True:
+                elif default == True:
                     user_val = acceptable_values[0]
             else:
                 user_val = str(acceptable_values[0])
                 acceptable_values = [str(user_val)]
 
+            # Grab the right data
             if user_val in acceptable_values:
                 if group not in ['filenumber', 'sample_theta', 'hybrid_x', 'hybrid_y']:
                     det = str(h5grab_data(file=file,

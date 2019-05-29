@@ -270,6 +270,36 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
                       med_blur_height, stdev_min, row, column, self):
     """Load the dynamic data in the viewer based on the user inputs
 
+    Parameters
+    ==========
+    results (nd.array)
+        the output of self.analysis or the self.results value
+    vmin_spot (int)
+        the vmin for the summed diffraction spot image
+    vmax_spot (int)
+        the vmax for the summed diffraction spot image
+    spot_dif_ax (matplotlib axis)
+        the figure axis for the diffraction spot image
+    ttheta_centroid_ax (matplotlib axis)
+        the figure axis for the 1D two theta plot
+    chi_centroid_ax (matplotlib axis)
+        the figure axis for the 1D chi plot
+    med_blur_distance (int)
+        the integer value used in the median_blur() function
+    med_blur_height (int)
+        the integer value used in the median_blur() function
+    stdev_min (int)
+        the standard deviation value used in the median_blur() segmentation function
+    row (int)
+        the row the user would like to load the data for
+    column (int)
+        the bolumn the user would like to load the data for
+    self (SXDMFramset)
+        the sxdmframset
+
+    Returns
+    =======
+    Nothing - loads figure data
     """
 
     # Clear axes
@@ -282,16 +312,16 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
 
     # Grab RAM required summed diffraction
     try:
-        if self.diffraction_load is True:
+        if self.diffraction_load == True:
 
             spot_dif = return_dic['summed_dif']
 
-        elif self.diffraction_load is False:
+        elif self.diffraction_load == False:
 
             f = h5py.File(self.save_filename, 'r')
             finder = False
             new_idx = 0
-            while finder is False:
+            while finder == False:
                 position = f['{}/row_column'.format(self.dataset_name)][new_idx]
                 if position[0] == self.row and position[1] == self.column:
                     finder = True
@@ -359,17 +389,27 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
 def run_viewer(user_class, fluor_image):
     """Function that compiles functions to get the viewer working
 
+    Parameters
+    ==========
+    user_class (SXDMFrameset)
+        the sxdmframeset
+    fluor_image (image)
+        the fluorescence image the user would like to load into the viewer
+
+    Returns
+    =======
+    Nothing - loads figure data
     """
     try:
         results = user_class.results
         return_dic = pixel_analysis_return(user_class.results, 0, 0)
-        if np.shape(return_dic['summed_dif']) == () and user_class.diffraction_load is True:
+        if np.shape(return_dic['summed_dif']) == () and user_class.diffraction_load == True:
             user_class.reload_save(summed_dif_return=user_class.diffraction_load)
             results = user_class.results
     except:
         print('No Results Found. Importing From Saved File...')
 
-    if user_class.diffraction_load is False:
+    if user_class.diffraction_load == False:
         print("Not Importing Diffraction")
         user_class.reload_save(summed_dif_return=user_class.diffraction_load)
         results = user_class.results
@@ -377,6 +417,7 @@ def run_viewer(user_class, fluor_image):
     # make buttons and tb do something
     # make clicking figures do something
     current_figure = FiguresClass()
+    current_figure.diffraction_load = user_class.diffraction_load
     current_figure.diffraction_load = user_class.diffraction_load
     current_figure.save_filename = user_class.save_filename
     current_figure.dataset_name = user_class.dataset_name
@@ -455,25 +496,32 @@ def run_viewer(user_class, fluor_image):
 
 
 def spot_change(text, self):
-    """
+    """When the user changes spots on the image, reload all the data for the new spot
 
-    :param text:
-    :param self:
-    :return:
+    Parameters
+    ==========
+    text (texbox text event)
+        textbox text event
+    self (SXDMFrameset)
+        the sxdmframeset
+
+    Returns
+    =======
+    Nothing - loads figure data
     """
 
     self.spot_diff_ax.cla()
     self.summed_dif_ax.cla()
 
     return_dic = pixel_analysis_return(self.results, self.row, self.column)
-    if self.diffraction_load is True:
+    if self.diffraction_load == True:
         spot_dif = return_dic['summed_dif']
-    elif self.diffraction_load is False:
+    elif self.diffraction_load == False:
         # print(self.diffraction_load)
         f = h5py.File(self.save_filename, 'r')
         finder = False
         new_idx = 0
-        while finder is False:
+        while finder == False:
             position = f['{}/row_column'.format(self.dataset_name)][new_idx]
             if position[0] == self.row and position[1] == self.column:
                 finder = True
@@ -506,11 +554,18 @@ def spot_change(text, self):
 
 
 def analysis_change(text, self):
-    """
+    """When analysis values change, make the plots change as well to fit analysis parameters
 
-    :param text:
-    :param self:
-    :return:
+    Parameters
+    ==========
+    text (textbox text event)
+        textbox text event
+    self (SXDMFrameset)
+        the sxdmframeset
+
+    Returns
+    =======
+    Nothing - loads figure data
     """
     make_red(self)
     self.med_blur_dis_val = int(self.med_blur_dis_tb.text)
@@ -533,6 +588,14 @@ class FiguresClass():
 def make_red(self):
     """Show the user which figures are not current by turning them red
 
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset
+
+    Returns
+    =======
+    Nothing - loads figure formatting
     """
     axes = [self.ttheta_map_ax, self.chi_map_ax,
             self.reprocessbtn_ax]
@@ -546,8 +609,14 @@ def make_red(self):
 def make_pink(self):
     """Show the user which values have not been saved by turning them pink
 
-    :param self:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset
+
+    Returns
+    =======
+    Nothing - loads figure formatting
     """
     axes = [self.ttheta_map_ax, self.chi_map_ax,
             self.savingbtn_ax, self.med_blur_dis_ax,
@@ -565,8 +634,14 @@ def make_pink(self):
 def make_black(self):
     """Reset figures to black when everything is up to date
 
-    :param self:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset
+
+    Returns
+    =======
+    Nothing - loads figure formatting
     """
     axes = [self.ttheta_map_ax, self.chi_map_ax,
             self.reprocessbtn_ax, self.savingbtn_ax, self.med_blur_dis_ax,
@@ -582,11 +657,18 @@ def make_black(self):
 def viewer_mouse_click(event, self):
     """Based on what is clicked in the figure change the viewer accordingly
 
-    :param event:
-    :param self:
-    :return:
+    Parameters
+    ==========
+    event (matplotlib event)
+        matplotlib event
+    self (SXDMFrameset)
+        the sxdmframeset
+
+    Returns
+    =======
+    Nothing - loads figure formatting
     """
-    if self.viewer_currentax in [self.fluor_ax, self.roi_ax] and self.viewer_currentax is not None:
+    if self.viewer_currentax in [self.fluor_ax, self.roi_ax] and self.viewer_currentax != None:
         self.row = int(np.floor(event.ydata))
         self.column = int(np.floor(event.xdata))
         try:
@@ -624,11 +706,18 @@ def viewer_mouse_click(event, self):
 
 def reprocessbtn_click(event, user_class, figure_class):
     """Calls the self.analysis function once the reprocessed button is clicked
+    Parameters
+    ==========
+    event (matplotlib event)
+        matplotlib event
+    user_class (SXDMFrameset)
+        the sxdmframeset
+    figure_class (FigureClass)
+        the figureclass
 
-    :param event:
-    :param user_class:
-    :param figure_class:
-    :return:
+    Returns
+    =======
+    Nothing - loads figure formatting
     """
     make_pink(figure_class)
     user_class.analysis(user_class.analysis_total_rows,
@@ -643,15 +732,20 @@ def reprocessbtn_click(event, user_class, figure_class):
 def savingbtn_click(event, user_class, figure_class):
     """Calls the self.save function and reloads data to the viewer
 
-    :param event:
-    :param user_class:
-    :param figure_class:
-    :return:
+    Parameters
+    ==========
+    event (matplotlib event)
+        matplotlib event
+    user_class (SXDMFrameset)
+        the sxdmframeset
+    figure_class (FigureClass)
+        the figureclass
+
+    Returns
+    =======
+    Nothing - loads figure formatting
     """
     make_black(figure_class)
     user_class.save()
     reload_some_static_data(user_class.results, figure_class.roi_ax,
                             figure_class.ttheta_map_ax, figure_class.chi_map_ax)
-
-    
-

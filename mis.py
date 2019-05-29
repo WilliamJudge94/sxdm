@@ -275,21 +275,21 @@ def resolution_check(self, user_resolution_um=0.0005):
         self.validation_x = validation_x
         self.validation_y = validation_y
 
-        if validation_x is True and validation_y is True:
+        if validation_x == True and validation_y == True:
             print('All X and All Y Resolutions are within ' +
                   str(user_resolution_um * 1000) + ' nanometers from each other respectivley')
         else:
-            if validation_x is not True and validation_y is not True:
+            if validation_x != True and validation_y != True:
                 warnings.warn('Resolution in X and Y Differ Between Scans')
-            elif validation_x is True and validation_y is not True:
+            elif validation_x == True and validation_y != True:
                 warnings.warn('Resolution in Y Differ Between Scans')
-            elif validation_x is not True and validation_y is True:
+            elif validation_x != True and validation_y == True:
                 warnings.warn('Resolution in X Differ Between Scans')
 
         res_difference = abs(self.res_x - self.res_y) <= (user_resolution_um * 1000)
-        if res_difference is True:
+        if res_difference == True:
             print('X And Y Resolutions Are Within {} nm Of Each Other'.format(user_resolution_um * 1000))
-        elif res_difference is False:
+        elif res_difference == False:
             warnings.warn('X And Y Resolutions Are NOT Within {} nm Of Each Other\n'
                           'Plots will need to be corrected'.format(user_resolution_um * 1000))
 
@@ -300,8 +300,14 @@ def resolution_check(self, user_resolution_um=0.0005):
 def image_numbers(self):
     """Grab the image numbers
 
-    :param self:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframset
+
+    Returns
+    =======
+    all of the diffraction image numbers for each scan in a 3D matrix
     """
     filenumbers = return_det(self.file, self.scan_numbers, group='filenumber')[0]
     int_filenumbers = {}
@@ -314,8 +320,14 @@ def image_numbers(self):
 def dic2array(dic):
     """Turn a dictionary into a numpy array
 
-    :param dic:
-    :return:
+    Parameters
+    ==========
+    dic (dictionary)
+        a dictionary of form {0: (num1, num2), 1: (num3, num4)}
+
+    Returns
+    =======
+    a numpy array of form [(num1, num2), (num3, num4)]
     """
     output_array = []
     for val in dic:
@@ -326,8 +338,14 @@ def dic2array(dic):
 def array2dic(array):
     """Turn a numpy array into a dictionary
 
-    :param array:
-    :return:
+    Parameters
+    ==========
+    array (numpy array)
+        a numpy array of form [(num1, num2), (num3, num4)] that will be turned into a dictionary
+
+    Returns
+    =======
+    a dictionary of form {0: (num1, num2), 1: (num3, num4)}
     """
     new_dic = {}
     for i, dot in enumerate(array):
@@ -338,10 +356,18 @@ def array2dic(array):
 def array_shift(self, arrays2shift, centering_idx):
     """Translate a 3D stack of numpy arrays to align based on set centering values
 
-    :param self:
-    :param arrays2shift:
-    :param centering_idx:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset
+    arrays2shift (numpy array)
+        the 3 dimensional array the user wants to center around one of the indexes
+    centering_idx (numpy array)
+        the dxdy values (translation values) for each matrix in the array
+
+    Returns
+    =======
+    the shifted array based on the dxdy values
     """
     complete_array = array2dic(h5grab_data(self.file, self.dataset_name + '/dxdy'))
     center = complete_array[centering_idx]
@@ -363,13 +389,25 @@ def array_shift(self, arrays2shift, centering_idx):
 def centering_det(self, group='fluor', center_around=False, summed=False, default=False):
     """Return a detector that has been centered around a set value
 
-    :param self:
-    :param group:
-    :param center_around:
-    :param summed:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset
+    group (str)
+        the group name the user would like to center to - acc_vals = fluor and roi
+    center_around (bool)
+        if True it will default to the first index
+    summed (bool)
+        if True it will sum together all scans after centering
+    default (bool)
+        if True it will set the fluor image to center on or roi image to view to the first index
+
+    Returns
+    =======
+    an array of the fluor images or the roi images for all the SXDMFrameset scans centered around
+    the users value
     """
-    if center_around is False:
+    if center_around == False:
         center_around = set_centering(self)
     else:
         pass
@@ -382,25 +420,36 @@ def centering_det(self, group='fluor', center_around=False, summed=False, defaul
         ims = array_shift(self, array, center_around)
     else:
         ims = array
-    if summed is False:
+    if summed == False:
         return ims
-    elif summed is True:
+    elif summed == True:
         return np.sum(ims, axis=0)
 
 
 def set_centering(self):
     """Set the centering values for each scan
 
-    :param self:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset
+
+    Returns
+    =======
+    The centering index - sets all centering data
     """
     try:
-        center_around = h5read_attr(self.file, self.dataset_name + '/dxdy', 'centering')
+        center_around = h5read_attr(file=self.file,
+                                    loc=self.dataset_name + '/dxdy',
+                                    attribute_name='centering')
         user_ask = input('A Centering Index of - ' + str(center_around) + ' - Has Been Found.' +
                          ' Would You Like To Use This Index To Center? y/n ')
         if user_ask == 'n':
             center_around = input('Which Scan Do You Want To Center Around? - Input Index - ')
-            h5set_attr(self.file, self.dataset_name + '/dxdy', 'centering', center_around)
+            h5set_attr(file=self.file,
+                       loc=self.dataset_name + '/dxdy',
+                       attribute_name='centering',
+                       attribute_val=center_around)
 
         elif user_ask == 'y':
             pass
@@ -408,15 +457,21 @@ def set_centering(self):
 
     except:
         center_around = input('Which Scan Do You Want To Center Around? - Input Index - ')
-        h5set_attr(self.file, self.dataset_name + '/dxdy', 'centering', center_around)
+        h5set_attr(file=self.file,
+                   loc=self.dataset_name + '/dxdy',
+                   attribute_name='centering',
+                   attribute_val=center_around)
 
     return int(center_around)
 
 
 def ram_check():
-    """Check how much RAM is being used. If it's over 90% then stop program
+    """Check how much RAM is being used.
+    If it's over 90% then the analysis function stop loading information
 
-    :return:
+    Returns
+    =======
+    the percent of RAM usage
     """
     mems = psutil.virtual_memory()
     return round(mems[2], 1)
@@ -424,33 +479,42 @@ def ram_check():
 
 def median_blur(input_array, median_blur_distance,
                 cut_off_value_above_mean):
-
     """Median Blur a 1D array. Used for eliminating hot or dead pixels
 
-    :param input_array:
-    :param median_blur_distance:
-    :param cut_off_value_above_mean:
-    :return:
+    Parameters
+    ==========
+    input_array (1D array)
+        a one dimensional numpy array
+    median_blur_distance (int)
+        the chunk size of numbers to to check for a median blur corrections
+    cut_off_value_above_mean (int)
+        the median_blur_height - amount above the mean to perform the median blur on
+
+    Returns
+    =======
+    a 1 dimensional numpy array that has been median blurred
     """
     iteration_number = np.shape(input_array)[0]
     # Finds out the length of the array you want to median blur. This equals the number of iterations you will perform
-    median_array = []  # Create a blank array for the final output
+    median_array = []
     for j in range(0, iteration_number):
         median_array = []
-        if j - median_blur_distance < 0:  # Corrects bounds if the program is out of bounds
+        # Corrects bounds if the program is out of bounds
+        if j - median_blur_distance < 0:
             its_blur = range(0, j + median_blur_distance + 1)
         if j + median_blur_distance > iteration_number:
             its_blur = range(j - median_blur_distance, iteration_number)
         if j - median_blur_distance >= 0 and j + median_blur_distance <= iteration_number:
             its_blur = range(j - median_blur_distance, j + median_blur_distance + 1)
-
-        for i in its_blur:  # Takes the indicies for one iteration and gets the values of these locations from the users array
+        # Takes the indicies for one iteration and gets the values of these locations from the users array
+        for i in its_blur:
             try:
                 median_array.append(input_array[i])
             except:
                 pass
+        # Replace a high value with the median value
         if input_array[j] > np.median(
-                median_array) + cut_off_value_above_mean:  # Replace a high value with the median value
+                median_array) + cut_off_value_above_mean:
             input_array[j] = np.median(median_array)
         else:
             pass
@@ -461,10 +525,17 @@ def median_blur(input_array, median_blur_distance,
 def grab_dxdy(self):
     """Return the dxdy movements for each scan
 
-    :param self:
-    :return:
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset
+
+    Returns
+    =======
+    the dxdy values stored in the self.file
     """
-    data = h5grab_data(self.file, self.dataset_name + '/dxdy')
+    data = h5grab_data(file=self.file,
+                       data_loc=self.dataset_name + '/dxdy')
     store = {}
     for i, d in enumerate(data):
         store[i] = (d[0], d[1])

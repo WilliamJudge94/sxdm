@@ -29,6 +29,7 @@ def h5create_file(loc, name):
 
 def h5read(file, data_loc):
     """Reads .h5 file data at a set location in the file
+    DEPRECIATED
 
     Parameters
     ==========
@@ -120,7 +121,6 @@ def h5create_group(file, group):
     Returns
     =======
     Nothing
-
     """
     with h5py.File(file, 'a') as hdf:
         hdf.create_group(group)
@@ -215,7 +215,7 @@ def h5images_wra(file, scan, im_loc, im_name, delete=False, import_type='uint32'
     Nothing
     """
     for idx, image in enumerate(im_loc):
-        if delete is False:
+        if delete == False:
             im = imageio.imread(image).astype(import_type)
         write_path = '/images/'+scan+'/'+im_name[idx]
         try:
@@ -223,11 +223,11 @@ def h5images_wra(file, scan, im_loc, im_name, delete=False, import_type='uint32'
                              ds_path=write_path,
                              ds_data=im)
         except:
-            if delete is False:
+            if delete == False:
                 h5replace_data(file=file,
                                group=write_path,
                                data=im)
-            elif delete is True:
+            elif delete == True:
                 h5del_data(file=file,
                            group=write_path)
 
@@ -295,7 +295,7 @@ def h5path_exists(file, loc):
     with h5py.File(file, 'r') as hdf:
         try:
             value = hdf.get(loc)
-            if value is None:
+            if value == None:
                 return False
             else:
                 return True
@@ -356,11 +356,12 @@ def h5get_image_destination(self, pixel):
     self (SXDMFramset)
         the sxdmframset
 
-    pixel
+    pixel (str array)
+        the image number from each scan that corresponds to a certain pixel
 
     Returns
     =======
-    All of the diffraction image locations for each scan in a 3D array
+    All of the diffraction FULL image locations for each scan in a 3D array - excluding the np.nan's
     """
     scan_numbers = self.scan_numbers
     image_loc = 'images/'

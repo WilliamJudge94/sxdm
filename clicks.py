@@ -26,18 +26,30 @@ def onclick_1(event, self):
     Nothing
 
     """
+
     button = ['left', 'middle', 'right']
     toolbar = plt.get_current_fig_manager().toolbar
     if toolbar.mode != '':
         print("You clicked on something, but toolbar is in mode {:s}.".format(toolbar.mode))
+
     # Keep making up to 30 figures in a single plot
     else:
+        try:
+            old_loc = self.clicks['loc']
+        except:
+            pass
         self.clicks['loc'] = (int(event.xdata), int(event.ydata))
         total = 30
+
+        # Making plots and getting axis locations
         try:
             for i in range(total):
                 if event.inaxes == self.loc_axs[i]:
-                    self.clicks['ax'] = i
+                    if i <= self.max_images:
+                        self.clicks['ax'] = i
+                    elif i > self.max_images:
+                        self.clicks['ax'] = self.max_images
+                        self.clicks['loc'] = old_loc
         except:
             pass
 
@@ -56,6 +68,8 @@ def onclick_2(event, self):
     self (SXDMFrameset)
         An SXDMFrameset that allows the clicks to be saved
     """
+
+    # Storing the click data
     button = ['left', 'middle', 'right']
     toolbar = plt.get_current_fig_manager().toolbar
     if toolbar.mode != '':
@@ -69,23 +83,27 @@ def fig1_click(event, self, fig, images):
 
     Parameters
     ==========
-
-
-    :param event:
-    :param self:
-    :param fig:
-    :param images:
-    :return:
+    event (matplotlib event)
+        matplotlib event
+    self (SXDMFrameset)
+        the sxdmframeset
+    fig (matplotlib figure)
+        the figure to be clicked on
+    images (nd.array)
+        the images to display
 
     Returns
     =======
-    Nothing
+    Nothing - deals with the clicks on the first image
     """
 
     # Set up figure
     fig2, axs2 = plt.subplots(1, 1, figsize=(10, 10), facecolor='w', edgecolor='k')
-    plt.imshow(images[self.clicks['ax']])
-    plt.suptitle('Select A Spot To Center On')
+    try:
+        plt.imshow(images[self.clicks['ax']])
+        plt.suptitle('Select A Spot To Center On')
+    except:
+        plt.close()
 
     click2 = partial(onclick_2, self=self)
 
@@ -93,6 +111,7 @@ def fig1_click(event, self, fig, images):
 
     plt.waitforbuttonpress(0)
 
+    # Grabing dxdy store movements and place their circle locations
     self.dxdy_store[self.clicks['ax']] = self.clicks['loc']
 
     circ = Circle((self.clicks['loc'][0], self.clicks['loc'][1]), 0.3, color='r')
@@ -102,6 +121,7 @@ def fig1_click(event, self, fig, images):
     except:
         pass
 
+    # Plot images
     self.loc_axs[self.clicks['ax']].add_patch(circ)
     plt.close(fig2)
     fig_count = len(self.scan_numbers)
@@ -126,7 +146,7 @@ def save_alignment(event, self):
 
     # Save/Replace the dxdy data
     if h5path_exists(file=self.file,
-                     loc=self.dataset_name + '/dxdy') is False:
+                     loc=self.dataset_name + '/dxdy') == False:
         h5create_dataset(file=self.file,
                          ds_path=self.dataset_name + '/dxdy',
                          ds_data=dic2array(self.dxdy_store))
@@ -179,9 +199,16 @@ def save_alignment(event, self):
 def check_mouse_ax(event, self):
     """Grabs the mouse axes position
 
+    Parameters
+    ==========
+    event (matplotlib event)
+        the matpotlib event
+    self (SXDMFrameset)
+        the sxdmframeset
+
     Returns
     =======
-    Nothing
+    Nothing - just checks which axis the mouse is in
     """
 
     if event.inaxes == self.fluor_ax:
@@ -192,6 +219,12 @@ def check_mouse_ax(event, self):
 
 def fig_leave(event, self):
     """If the user leaves an axis set the self.viewer_currentax to None
+    Parameters
+    ==========
+    event (matplotlib event)
+        the matplotlib event
+    self (SXDMFrameset)
+        the sxdmframeset
 
     Returns
     =======
