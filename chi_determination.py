@@ -80,7 +80,8 @@ def return_chi_images_loc(file,
             chi_figures.scan_theta = theta
 
     # Throw error if the program cannot pull info
-    except:
+    except Exception as ex:
+        print('chi_determination.py/return_chi_images_loc', ex)
         warnings.warn('You Have Failed To Load In The Correct Detector Channel. '
                       'Correct The detector_channel_loc or Import Correct Data')
         chi_figures.images_location = None

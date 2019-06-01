@@ -75,7 +75,8 @@ def initialize_group(self):
                     except:
                         pass
 
-    except:
+    except Exception as ex:
+        print('preprocess.py/initialize_group', ex)
         warnings.warn('Cannot Initialize Group. Some .mda Files Might Be Missing...')
 
 
@@ -318,5 +319,6 @@ def initialize_scans(self, scan_numbers=False, fill_num=4):
 
         self.scan_theta = [np.mean(scan, axis=(0, 1)) for scan in scan_theta_grab]
 
-    except:
+    except Exception as ex:
+        print('preprocess.py/initialize_scans', ex)
         warnings.warn('Cannot Initialize Scans. Some .mda Files Might Be Missing...')

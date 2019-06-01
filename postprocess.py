@@ -197,11 +197,9 @@ def maps_correct(user_map, new_bounds):
     for i in range(0, row - 1):
         for j in range(0, column - 1):
             try:
-
                 output[i][j] = new_bounds[int(user_map[i][j])]
-
-            except:
-                pass
+            except Exception as ex:
+                print('postprocess.py/maps_correct', ex)
     return output
 
 

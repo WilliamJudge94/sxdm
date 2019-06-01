@@ -300,6 +300,81 @@ def best_analysis(self, rows, columns, med_blur_distance=4,
     return readable_results
 
 
+def roi_analysis(self, rows, columns, med_blur_distance=4,
+                  med_blur_height=10,
+                  stdev_min=35, multiplier=1,
+                  center_around=False,
+                 diff_segmentation=False):
+
+    """Calculates region of interest for each scan as well as the region of interest maps for
+    user defined sub region of interests
+
+    Parameters
+    ==========
+    self: (SXDMFramset)
+        the sxdmframset
+    rows: (int)
+        the total number of rows you want to iterate through
+    columns: (int)
+        the total number of columns you want to iterate through
+    med_blur_distance: (int)
+        the amount of values to scan for median blur
+    med_blur_height:
+        (int) the height cut off for the median blur
+    stdev_min: (int)
+        standard deviation above the mean of signal to ignore
+    multiplier: (int)
+        multiplier for the background signal to be subtracted
+    center_around: (int)
+        the index of the scan you would like to center around
+    diff_segmentation: (bool)
+        if set to True this will initiate the user sub region of interest analysis
+
+    Returns
+    =======
+    A numpy matrix of every pixel asked. Each pixel contains
+
+    [(row, column), idxs,
+               raw_scan_data, corr_scan_data, scan_data_roi_vals,
+               summed_data, corr_summed_data, summed_data_roi_vals]
+    """
+    self.median_blur_distance = med_blur_distance
+    self.median_blur_height = med_blur_height
+    self.stdev_min = stdev_min
+
+    # Create a background for the scans
+    background_dic_basic = scan_background(self, multiplier=multiplier)
+
+    # Grab all your images
+    create_imagearray(self, center_around=center_around)
+
+    # Initialize verctorization
+    row, column = initialize_vectorize(self, rows, columns)
+
+    vectorize_roi_pixel_analysis = np.vectorize(roi_pixel_analysis,
+                                            excluded=['self', 'median_blur_distance',
+                                                      'median_blur_height', 'diff_segmentation'])
+    # Create progress bar
+    self.pbar_val = 0
+    widgets = ['Progress: ', Percentage(), ' ', Bar(marker='-', left='[', right=']'),
+               ' ', Timer(), '  ', ETA(), ' ', FileTransferSpeed()]  # see docs for other options
+    self.pbar = ProgressBar(widgets=widgets, maxval=len(row)+1)
+    self.pbar.start()
+
+    results = vectorize_roi_pixel_analysis(self, row, column,
+                                       self.median_blur_distance,
+                                       self.median_blur_height,
+                                       diff_segmentation)
+    readable_results = []
+
+    # Make the results readable
+    for re in results:
+        readable_results.append(np.asarray(re))
+    readable_results = np.asarray(readable_results)
+
+    return readable_results
+
+
 def create_imagearray(self, center_around=False):
     """Creates the self.image_array variable needed for pixel_analysis
 

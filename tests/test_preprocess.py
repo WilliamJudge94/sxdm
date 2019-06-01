@@ -23,8 +23,8 @@ class PreprocessTestCase(unittest.TestCase):
 
     def test_initialize_scans(self):
         initialize_scans(testing,
-                         scan_numbers = test_scan_numbers,
-                         fill_num = 4)
+                         scan_numbers=test_scan_numbers,
+                         fill_num=4)
         self.assertEqual(testing.scan_numbers, ['0178', '0178'])
 
         self.assertEqual(testing.scan_theta, [56509.170099431816, 56509.170099431816])
@@ -42,6 +42,7 @@ class PreprocessTestCase(unittest.TestCase):
         self.assertTrue(testing.shape_checker)
 
     def test_resolution_check(self):
+        testing.scan_numbers = ['0178', '0178']
         resolution_check(testing)
         self.assertEqual(testing.res_x, 26.7974853515625)
         self.assertEqual(testing.res_y, 2110.107421875)
@@ -49,9 +50,13 @@ class PreprocessTestCase(unittest.TestCase):
         self.assertEqual(testing.validation_y, True)
 
     def test_gaus_check(self):
+        initialize_scans(testing,
+                         scan_numbers=test_scan_numbers,
+                         fill_num=4)
+
         x, y = gaus_check(testing, center_around=True, default=True)
         test_x = [56509.170099431816, 56509.170099431816]
-        test_y = [791165.8359375002, 791281.8359375002]
+        test_y = [452057.90625000006, 451941.90625000006]
         x_equal = all(np.equal(np.asarray(x), test_x))
         y_equal = all(np.equal(np.asarray(y), test_y))
         self.assertTrue(x_equal)

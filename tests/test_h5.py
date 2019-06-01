@@ -70,12 +70,14 @@ class H5TestCase(unittest.TestCase):
         test_fs = SXDMFrameset(file, dataset_name, scan_numbers=scan_numbers)
 
         row = 1
-        column = 1
+        column = 9
+
         create_imagearray(test_fs, True)
 
         pix = grab_pix(array=test_fs.image_array, row=row, column=column, int_convert=True)
         destination = h5get_image_destination(self=test_fs, pixel=pix)
-        equality = destination == ['images/0178/165140', 'images/0178/165136']
+        print(destination)
+        equality = destination == ['images/0178/165137', 'images/0178/165144']
         self.assertTrue(equality)
 
 

@@ -50,8 +50,8 @@ def onclick_1(event, self):
                     elif i > self.max_images:
                         self.clicks['ax'] = self.max_images
                         self.clicks['loc'] = old_loc
-        except:
-            pass
+        except Exception as ex:
+            print('clicks.py/onclick_1', ex)
 
 
 def onclick_2(event, self):
@@ -175,7 +175,8 @@ def save_alignment(event, self):
                        loc=self.dataset_name + '/dxdy',
                        attribute_name='alignment_subgroup',
                        attribute_val=self.alignment_subgroup)
-        except:
+        except Exception as ex:
+            print('clicks.py/save_alignment', ex)
             print('Deleted Group')
             h5del_group(file=self.file,
                         group=self.dataset_name + '/dxdy')

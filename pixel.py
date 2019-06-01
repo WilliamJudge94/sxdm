@@ -3,7 +3,7 @@ from multiprocessing.pool import ThreadPool
 from multiprocessing import Process, Queue
 import logging
 
-from mis import ram_check, median_blur
+from mis import ram_check, median_blur, get_idx4roi
 from h5 import h5get_image_destination, h5grab_data
 from background import scan_background, scan_background_finder
 from datetime import datetime
@@ -270,19 +270,121 @@ def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_heigh
                                                        median_blur_distance,
                                                        median_blur_height, stdev_min)
 
-    # add a way to segment areas of each diffraction signal into multiple rois
-
-    # look at summed diffraction
-
-    # set the rois in the diffraction pattern
-
-    # crop the summed diff for each segmentation and plot their summed values into an array
-
-    # return the final array
-
     full_roi = np.sum(ttheta2)
 
     results = [(row, column), summed_dif, ttheta, chi, ttheta_centroid_finder,
                ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi]
+
+    return results
+
+def roi_pixel_analysis(self, row, column, median_blur_distance,
+                       median_blur_height, diff_segments=False):
+    """The analysis done on a single pixel - this will get the new roi for each theta
+    and be able to segment out diffraction areas and create the roi for them
+
+    Parameters
+    ==========
+
+    self (SXDMFrameset)
+        the sxdmframset
+    rows: (int)
+        the total number of rows you want to iterate through
+    columns: (int)
+        the total number of columns you want to iterate through
+    med_blur_distance: (int)
+        the amount of values to scan for median blur
+    med_blur_height:  (int)
+        the height cut off for the median blur
+    diff_segments: (array)
+        array used for segmenting the diffraction patterns
+
+    Returns
+    =======
+    the analysis results as an nd.array
+    """
+    image_array = self.image_array
+    try:
+        self.pbar_val = self.pbar_val + 1
+        self.pbar.update(self.pbar_val)
+    except:
+        pass
+    if column == 0:
+        if ram_check() > 90:
+            return False
+    t = datetime.now()
+    pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
+    destination = h5get_image_destination(self=self, pixel=pix)
+
+    each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
+
+    # Background Correction
+    backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
+
+    # All diffraction images for the current pixel
+    each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
+
+    # Obtain all master array scan_number index values that the diffraction scans correspond to
+    idxs = get_idx4roi(pix=pix, destination=destination, scan_numbers=self.scan_numbers)
+
+    raw_scan_data = []
+    corr_scan_data = []
+    scan_data_roi_vals = []
+
+    # SCAN DATA
+    # For each of the scan_diffraction_post
+    for diffraction in each_scan_diffraction_post:
+
+        # sum down an axis
+        ttheta = np.sum(diffraction, axis=0)
+        ttheta_copy = ttheta.copy()
+
+        # store this to an array
+        raw_scan_data.append(ttheta)
+
+        # median blur it and store
+        ttheta_copy = median_blur(input_array=ttheta_copy,
+                    median_blur_distance=median_blur_distance,
+                    cut_off_value_above_mean=median_blur_height)
+        corr_scan_data.append(ttheta_copy)
+
+        # sum to single value and store
+        scan_roi_val = np.sum(ttheta_copy)
+        scan_data_roi_vals.append(scan_roi_val)
+
+    # start roi bounding arrays
+    summed_data = []
+    corr_summed_data = []
+    summed_data_roi_vals = []
+
+    # create the summed diffraction pattern for the selected pixel location
+    summed_dif = np.sum(each_scan_diffraction_post, axis=0)
+
+    # only do this is the user wants it done
+    if diff_segments != False:
+
+        # for each bounding box
+        for segment in self.diff_segment_sqaures:
+            # segment the summed diffraction pattern
+            segmented_diffraction = summed_dif[segment[0]:segment[1],
+                                    segment[2]:segment[3]]
+
+            # sum it down an axis and store
+            ttheta = np.sum(segmented_diffraction, axis=0)
+            ttheta_copy = ttheta.copy()
+            summed_data.append(ttheta)
+
+            # median blur it and store
+            ttheta_copy = median_blur(input_array=ttheta_copy,
+                        median_blur_distance=median_blur_distance,
+                        cut_off_value_above_mean=median_blur_height)
+            corr_summed_data.append(ttheta_copy)
+
+            # sum to single value and store
+            summed_data_roi_val = np.sum(ttheta_copy)
+            summed_data_roi_vals.append(summed_data_roi_val)
+
+    results = [(row, column), idxs,
+               raw_scan_data, corr_scan_data, scan_data_roi_vals,
+               summed_data, corr_summed_data, summed_data_roi_vals]
 
     return results

@@ -330,8 +330,8 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
             spot_dif = f['{}/summed_dif'.format(self.dataset_name)][new_idx]
 
             f.close()
-    except:
-        pass
+    except Exception as ex:
+        print('viewer.py/load_dynamic_data', ex)
 
     # Grab spot diffraction
     try:
@@ -680,7 +680,6 @@ def viewer_mouse_click(event, self):
             self.ttheta_map_ax.lines[0].remove()
             self.chi_map_ax.lines[1].remove()
             self.chi_map_ax.lines[0].remove()
-
         except:
             pass
         self.fluor_ax.axvline(x=self.column, color='w', linewidth=1)

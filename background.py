@@ -88,7 +88,10 @@ def scan_background_finder(destination, background_dic):
     """
     # Take the destination and convert it into something readable for the dictionary entry
     scans = [value.split('/')[1] for value in destination]
+
     background = []
+    scan4background = []
     for scan in scans:
         background.append(background_dic[scan])
+        scan4background.append(scan)
     return background

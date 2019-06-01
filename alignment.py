@@ -38,8 +38,9 @@ def alignment_function(self):
                 self.alignment_subgroup = h5read_attr(file=self.file,
                                                       loc=self.dataset_name + '/dxdy',
                                                       attribute_name='alignment_subgroup')
-            except:
-                pass
+            except Exception as ex:
+                print('alignment.py/alignment_function 1', ex)
+
         else:
             start_alignment = 'n'
             redo_alignment = 'n'
@@ -55,8 +56,8 @@ def alignment_function(self):
             try:
                 print('Previous Alignment Done On - {} - {}'.format(self.alignment_group,
                                                                 self.alignment_subgroup))
-            except:
-                pass
+            except Exception as ex:
+                print('alignment.py/alignment_function 1', ex)
 
             # Grabbing old alignment and setting alignment circles
             retrieve_old_data = array2dic(array=h5grab_data(file=self.file,

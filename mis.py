@@ -185,7 +185,8 @@ def shape_check(self):
         else:
             self.shape_checker = True
             print('Hybrid Scan Shapes Are Equivalent')
-    except:
+    except Exception as ex:
+        print('shape_check', ex)
         warnings.warn('Cannot Check Shape. Some .mda Files Might Be Missing...')
 
 
@@ -272,6 +273,8 @@ def resolution_check(self, user_resolution_um=0.0005):
         # Store values for testing code
         self.res_x = np.median(res_x) * 1000
         self.res_y = np.median(res_y) * 1000
+        self.all_res_x = res_x
+        self.all_res_y = res_y
         self.validation_x = validation_x
         self.validation_y = validation_y
 
@@ -293,7 +296,8 @@ def resolution_check(self, user_resolution_um=0.0005):
             warnings.warn('X And Y Resolutions Are NOT Within {} nm Of Each Other\n'
                           'Plots will need to be corrected'.format(user_resolution_um * 1000))
 
-    except:
+    except Exception as ex:
+        print('mis.py/resolution_check', ex)
         warnings.warn('Cannot Check Resolution. Some .mda Files Might Be Missing...')
 
 
@@ -396,7 +400,7 @@ def centering_det(self, group='fluor', center_around=False, summed=False, defaul
     group (str)
         the group name the user would like to center to - acc_vals = fluor and roi
     center_around (bool)
-        if True it will default to the first index
+        if this equals -1 then there will be no centering adjustments
     summed (bool)
         if True it will sum together all scans after centering
     default (bool)
@@ -496,6 +500,7 @@ def median_blur(input_array, median_blur_distance,
     """
     iteration_number = np.shape(input_array)[0]
     # Finds out the length of the array you want to median blur. This equals the number of iterations you will perform
+
     median_array = []
     for j in range(0, iteration_number):
         median_array = []
@@ -540,3 +545,83 @@ def grab_dxdy(self):
     for i, d in enumerate(data):
         store[i] = (d[0], d[1])
     return store
+
+
+def get_idx4roi(pix, destination, scan_numbers):
+    """Based on the pixel being loaded, this returns the index of each scan used in the self.scan_numbers
+
+    Parameters
+    ==========
+    pix (array of strings)
+        the image numbers for each scan for a given pixel
+    destination (array of strings)
+        full diffraction image locations for each scan for a given pixel
+    scan_numbers (array of strings)
+        the self.scan_numbers value
+
+    Returns
+    =======
+    an array of index values for a master roi used to store values in the correct position
+    """
+    counter = 0
+    working = True
+    scan_splitter = [destin.split('/')[1] for destin in destination]
+    idx_store = []
+    for value in pix:
+        if np.isnan(value) == False:
+            idx_store.append(counter)
+            if scan_splitter[counter] != scan_numbers[counter]:
+                working = False
+            counter = counter + 1
+    if working == False:
+        warning.warn('Program ROI IDX Fail')
+    return idx_store
+
+
+def create_rois(self):
+    """Take the self.roi_results and make them into something more useful
+
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframset
+
+    Returns
+    =======
+    the region of interst maps for each scan, the region of interest maps for the user defined
+    sub regions of interest
+    """
+    # Create blank arrays
+    scan_rois = np.empty((len(self.scan_numbers),
+                          self.roi_analysis_total_rows,
+                          self.roi_analysis_total_columns))
+    try:
+        sub_rois = np.empty((len(self.diff_segment_sqaures),
+                             self.roi_analysis_total_rows,
+                             self.roi_analysis_total_columns))
+    except:
+        print('self.diff_segment_sqaures is not defined. using default value')
+        sub_rois = np.empty((1,
+                             self.roi_analysis_total_rows,
+                             self.roi_analysis_total_columns))
+
+    # take the roi_results value and place them into a usable numpy array
+    for pixel in self.roi_results:
+        # Scan ROI
+        row = pixel[0][0]
+        column = pixel[0][1]
+        scan_idxs = pixel[1]
+        scan_vals = pixel[4]
+
+        for i, idx in enumerate(scan_idxs):
+            scan_rois[idx][row][column] = scan_vals[i]
+
+        # User Sub Region
+        sub_vals = pixel[7]
+
+        for j, val in enumerate(sub_vals):
+            sub_rois[j][row][column] = val
+
+    return scan_rois, sub_rois
+
+
