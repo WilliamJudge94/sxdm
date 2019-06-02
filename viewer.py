@@ -310,6 +310,12 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
     # Grab pixel data
     return_dic = pixel_analysis_return(results, row, column)
 
+    try:
+        pre1, pre2, = self.row, self.column
+    except:
+        self.row = 0
+        self.column = 0
+
     # Grab RAM required summed diffraction
     try:
         if self.diffraction_load == True:
@@ -380,6 +386,7 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         ttheta_centroid_ax.plot(ttheta, color='blue')
         ttheta_centroid_ax.plot(ttheta_centroid_finder, color='red')
         ttheta_centroid_ax.axvline(x=ttheta_centroid, color='black')
+
 
         chi_centroid_ax.plot(chi, color='blue')
         chi_centroid_ax.plot(chi_centroid_finder, color='red')
