@@ -3,6 +3,7 @@ import numpy as np
 import os
 from scipy.ndimage import shift
 import psutil
+import warnings
 
 from det_chan import return_det
 from h5 import h5grab_data, h5set_attr, h5read_attr
@@ -563,18 +564,30 @@ def get_idx4roi(pix, destination, scan_numbers):
     =======
     an array of index values for a master roi used to store values in the correct position
     """
-    counter = 0
+    scan_splitter_counter = 0
+    scan_numbers_counter = 0
     working = True
     scan_splitter = [destin.split('/')[1] for destin in destination]
     idx_store = []
+    #print(pix, 'pix')
     for value in pix:
+        #print(value)
         if np.isnan(value) == False:
-            idx_store.append(counter)
-            if scan_splitter[counter] != scan_numbers[counter]:
+           # print('second val', value)
+            idx_store.append(scan_numbers_counter
+                             )
+            #print(scan_splitter[scan_splitter_counter], scan_numbers[scan_numbers_counter])
+            if scan_splitter[scan_splitter_counter] != scan_numbers[scan_numbers_counter]:
+                #print(value, 'failure')
                 working = False
-            counter = counter + 1
+            scan_splitter_counter = scan_splitter_counter + 1
+            scan_numbers_counter = scan_numbers_counter + 1
+        else:
+            scan_numbers_counter = scan_numbers_counter + 1
+        #print(scan_splitter_counter, scan_numbers_counter)
+
     if working == False:
-        warning.warn('Program ROI IDX Fail')
+        warnings.warn('Program ROI IDX Fail')
     return idx_store
 
 

@@ -302,6 +302,7 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
     =======
     the analysis results as an nd.array
     """
+
     image_array = self.image_array
     try:
         self.pbar_val = self.pbar_val + 1
