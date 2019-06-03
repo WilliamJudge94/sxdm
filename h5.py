@@ -385,5 +385,5 @@ def h5grab_fov_dimensions(self):
     =======
     the np.shape() of the fluorescence images - which are identical for the the entire field of view
     """
-    image = return_det(self.file, self.scan_numbers, group='fluor', default=True):
+    image = return_det(self.file, self.scan_numbers, group='fluor', default=True)
     return np.shape(image)
