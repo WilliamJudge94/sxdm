@@ -7,6 +7,8 @@ import warnings
 
 import h5py
 
+from det_chan import return_det
+
 
 def h5create_file(loc, name):
     """Creates hdf5 file
@@ -386,4 +388,4 @@ def h5grab_fov_dimensions(self):
     the np.shape() of the fluorescence images - which are identical for the the entire field of view
     """
     image = return_det(self.file, self.scan_numbers, group='fluor', default=True)
-    return np.shape(image)
+    return np.shape(image[0])
