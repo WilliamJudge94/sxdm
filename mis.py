@@ -5,6 +5,8 @@ from scipy.ndimage import shift
 import psutil
 import warnings
 
+import h5py
+
 from det_chan import return_det
 from h5 import h5grab_data, h5set_attr, h5read_attr
 
@@ -638,3 +640,35 @@ def create_rois(self):
     return scan_rois, sub_rois
 
 
+def grab_fov_dimensions(self):
+    """Returns the image dimensions for the User
+
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset
+
+    Returns
+    =======
+    the np.shape() of the fluorescence images - which are identical for the the entire field of view
+    """
+    image = return_det(self.file, self.scan_numbers, group='fluor', default=True)
+    return np.shape(image[0])
+
+
+def results_2dsum(self):
+
+    counter = 0
+    for i in range(0, 21):
+        for j in range(0, 20):
+            f = h5py.File(self.save_filename, 'r')
+            spot_dif = f['{}/summed_dif'.format(self.dataset_name)][counter]
+            counter = counter + 1
+            try:
+                store = np.add(store, spot_dif)
+            except:
+                store = spot_dif
+
+            f.close()
+
+    return store

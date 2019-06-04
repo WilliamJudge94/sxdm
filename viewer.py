@@ -12,7 +12,7 @@ from time import time
 import h5py
 
 from postprocess import pixel_analysis_return, saved_return
-from mis import median_blur, centering_det
+from mis import median_blur, centering_det, results_2dsum
 from postprocess import centroid_roi_map, pooled_return
 from pixel import theta_maths, chi_maths
 from clicks import check_mouse_ax, fig_leave
@@ -177,7 +177,7 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
 
 
 def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
-                     summed_dif_ax, ttheta_map_ax, chi_map_ax, fluor_image):
+                     summed_dif_ax, ttheta_map_ax, chi_map_ax, fluor_image, user_class=False):
     """Load all the static data for the viewer
 
     Parameters
@@ -220,9 +220,14 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
         summed_dif = np.sum(results[:, 1], axis=0)
         summed_dif_ax.imshow(summed_dif, vmin=vmin_sum, vmax=vmax_sum)
     except:
-        summed_dif_ax.imshow(sum_error())
-        summed_dif_ax.set_xticks = []
-        summed_dif_ax.set_yticks = []
+        try:
+            summed_dif_ax.imshow(results_2dsum(ERRORuser_class))
+            summed_dif_ax.set_xticks = []
+            summed_dif_ax.set_yticks = []
+        except:
+            summed_dif_ax.imshow(sum_error())
+            summed_dif_ax.set_xticks = []
+            summed_dif_ax.set_yticks = []
 
     # Plot image data
     ttheta_map_ax.imshow(ttheta_centroid)
@@ -424,6 +429,7 @@ def run_viewer(user_class, fluor_image):
     # make buttons and tb do something
     # make clicking figures do something
     current_figure = FiguresClass()
+    current_figure.user_class = user_class
     current_figure.diffraction_load = user_class.diffraction_load
     current_figure.diffraction_load = user_class.diffraction_load
     current_figure.save_filename = user_class.save_filename
@@ -469,7 +475,7 @@ def run_viewer(user_class, fluor_image):
     load_static_data(current_figure.results, current_figure.vmin_sum_val, current_figure.vmax_sum_val,
                      current_figure.fluor_ax,
                      current_figure.roi_ax, current_figure.summed_dif_ax,
-                     current_figure.ttheta_map_ax, current_figure.chi_map_ax, fluor_image)
+                     current_figure.ttheta_map_ax, current_figure.chi_map_ax, fluor_image, user_class=user_class)
 
     load_dynamic_data(current_figure.results, current_figure.vmin_spot_val, current_figure.vmax_spot_val,
                       current_figure.spot_diff_ax, current_figure.ttheta_centroid_ax, current_figure.chi_centroid_ax,
@@ -547,9 +553,15 @@ def spot_change(text, self):
         summed_dif = np.sum(self.results[:, 1], axis=0)
         self.summed_dif_ax.imshow(summed_dif, vmin=self.vmin_sum_val, vmax=self.vmax_sum_val)
     except:
-        self.summed_dif_ax.imshow(sum_error())
-        self.summed_dif_ax.set_xticks = []
-        self.summed_dif_ax.set_yticks = []
+
+        try:
+            self.summed_dif_ax.imshow(results_2dsum(ERRORself.user_class))
+            self.summed_dif_ax.set_xticks = []
+            self.summed_dif_ax.set_yticks = []
+        except:
+            self.summed_dif_ax.imshow(sum_error())
+            self.summed_dif_ax.set_xticks = []
+            self.summed_dif_ax.set_yticks = []
 
     try:
         self.spot_diff_ax.imshow(spot_dif, vmin=self.vmin_spot_val, vmax=self.vmax_spot_val)
