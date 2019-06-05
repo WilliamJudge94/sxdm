@@ -659,7 +659,7 @@ def grab_fov_dimensions(self):
 def results_2dsum(self):
 
     counter = 0
-    for i in range(0, 21):
+    for i in range(0, 40):
         for j in range(0, 20):
             f = h5py.File(self.save_filename, 'r')
             spot_dif = f['{}/summed_dif'.format(self.dataset_name)][counter]
