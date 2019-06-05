@@ -105,12 +105,12 @@ def line_select_callback(eclick, erelease, figure_class):
 
     # append stored array - if it doesn't exist make it
     try:
-        figure_class.pre_roi_bounding.append((x1, x2, y1, y2))
+        figure_class.pre_roi_bounding.append([x1, x2, y1, y2])
     except:
-        figure_class.pre_roi_bounding = [(x1, x2, y1, y2)]
+        figure_class.pre_roi_bounding = ([x1, x2, y1, y2])
 
 
-def start_figure():
+def start_figure(summed_diff_pattern, user_class):
     """Starts the ROI bounding box GUI
 
     Returns
@@ -122,13 +122,12 @@ def start_figure():
     bounding_figure_setup(roi)
     textbox_btn_dropdown_setup(roi)
 
-    im = imageio.imread('/home/will/Desktop/sum.tif')
-    roi.im = im
+    roi.im = summed_diff_pattern
 
-    roi.summed_dif_ax.imshow(im, vmax=1000)
+    roi.summed_dif_ax.imshow(roi.im, vmax=1000)
 
     p_line_select_callback = partial(line_select_callback, figure_class=roi)
-    p_contbtn_click = partial(contbtn_click, fig=roi.fig)
+    p_contbtn_click = partial(contbtn_click, figure_class=roi, user_class=user_class)
     p_vs_change = partial(vs_change, figure_class=roi)
     p_rm_box_click = partial(rm_box_click, figure_class=roi)
 
@@ -169,7 +168,7 @@ def rec_select_setup(figure_class):
     plt.show(block=True)
 
 
-def contbtn_click(event, fig):
+def contbtn_click(event, figure_class, user_class):
     """Close the bounding box figure once complete
 
     Parameters
@@ -183,7 +182,9 @@ def contbtn_click(event, fig):
     =======
     Nothing
     """
-    plt.close(fig)
+    user_class.diff_segment_sqaures =figure_class.pre_roi_bounding
+
+    plt.close(figure_class.fig)
 
 
 def vs_change(text, figure_class):
@@ -244,12 +245,8 @@ def rm_box_click(event, figure_class):
             rect = plt.Rectangle((min(x1, x2), min(y1, y2)), np.abs(x1 - x2), np.abs(y1 - y2),
                                  fill=False, color='w')
             figure_class.summed_dif_ax.add_patch(rect)
-            store_bound.append((x1, x2, y1, y2))
+            store_bound.append([x1, x2, y1, y2])
         figure_class.pre_roi_bounding = store_bound
 
     except Exception as ex:
         print('roi_bounding.py/rm_box_click', ex)
-
-
-
-

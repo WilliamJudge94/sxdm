@@ -11,6 +11,23 @@ import matplotlib as mpl
 from matplotlib.widgets import Button, TextBox
 
 from roi_bounding import ROI_FiguresClass
+from mis import create_rois
+from roi_bounding import *
+from postprocess import twodsummed
+
+def pre_figures(self):
+    main_results = self.results
+
+    summed_dif_pattern = twodsummed(main_results)
+
+    out = start_figure(summed_dif_pattern, self)
+
+    #roi_results = self.roi_results
+
+    #readable_roi_results = create_rois(roi_results)
+
+    return out
+
 
 def start_scan_roi():
     scan_roi = ROI_FiguresClass()

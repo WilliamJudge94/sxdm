@@ -119,6 +119,9 @@ class SXDMFrameset():
 
         print('Results Stored As self.roi_results')
 
+    def roi_viewer(self):
+        pass
+
     def analysis(self, rows, columns, med_blur_distance=2,
                  med_blur_height=1, stdev_min=25, bkg_multiplier=0):
         """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
