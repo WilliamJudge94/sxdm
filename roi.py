@@ -66,6 +66,7 @@ def start_bounding_roi(user_class):
 
     :return:
     """
+
     bounding_roi = ROI_FiguresClass()
     bounding_roi_figure_setup(figure_class=bounding_roi)
     textbox_setup(figure_class=bounding_roi)
@@ -77,16 +78,28 @@ def start_bounding_roi(user_class):
     display_left_roi(figure_class=bounding_roi, user_class=user_class, types='bounding')
 
 
+
+
+    user_class.roi_sum_im = results_2dsum(user_class)
+    sum_fig = ROI_FiguresClass()
+    bounding_box_setup(sum_fig)
+    bounding_tb_setup(sum_fig)
+    display_summed_ims(sum_fig, user_class)
+
+
     p_top_plot_reload = partial(top_plot_reload, figure_class=bounding_roi, user_class=user_class, types='bounding')
     p_display_left_roi_reload = partial(display_left_roi_reload, figure_class=bounding_roi, user_class=user_class, types='bounding')
 
+    p_display_summed_ims_reload = partial(display_summed_ims_reload, figure_class=sum_fig, user_class=user_class)
 
     user_class.bounding_slider.on_changed(p_top_plot_reload)
     user_class.bounding_slider.on_changed(p_display_left_roi_reload)
 
+    user_class.bounding_slider.on_changed(p_display_summed_ims_reload)
+
 def scan_roi_figure_setup(figure_class):
     """Initiates the scan roi figure with proper axes locations
-
+current_roi_slider_val
     :param figure_class:
     :return:
     """
@@ -344,13 +357,20 @@ def display_summed_ims(figure_class, user_class):
     :param user_class:
     :return:
     """
+
     rect = user_class.diff_segment_squares
     im = user_class.roi_sum_im
     vmin = int(figure_class.vmin_tb.text)
     vmax = int(figure_class.vmax_tb.text)
 
+
+    figure_class.summed_dif_ax1.cla()
+    figure_class.summed_dif_ax2.cla()
+
+
     figure_class.summed_dif_ax1.imshow(im, vmin=vmin, vmax=vmax)
     figure_class.summed_dif_ax2.imshow(im, vmin=vmin, vmax=vmax)
+
 
     try:
         for i, r in enumerate(rect):
@@ -372,6 +392,11 @@ def display_summed_ims(figure_class, user_class):
     except Exception as ex:
         print(ex)
         pass
+
+    plt.draw()
+
+def display_summed_ims_reload(val, figure_class, user_class):
+    display_summed_ims(figure_class=figure_class, user_class=user_class)
 
 def bounding_box_total_setup(user_class):
     """Complete setup of the summed diffraction pattern with the bounding boxes on top of them
@@ -398,6 +423,7 @@ def top_plot_start(figure_class, user_class, types='scan'):
             pass
     elif types == 'bounding':
         vlin = int(user_class.bounding_slider.val)
+        user_class.current_roi_slider_val = vlin
         figure_class.gaus_ax.plot(user_class.bounding_top_x, user_class.bounding_top_y)
         figure_class.gaus_ax.set_title(
             'Int. vs Bounding Box (box {})'.format(int(vlin)))
