@@ -625,14 +625,14 @@ def create_rois(self):
         # Scan ROI
         row = pixel[0][0]
         column = pixel[0][1]
-        scan_idxs = pixel[1]
-        scan_vals = pixel[4]
+        scan_idxs = pixel[1].copy()
+        scan_vals = pixel[4].copy()
 
         for i, idx in enumerate(scan_idxs):
             scan_rois[idx][row][column] = scan_vals[i]
 
         # User Sub Region
-        sub_vals = pixel[7]
+        sub_vals = pixel[7].copy()
 
         for j, val in enumerate(sub_vals):
             sub_rois[j][row][column] = val

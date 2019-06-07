@@ -15,6 +15,8 @@ from mis import create_rois, results_2dsum
 from roi_bounding import *
 from postprocess import twodsummed
 
+from functools import partial
+
 def pre_figures(self):
     """WIP
 
@@ -42,8 +44,22 @@ def start_scan_roi(user_class):
     scan_roi = ROI_FiguresClass()
     scan_roi_figure_setup(figure_class=scan_roi)
     textbox_setup(figure_class=scan_roi)
-    slder1 = scan_slider_setup(figure_class=scan_roi, user_class=user_class)
-    return slder1
+    scan_slider_setup(figure_class=scan_roi, user_class=user_class)
+    grab_int_v_scan(user_class=user_class)
+
+    top_plot_start(scan_roi, user_class)
+
+    display_right_roi(figure_class=scan_roi, im=right_roi(user_class, types='scan'))
+    display_left_roi(figure_class=scan_roi, user_class=user_class, types='scan')
+
+    p_top_plot_reload = partial(top_plot_reload, figure_class=scan_roi, user_class=user_class, types='scan')
+    p_display_left_roi_reload = partial(display_left_roi_reload, figure_class=scan_roi, user_class=user_class, types='scan')
+
+
+    user_class.scan_slider.on_changed(p_top_plot_reload)
+    user_class.scan_slider.on_changed(p_display_left_roi_reload)
+
+
 
 def start_bounding_roi(user_class):
     """Displays the bounding box roi with aproptiate textboxes
@@ -53,9 +69,20 @@ def start_bounding_roi(user_class):
     bounding_roi = ROI_FiguresClass()
     bounding_roi_figure_setup(figure_class=bounding_roi)
     textbox_setup(figure_class=bounding_roi)
-    slder2 = bounding_slider_setup(figure_class=bounding_roi, user_class=user_class)
-    return slder2
+    bounding_slider_setup(figure_class=bounding_roi, user_class=user_class)
+    grab_int_v_scan(user_class=user_class, types='bounding')
+    top_plot_start(bounding_roi, user_class, types='bounding')
 
+    display_right_roi(figure_class=bounding_roi, im=right_roi(user_class, types='bounding'))
+    display_left_roi(figure_class=bounding_roi, user_class=user_class, types='bounding')
+
+
+    p_top_plot_reload = partial(top_plot_reload, figure_class=bounding_roi, user_class=user_class, types='bounding')
+    p_display_left_roi_reload = partial(display_left_roi_reload, figure_class=bounding_roi, user_class=user_class, types='bounding')
+
+
+    user_class.bounding_slider.on_changed(p_top_plot_reload)
+    user_class.bounding_slider.on_changed(p_display_left_roi_reload)
 
 def scan_roi_figure_setup(figure_class):
     """Initiates the scan roi figure with proper axes locations
@@ -63,7 +90,7 @@ def scan_roi_figure_setup(figure_class):
     :param figure_class:
     :return:
     """
-    fig = plt.figure(figsize=(5, 10))
+    fig = plt.figure(figsize=(5.5, 10))
     mpl.rcParams['axes.linewidth'] = 1.5
     figure_class.fig = fig
 
@@ -72,6 +99,7 @@ def scan_roi_figure_setup(figure_class):
     # Gaussian
     figure_class.gaus_ax = plt.axes([0.1, 0.75, 0.8, 0.2])
     figure_class.gaus_ax.set_title('Tot. Intensity vs. Scan')
+    figure_class.gaus_ax.tick_params(axis="y", labelsize=8)
 
     # scan roi
     figure_class.scan_roi_ax = plt.axes([0.1, 0.30, 0.3, 0.3])
@@ -145,11 +173,13 @@ def bounding_roi_figure_setup(figure_class):
     # Gaussian
     figure_class.gaus_ax = plt.axes([0.1, 0.75, 0.8, 0.2])
     figure_class.gaus_ax.set_title('Tot. Intensity vs. Bounding Box #')
+    figure_class.gaus_ax.tick_params(axis="y", labelsize=8)
 
     # scan roi
     figure_class.scan_roi_ax = plt.axes([0.1, 0.30, 0.3, 0.3])
     figure_class.scan_roi_ax.set_xticks([])
     figure_class.scan_roi_ax.set_yticks([])
+
 
     # scan roi slider
     figure_class.scan_slider_ax = plt.axes([0.1, 0.65, 0.8, 0.05])
@@ -223,14 +253,14 @@ def scan_slider_setup(figure_class, user_class):
     amount = len(user_class.scan_theta) - 1
     sld1 = Slider(figure_class.scan_slider_ax, 'Scan', 0, amount, valinit=0, valstep=1)
     plt.draw()
-    return sld1
+    user_class.scan_slider = sld1
 
 
 def bounding_slider_setup(figure_class, user_class):
     amount = len(user_class.diff_segment_squares) - 1
-    sld1 = Slider(figure_class.scan_slider_ax, 'Box', 0, amount, valinit=0, valstep=1)
+    sld2 = Slider(figure_class.scan_slider_ax, 'Box', 0, amount, valinit=0, valstep=1)
     plt.draw()
-    return sld1
+    user_class.bounding_slider = sld2
 
 # bounding_roi
 ## there are different boxes the user can select and see their roi maps and their summed roi colormap
@@ -239,7 +269,6 @@ def bounding_slider_setup(figure_class, user_class):
 # right summing all the roi boxes as difference colors
 # bottom plot show the gaussian curve for the current selected bounding ox the user is viewing (center)
 # show the median_blur_data depending where the user clicks and which scan they click
-
 
 
 def bounding_box_setup(figure_class):
@@ -356,17 +385,104 @@ def bounding_box_total_setup(user_class):
     bounding_tb_setup(sum_fig)
     display_summed_ims(sum_fig, user_class)
 
-def grab_int_v_scan(user_class, type='scan'):
+def top_plot_start(figure_class, user_class, types='scan'):
+    figure_class.gaus_ax.cla()
+
+    if types == 'scan':
+        vlin = int(user_class.scan_slider.val)
+        figure_class.gaus_ax.plot(user_class.scan_top_x, user_class.scan_top_y)
+        try:
+            figure_class.gaus_ax.axvline(x=user_class.ordered_scan_theta[vlin])
+            figure_class.gaus_ax.set_title('Int. vs Scan Theta ({} deg)'.format(np.round(user_class.ordered_scan_theta[vlin], 2)))
+        except:
+            pass
+    elif types == 'bounding':
+        vlin = int(user_class.bounding_slider.val)
+        figure_class.gaus_ax.plot(user_class.bounding_top_x, user_class.bounding_top_y)
+        figure_class.gaus_ax.set_title(
+            'Int. vs Bounding Box (box {})'.format(int(vlin)))
+        try:
+            figure_class.gaus_ax.axvline(x=vlin)
+        except:
+            pass
+
+def top_plot_reload(val, figure_class, user_class, types='scan'):
+    top_plot_start(figure_class=figure_class, user_class=user_class, types=types)
+
+def grab_int_v_scan(user_class, types='scan'):
     output = create_rois(user_class)
 
-    if type=='scan':
+    if types == 'scan':
         theta = np.asarray(user_class.scan_theta)
         inds = theta.argsort()
+        copy_theta = theta.copy()
+
+        user_class.ordered_scan_theta = copy_theta[inds]
+        user_class.scan_theta_inds = inds
+
+        copy_output = output[0].copy()
+
+        user_class.ordered_scan_roi = []
+        user_class.ordered_scan_roi = copy_output[inds]
         x = theta[inds]
-        pre_y = np.sum(output[0], axis=(1, 2))
+
+        pre_y = add_rois(output, types='scan')
+
         y = pre_y[inds]
-        return x, y
-    elif type=='bounding':
+        user_class.scan_top_x = x.copy()
+        user_class.scan_top_y = np.nan_to_num(y).copy()
+
+
+    elif types == 'bounding':
         x = np.arange(0, len(output[1]))
-        y = np.sum(output[1], axis=(1, 2))
-        return x, y
+        y = add_rois(output, types='bounding')
+        user_class.ordered_bounding_roi = output[1].copy()
+        user_class.bounding_top_x = x
+        user_class.bounding_top_y = np.nan_to_num(y)
+
+def add_rois(rois, types='scan'):
+    summed = []
+
+    if types == 'scan':
+        master_roi = rois[0]
+    elif types == 'bounding':
+        master_roi = rois[1]
+
+    for array in master_roi:
+        ar = array.copy()
+        s = np.nansum(ar)
+        c = np.count_nonzero(np.isnan(ar)) * np.nanmedian(ar)
+        summed.append(s)
+
+    return np.asarray(summed)
+
+def right_roi(user_class, types='scan'):
+    output = create_rois(user_class)
+    output = np.asarray(output)
+    output2 = output.copy()
+    if types == 'scan':
+        return np.nansum(output2[0], axis=0)
+    elif types == 'bounding':
+        return np.nansum(output2[1], axis=0)
+
+def display_right_roi(figure_class, im):
+    figure_class.summed_roi_ax.imshow(im)
+
+def display_left_roi(figure_class, user_class, types='scan'):
+
+    figure_class.scan_roi_ax.cla()
+    vmin = int(figure_class.vmin_scan_tb.text)
+    vmax = int(figure_class.vmax_scan_tb.text)
+    if types == 'scan':
+        im = user_class.ordered_scan_roi
+        idx = int(user_class.scan_slider.val)
+
+    elif types == 'bounding':
+        im = user_class.ordered_bounding_roi
+        idx = int(user_class.bounding_slider.val)
+
+    figure_class.scan_roi_ax.imshow(im[idx], vmin=vmin, vmax=vmax)
+
+def display_left_roi_reload(val, figure_class, user_class, types='scan'):
+    display_left_roi(figure_class=figure_class, user_class=user_class, types=types)
+
