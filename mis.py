@@ -611,11 +611,11 @@ def create_rois(self):
                           self.roi_analysis_total_rows,
                           self.roi_analysis_total_columns))
     try:
-        sub_rois = np.empty((len(self.diff_segment_sqaures),
+        sub_rois = np.empty((len(self.diff_segment_squares),
                              self.roi_analysis_total_rows,
                              self.roi_analysis_total_columns))
     except:
-        print('self.diff_segment_sqaures is not defined. using default value')
+        print('self.diff_segment_squares is not defined. using default value')
         sub_rois = np.empty((1,
                              self.roi_analysis_total_rows,
                              self.roi_analysis_total_columns))
@@ -657,10 +657,22 @@ def grab_fov_dimensions(self):
 
 
 def results_2dsum(self):
+    """Returns the 2d summed diffraction pattern from the results self.saved_file without loading all the diffraction
+    data
+
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset object
+
+    Returns
+    =======
+    2d image array of the summed diffraction pattern
+    """
 
     counter = 0
-    for i in range(0, 40):
-        for j in range(0, 20):
+    for i in range(0, self.roi_analysis_total_rows):
+        for j in range(0, self.roi_analysis_total_columns):
             f = h5py.File(self.save_filename, 'r')
             spot_dif = f['{}/summed_dif'.format(self.dataset_name)][counter]
             counter = counter + 1

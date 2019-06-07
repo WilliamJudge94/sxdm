@@ -114,7 +114,7 @@ class SXDMFrameset():
                                      med_blur_height=med_blur_height, multiplier=bkg_multiplier,
                                      center_around=1, diff_segmentation=diff_segmentation)
         if False in self.roi_results:
-            warnings.warn('RAM Usage Too High. Analysis Stopped')
+            warnings.warn('RAM Usage Too High. ROI Analysis Stopped')
         self.roi_analysis_params = [med_blur_distance, med_blur_height, bkg_multiplier]
 
         print('Results Stored As self.roi_results')
@@ -122,7 +122,7 @@ class SXDMFrameset():
     def roi_viewer(self):
         pass
 
-    def analysis(self, rows, columns, med_blur_distance=2,
+    def centroid_analysis(self, rows, columns, med_blur_distance=2,
                  med_blur_height=1, stdev_min=25, bkg_multiplier=0):
         """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
 
@@ -152,14 +152,15 @@ class SXDMFrameset():
                                      med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier,
                                      center_around=1)
         if False in self.results:
-            warnings.warn('RAM Usage Too High. Analysis Stopped')
+            warnings.warn('RAM Usage Too High. Centroid Analysis Stopped')
         self.analysis_params = [med_blur_distance, med_blur_height, stdev_min, bkg_multiplier]
 
         print('Results Stored As self.results')
 
     def save(self):
-        """Save self.results to _savedata.h5
+        """Save self.results (Centroid Data) to _savedata.h5
 
+        Unable to efficiently save ROI data
         """
         save_filename = self.file[0:-3] + '_savedata.h5'
         self.save_file = save_filename
@@ -180,7 +181,7 @@ class SXDMFrameset():
             except:
                 h5replace_data(save_filename, self.dataset_name + '/{}'.format(value), np.asarray(readable_results2))
 
-    def viewer(self, diffraction_load=False):
+    def centroid_viewer(self, diffraction_load=False):
         """Allow the user to view the data in a convenient format
 
         Parameters
@@ -204,7 +205,7 @@ class SXDMFrameset():
         run_viewer(self, fluor_image)
 
     def reload_save(self, summed_dif_return=True):
-        """Allow the user to reload saved data
+        """Allow the user to reload Centroid saved data
 
         Parameters
         ==========

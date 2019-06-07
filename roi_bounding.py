@@ -107,7 +107,7 @@ def line_select_callback(eclick, erelease, figure_class):
     try:
         figure_class.pre_roi_bounding.append([x1, x2, y1, y2])
     except:
-        figure_class.pre_roi_bounding = ([x1, x2, y1, y2])
+        figure_class.pre_roi_bounding = ([[x1, x2, y1, y2]])
 
 
 def start_figure(summed_diff_pattern, user_class):
