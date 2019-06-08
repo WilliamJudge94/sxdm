@@ -49,11 +49,23 @@ def start_scan_roi(user_class):
     # setup event functions
     p_top_plot_reload = partial(top_plot_reload, figure_class=scan_roi, user_class=user_class, types='scan')
     p_display_left_roi_reload = partial(display_left_roi_reload, figure_class=scan_roi, user_class=user_class, types='scan')
+    p_display_right_roi_reload = partial(display_right_roi_reload, figure_class=scan_roi, im=np.sum(user_class.ordered_scan_roi, axis=0))
+
 
     user_class.scan_slider.on_changed(p_top_plot_reload)
     user_class.scan_slider.on_changed(p_display_left_roi_reload)
 
-    p_on_scan_click = partial(on_scan_click, figure_class=scan_roi, user_class=user_class)
+
+    scan_roi.vmin_scan_tb.on_submit(p_display_left_roi_reload)
+    scan_roi.vmax_scan_tb.on_submit(p_display_left_roi_reload)
+
+
+    scan_roi.vmin_sum_tb.on_submit(p_display_right_roi_reload)
+    scan_roi.vmax_sum_tb.on_submit(p_display_right_roi_reload)
+
+    p_on_scan_click = partial(on_scan_click, figure_class=scan_roi, user_class=user_class, types='scan')
+
+
     scan_roi.fig.canvas.mpl_connect('button_press_event', p_on_scan_click)
 
 
@@ -88,8 +100,7 @@ def on_scan_click(event, figure_class, user_class, types='scan'):
             figure_class.user_click_y = int(np.ceil(event.ydata))
 
             # set the index value based on the results
-            if types=='scan':
-                idx = 0
+            idx = 0
 
             # try to find the pixel location
             while cont == True:
@@ -104,8 +115,13 @@ def on_scan_click(event, figure_class, user_class, types='scan'):
                 if y == figure_class.user_click_x and x == figure_class.user_click_y:
                     figure_class.scan_med_data_ax.cla()
                     figure_class.scan_med_data_ax.set_title('Row {} Column {}'.format(x, y))
+
                     data = []
-                    for array in results[begin][2]:
+                    if types == 'scan':
+                        new_idx = 2
+                    elif types == 'bounding':
+                        new_idx = 5
+                    for array in results[begin][new_idx]:
                         a = array.copy()
                         data.append(median_blur(a, med_dis, med_h))
 
@@ -167,9 +183,29 @@ def start_bounding_roi(user_class):
     p_display_left_roi_reload = partial(display_left_roi_reload, figure_class=bounding_roi, user_class=user_class, types='bounding')
     p_display_summed_ims_reload = partial(display_summed_ims_reload, figure_class=sum_fig, user_class=user_class)
 
+
+
     user_class.bounding_slider.on_changed(p_top_plot_reload)
     user_class.bounding_slider.on_changed(p_display_left_roi_reload)
     user_class.bounding_slider.on_changed(p_display_summed_ims_reload)
+
+
+    p_display_left_roi_reload = partial(display_left_roi_reload, figure_class=bounding_roi, user_class=user_class, types='bounding')
+    p_display_right_roi_reload = partial(display_right_roi_reload, figure_class=bounding_roi, im=np.sum(user_class.ordered_bounding_roi, axis=0))
+
+    bounding_roi.vmin_scan_tb.on_submit(p_display_left_roi_reload)
+    bounding_roi.vmax_scan_tb.on_submit(p_display_left_roi_reload)
+
+
+    bounding_roi.vmin_sum_tb.on_submit(p_display_right_roi_reload)
+    bounding_roi.vmax_sum_tb.on_submit(p_display_right_roi_reload)
+
+
+
+
+
+    p_on_scan_click2 = partial(on_scan_click, figure_class=bounding_roi, user_class=user_class, types='bounding')
+    bounding_roi.fig.canvas.mpl_connect('button_press_event', p_on_scan_click2)
 
     sum_fig.closebtn.on_clicked(close_all)
 
@@ -665,7 +701,12 @@ def display_right_roi(figure_class, im):
     :param im:
     :return:
     """
-    figure_class.summed_roi_ax.imshow(im)
+    vmin = int(figure_class.vmin_sum_tb.text)
+    vmax = int(figure_class.vmax_sum_tb.text)
+    figure_class.summed_roi_ax.imshow(im, vmin=vmin, vmax=vmax)
+
+def display_right_roi_reload(val, figure_class, im):
+    display_right_roi(figure_class=figure_class, im=im)
 
 
 def display_left_roi(figure_class, user_class, types='scan'):
