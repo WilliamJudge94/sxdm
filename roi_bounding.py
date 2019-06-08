@@ -110,7 +110,7 @@ def line_select_callback(eclick, erelease, figure_class):
         figure_class.pre_roi_bounding = ([[x1, x2, y1, y2]])
 
 
-def start_figure(summed_diff_pattern, user_class):
+def start_bounding_box(summed_diff_pattern, user_class):
     """Starts the ROI bounding box GUI
 
     Returns

@@ -13,6 +13,8 @@ from logger import *
 from viewer import *
 from postprocess import *
 from chi_determination import *
+from roi_bounding import *
+from roi import *
 
 from tqdm import tqdm
 
@@ -78,7 +80,7 @@ class SXDMFrameset():
         chi_function(self)
 
     def region_of_interest(self, rows, columns, med_blur_distance=9,
-                           med_blur_height=100, bkg_multiplier=0, diff_segmentation=False):
+                           med_blur_height=100, bkg_multiplier=0, diff_segmentation=True):
         """Create a region of interest map for each scan and center the region of interest maps.
         If the diff segmentation is True this will also create a region of interest map based on
         a user defined sub region of interests
@@ -110,6 +112,10 @@ class SXDMFrameset():
 
         self.roi_analysis_total_rows = rows
         self.roi_analysis_total_columns = columns
+
+        dif_im = results_2dsum(self)
+        start_bounding_box(dif_im, self)
+
         self.roi_results = roi_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
                                      med_blur_height=med_blur_height, multiplier=bkg_multiplier,
                                      center_around=1, diff_segmentation=diff_segmentation)
@@ -120,7 +126,7 @@ class SXDMFrameset():
         print('Results Stored As self.roi_results')
 
     def roi_viewer(self):
-        pass
+        initiate_roi_viewer(self)
 
     def centroid_analysis(self, rows, columns, med_blur_distance=2,
                  med_blur_height=1, stdev_min=25, bkg_multiplier=0):
