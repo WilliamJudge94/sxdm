@@ -182,7 +182,7 @@ def contbtn_click(event, figure_class, user_class):
     =======
     Nothing
     """
-    user_class.diff_segment_sqaures =figure_class.pre_roi_bounding
+    user_class.diff_segment_squares =figure_class.pre_roi_bounding
 
     plt.close(figure_class.fig)
 

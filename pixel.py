@@ -366,8 +366,8 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
         # for each bounding box
         for segment in self.diff_segment_sqaures:
             # segment the summed diffraction pattern
-            segmented_diffraction = summed_dif[segment[0]:segment[1],
-                                    segment[2]:segment[3]]
+            segmented_diffraction = summed_dif[int(segment[0]):int(segment[1]),
+                                    int(segment[2]):int(segment[3])]
 
             # sum it down an axis and store
             ttheta = np.sum(segmented_diffraction, axis=0)

@@ -79,6 +79,12 @@ class SXDMFrameset():
             self.user_rocking_check = self.user_rocking in ['det', 'spl']
         chi_function(self)
 
+    def roi_segmentation(self):
+        dif_im = results_2dsum(self)
+        roi, rs = start_bounding_box(dif_im, self)
+        self.rando1 = roi
+        self.rando2 = rs
+
     def region_of_interest(self, rows, columns, med_blur_distance=9,
                            med_blur_height=100, bkg_multiplier=0, diff_segmentation=True):
         """Create a region of interest map for each scan and center the region of interest maps.
@@ -112,9 +118,6 @@ class SXDMFrameset():
 
         self.roi_analysis_total_rows = rows
         self.roi_analysis_total_columns = columns
-
-        dif_im = results_2dsum(self)
-        start_bounding_box(dif_im, self)
 
         self.roi_results = roi_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
                                      med_blur_height=med_blur_height, multiplier=bkg_multiplier,
