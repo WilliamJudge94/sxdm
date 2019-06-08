@@ -11,62 +11,142 @@ import matplotlib as mpl
 from matplotlib.widgets import Button, TextBox, Slider
 
 from roi_bounding import ROI_FiguresClass
-from mis import create_rois, results_2dsum
+from mis import create_rois, results_2dsum, median_blur
 from roi_bounding import *
 from postprocess import twodsummed
 
 from functools import partial
 
-def pre_figures(self):
-    """WIP
-
-    :param self:
-    :return:
-    """
-    main_results = self.results
-
-    #summed_dif_pattern = twodsummed(main_results)
-
-    out = start_figure(summed_dif_pattern, self)
-
-    #roi_results = self.roi_results
-
-    #readable_roi_results = create_rois(roi_results)
-
-    return out
-
 
 def start_scan_roi(user_class):
-    """Displays the scan roi figure with appropriate textboxes
+    """Displays the scan roi figure with appropriate settings
 
-    :return:
+    Parameters
+    ==========
+    user_class (SXDMFrameset)
+        the sxdmframeset object
+
+    Returns
+    =======
+    Nothing
     """
+
+    # close all figures to stop errors from happening
+    plt.close('all')
+
+    # setup the figure clas
     scan_roi = ROI_FiguresClass()
     scan_roi_figure_setup(figure_class=scan_roi)
     textbox_setup(figure_class=scan_roi)
     scan_slider_setup(figure_class=scan_roi, user_class=user_class)
     grab_int_v_scan(user_class=user_class)
-
     top_plot_start(scan_roi, user_class)
+
 
     display_right_roi(figure_class=scan_roi, im=right_roi(user_class, types='scan'))
     display_left_roi(figure_class=scan_roi, user_class=user_class, types='scan')
 
+    # setup event functions
     p_top_plot_reload = partial(top_plot_reload, figure_class=scan_roi, user_class=user_class, types='scan')
     p_display_left_roi_reload = partial(display_left_roi_reload, figure_class=scan_roi, user_class=user_class, types='scan')
-
 
     user_class.scan_slider.on_changed(p_top_plot_reload)
     user_class.scan_slider.on_changed(p_display_left_roi_reload)
 
+    p_on_scan_click = partial(on_scan_click, figure_class=scan_roi, user_class=user_class)
+    scan_roi.fig.canvas.mpl_connect('button_press_event', p_on_scan_click)
+
+
+def on_scan_click(event, figure_class, user_class, types='scan'):
+    """Obtains all the raw scan data for a user clicked pixel
+
+    Parameters
+    ==========
+    event (matplotlib event)
+        the matplotlib event
+    figure_class (ROI_FiguresClass)
+        the roi_figuresclass object
+    user_class (SXDMFrameset)
+        the sxdmframeset object
+    types (str)
+        either 'scan' or 'bounding'
+
+    Returns
+    =======
+    Nothing - obtains all data and diplays data to appropriate location
+    """
+    if not event.dblclick:
+        ax = event.inaxes
+        cont = True
+        begin = 0
+        med_dis = int(figure_class.med_blur_dis_tb.text)
+        med_h = int(figure_class.med_blur_h_tb.text)
+
+        # make sure that the click was in the right axis
+        if ax == figure_class.scan_roi_ax:
+            figure_class.user_click_x = int(np.ceil(event.xdata))
+            figure_class.user_click_y = int(np.ceil(event.ydata))
+
+            # set the index value based on the results
+            if types=='scan':
+                idx = 0
+
+            # try to find the pixel location
+            while cont == True:
+                results = user_class.roi_results
+                try:
+                    x, y = results[begin][idx]
+                except Exception as ex:
+                    print('roi.py/on_scan_click', ex)
+                    fail_safe = input('Loop Error')
+
+                # plot it in the correct location
+                if y == figure_class.user_click_x and x == figure_class.user_click_y:
+                    figure_class.scan_med_data_ax.cla()
+                    figure_class.scan_med_data_ax.set_title('Row {} Column {}'.format(x, y))
+                    data = []
+                    for array in results[begin][2]:
+                        a = array.copy()
+                        data.append(median_blur(a, med_dis, med_h))
+
+                    for ar in data:
+                        figure_class.scan_med_data_ax.plot(ar)
+
+                    cont = False
+                    plt.draw()
+
+                else:
+                    begin = begin + 1
+
+
+def initiate_roi_viewer(user_class):
+    """Sets up all the ROI viewer figures
+
+    Parameters
+    ==========
+    user_class (SXDMFrameset)
+        the sxdmframeset object
+
+    Returns
+    =======
+    Nothing
+    """
+    start_scan_roi(user_class=user_class)
+    start_bounding_roi(user_class=user_class)
 
 
 def start_bounding_roi(user_class):
     """Displays the bounding box roi with aproptiate textboxes
 
-    :return:
-    """
+    Parameters
+    ==========
+    user_class (SXDMFrameset)
+        the sxdmframeset object
 
+    Returns
+    =======
+    Nothing
+    """
     bounding_roi = ROI_FiguresClass()
     bounding_roi_figure_setup(figure_class=bounding_roi)
     textbox_setup(figure_class=bounding_roi)
@@ -77,33 +157,36 @@ def start_bounding_roi(user_class):
     display_right_roi(figure_class=bounding_roi, im=right_roi(user_class, types='bounding'))
     display_left_roi(figure_class=bounding_roi, user_class=user_class, types='bounding')
 
-
-
-
     user_class.roi_sum_im = results_2dsum(user_class)
     sum_fig = ROI_FiguresClass()
     bounding_box_setup(sum_fig)
     bounding_tb_setup(sum_fig)
     display_summed_ims(sum_fig, user_class)
 
-
     p_top_plot_reload = partial(top_plot_reload, figure_class=bounding_roi, user_class=user_class, types='bounding')
     p_display_left_roi_reload = partial(display_left_roi_reload, figure_class=bounding_roi, user_class=user_class, types='bounding')
-
     p_display_summed_ims_reload = partial(display_summed_ims_reload, figure_class=sum_fig, user_class=user_class)
 
     user_class.bounding_slider.on_changed(p_top_plot_reload)
     user_class.bounding_slider.on_changed(p_display_left_roi_reload)
-
     user_class.bounding_slider.on_changed(p_display_summed_ims_reload)
 
+    sum_fig.closebtn.on_clicked(close_all)
+
 def scan_roi_figure_setup(figure_class):
-    """Initiates the scan roi figure with proper axes locations
-current_roi_slider_val
-    :param figure_class:
-    :return:
+    """Initiates the scan roi figure with proper axes locations current_roi_slider_val
+
+    Parameters
+    ==========
+    figure_class (ROI_FiguresClass)
+        the roi_figuresclass object
+
+    Returns
+    =======
+    Nothing
     """
     fig = plt.figure(figsize=(5.5, 10))
+    figure_class.fig = fig
     mpl.rcParams['axes.linewidth'] = 1.5
     figure_class.fig = fig
 
@@ -158,13 +241,13 @@ current_roi_slider_val
     figure_class.vmax_sum_ax.set_yticks([])
 
     # medblur height
-    figure_class.med_blur_h_ax = plt.axes([0.05, 0.05, 0.13, 0.05])
+    figure_class.med_blur_h_ax = plt.axes([0.05, 0.05, 0.10, 0.05])
     figure_class.med_blur_h_ax.set_xticks([])
     figure_class.med_blur_h_ax.set_yticks([])
     figure_class.med_blur_h_ax.set_title('blur height', fontsize=8)
 
     # medblur distance
-    figure_class.med_blur_dis_ax = plt.axes([0.05, 0.2, 0.13, 0.05])
+    figure_class.med_blur_dis_ax = plt.axes([0.05, 0.15, 0.08, 0.05])
     figure_class.med_blur_dis_ax.set_xticks([])
     figure_class.med_blur_dis_ax.set_yticks([])
     figure_class.med_blur_dis_ax.set_title('blur distance', fontsize=8)
@@ -174,8 +257,14 @@ current_roi_slider_val
 def bounding_roi_figure_setup(figure_class):
     """Initiates the bounding box figure with axes
 
-    :param figure_class:
-    :return:
+    Parameters
+    ==========
+    figure_class (ROI_FiguresClass)
+        the roi_figuresclass object
+
+    Returns
+    =======
+    Nothing
     """
     fig = plt.figure(figsize=(5, 10))
     mpl.rcParams['axes.linewidth'] = 1.5
@@ -233,13 +322,13 @@ def bounding_roi_figure_setup(figure_class):
     figure_class.vmax_sum_ax.set_yticks([])
 
     # medblur height
-    figure_class.med_blur_h_ax = plt.axes([0.05, 0.05, 0.13, 0.05])
+    figure_class.med_blur_h_ax = plt.axes([0.05, 0.05, 0.10, 0.05])
     figure_class.med_blur_h_ax.set_xticks([])
     figure_class.med_blur_h_ax.set_yticks([])
     figure_class.med_blur_h_ax.set_title('blur height', fontsize=8)
 
     # medblur distance
-    figure_class.med_blur_dis_ax = plt.axes([0.05, 0.2, 0.13, 0.05])
+    figure_class.med_blur_dis_ax = plt.axes([0.05, 0.15, 0.08, 0.05])
     figure_class.med_blur_dis_ax.set_xticks([])
     figure_class.med_blur_dis_ax.set_yticks([])
     figure_class.med_blur_dis_ax.set_title('blur distance', fontsize=8)
@@ -250,8 +339,14 @@ def bounding_roi_figure_setup(figure_class):
 def textbox_setup(figure_class):
     """Sets up textboxes for the scan roi and the bounding box roi figures
 
-    :param figure_class:
-    :return:
+    Parameters
+    ==========
+    figure_class (ROI_FiguresClass)
+        the roi_figuresclass object
+
+    Returns
+    =======
+    Nothing
     """
     figure_class.vmin_scan_tb = TextBox(figure_class.vmin_scan_ax, '', initial='0')
     figure_class.vmax_scan_tb = TextBox(figure_class.vmax_scan_ax, '', initial='1000')
@@ -263,6 +358,19 @@ def textbox_setup(figure_class):
     figure_class.med_blur_h_tb = TextBox(figure_class.med_blur_h_ax, '', initial='100')
 
 def scan_slider_setup(figure_class, user_class):
+    """Sets up the scan figure slider inside the roi figures
+
+    Parameters
+    ==========
+    figure_class (ROI_FiguresClass)
+        the roi_figuresclass object
+    user_class (SXDMFrameset)
+        the sxdmframeset object
+
+    Returns
+    =======
+    Nothing
+    """
     amount = len(user_class.scan_theta) - 1
     sld1 = Slider(figure_class.scan_slider_ax, 'Scan', 0, amount, valinit=0, valstep=1)
     plt.draw()
@@ -270,18 +378,23 @@ def scan_slider_setup(figure_class, user_class):
 
 
 def bounding_slider_setup(figure_class, user_class):
+    """Sets up the bounding figure slider inside the roi figures
+
+    Parameters
+    ==========
+    figure_class (ROI_FiguresClass)
+        the roi_figuresclass object
+    user_class (SXDMFrameset)
+        the sxdmframeset object
+
+    Returns
+    =======
+    Nothing
+    """
     amount = len(user_class.diff_segment_squares) - 1
     sld2 = Slider(figure_class.scan_slider_ax, 'Box', 0, amount, valinit=0, valstep=1)
     plt.draw()
     user_class.bounding_slider = sld2
-
-# bounding_roi
-## there are different boxes the user can select and see their roi maps and their summed roi colormap
-# left side had a figure where the user selects roi boxes
-# create a way to flick through all the boxes roi individually
-# right summing all the roi boxes as difference colors
-# bottom plot show the gaussian curve for the current selected bounding ox the user is viewing (center)
-# show the median_blur_data depending where the user clicks and which scan they click
 
 
 def bounding_box_setup(figure_class):
@@ -328,6 +441,7 @@ def bounding_box_setup(figure_class):
 
     plt.draw()
 
+
 def bounding_tb_setup(figure_class):
     """Sets up all the textboxes and buttons
 
@@ -349,6 +463,11 @@ def bounding_tb_setup(figure_class):
                            color='teal',
                            hovercolor='tomato')
     plt.draw()
+
+
+def close_all(event):
+    plt.close('all')
+
 
 def display_summed_ims(figure_class, user_class):
     """Show the summed diffraction pattern with all assigned bounding boxes
@@ -395,8 +514,17 @@ def display_summed_ims(figure_class, user_class):
 
     plt.draw()
 
+
 def display_summed_ims_reload(val, figure_class, user_class):
+    """Allows the summed diffraction images to be displayed
+
+    :param val:
+    :param figure_class:
+    :param user_class:
+    :return:
+    """
     display_summed_ims(figure_class=figure_class, user_class=user_class)
+
 
 def bounding_box_total_setup(user_class):
     """Complete setup of the summed diffraction pattern with the bounding boxes on top of them
@@ -410,7 +538,15 @@ def bounding_box_total_setup(user_class):
     bounding_tb_setup(sum_fig)
     display_summed_ims(sum_fig, user_class)
 
+
 def top_plot_start(figure_class, user_class, types='scan'):
+    """Initiate the gaus plot
+
+    :param figure_class:
+    :param user_class:
+    :param types:
+    :return:
+    """
     figure_class.gaus_ax.cla()
 
     if types == 'scan':
@@ -432,10 +568,26 @@ def top_plot_start(figure_class, user_class, types='scan'):
         except:
             pass
 
+
 def top_plot_reload(val, figure_class, user_class, types='scan'):
+    """Reloads the gaus plot
+
+    :param val:
+    :param figure_class:
+    :param user_class:
+    :param types:
+    :return:
+    """
     top_plot_start(figure_class=figure_class, user_class=user_class, types=types)
 
+
 def grab_int_v_scan(user_class, types='scan'):
+    """Grab the data needed for the gaus plot
+
+    :param user_class:
+    :param types:
+    :return:
+    """
     output = create_rois(user_class)
 
     if types == 'scan':
@@ -466,7 +618,14 @@ def grab_int_v_scan(user_class, types='scan'):
         user_class.bounding_top_x = x
         user_class.bounding_top_y = np.nan_to_num(y)
 
+
 def add_rois(rois, types='scan'):
+    """add the create_rois output and return the correct plots
+
+    :param rois:
+    :param types:
+    :return:
+    """
     summed = []
 
     if types == 'scan':
@@ -482,7 +641,14 @@ def add_rois(rois, types='scan'):
 
     return np.asarray(summed)
 
+
 def right_roi(user_class, types='scan'):
+    """Plots the right roi plot
+
+    :param user_class:
+    :param types:
+    :return:
+    """
     output = create_rois(user_class)
     output = np.asarray(output)
     output2 = output.copy()
@@ -491,11 +657,25 @@ def right_roi(user_class, types='scan'):
     elif types == 'bounding':
         return np.nansum(output2[1], axis=0)
 
+
 def display_right_roi(figure_class, im):
+    """Displays the right roi plot
+
+    :param figure_class:
+    :param im:
+    :return:
+    """
     figure_class.summed_roi_ax.imshow(im)
 
-def display_left_roi(figure_class, user_class, types='scan'):
 
+def display_left_roi(figure_class, user_class, types='scan'):
+    """Sets up the display for the left roi plot
+
+    :param figure_class:
+    :param user_class:
+    :param types:
+    :return:
+    """
     figure_class.scan_roi_ax.cla()
     vmin = int(figure_class.vmin_scan_tb.text)
     vmax = int(figure_class.vmax_scan_tb.text)
@@ -509,6 +689,15 @@ def display_left_roi(figure_class, user_class, types='scan'):
 
     figure_class.scan_roi_ax.imshow(im[idx], vmin=vmin, vmax=vmax)
 
+
 def display_left_roi_reload(val, figure_class, user_class, types='scan'):
+    """Reloads the left roi
+
+    :param val:
+    :param figure_class:
+    :param user_class:
+    :param types:
+    :return:
+    """
     display_left_roi(figure_class=figure_class, user_class=user_class, types=types)
 
