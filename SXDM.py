@@ -42,11 +42,14 @@ class SXDMFrameset():
         """Allows the user to align all scans based on Fluorescence Maps or ROI Maps
 
         """
+        self.log.info('Starting self.alignment')
 
         if reset == True:
             reset_dxdy(self)
 
         alignment_function(self)
+
+        self.log.info('Ending self.alignment')
 
     def gaus_checker(self, center_around=False, default=False):
         """Plots total diffraction intensity vs scan angle for a set ROI
@@ -62,16 +65,24 @@ class SXDMFrameset():
         =======
         Nothing - displays the total intensity vs scan theta rocking curve
         """
+
+        self.log.info('Starting self.gaus_checker')
+
         x, y = gaus_check(self, center_around=center_around, default=default)
         self.mda_roi_gaus_check = (x, y)
         plt.plot(x, y)
         plt.xlabel('Sample Angle (Degrees)')
         plt.ylabel('Relative Intensity')
 
+        self.log.info('Ending self.gaus_checker')
+
     def chi_determination(self):
         """Determine the axis bounds for the diffraction images
 
         """
+
+        self.log.info('Starting self.chi_determination')
+
         self.user_rocking_check = False
         while self.user_rocking_check == False:
             self.user_rocking = str(input("What Are You Rocking For The Chi Determination? "
@@ -79,11 +90,28 @@ class SXDMFrameset():
             self.user_rocking_check = self.user_rocking in ['det', 'spl']
         chi_function(self)
 
+        self.log.info('Ending self.chi_determination')
+
     def roi_segmentation(self):
+        """Allows the User to create a summed diffraction pattern bounding box for region_of_interest analysis
+
+        Parameters
+        ==========
+        self (SXDMFrameset)
+            the sxdmframeset object
+
+        Returns
+        =======
+        Nothing
+        """
+        self.log.info('Starting self.roi_segmentation')
+
         dif_im = results_2dsum(self)
         roi, rs = start_bounding_box(dif_im, self)
         self.rando1 = roi
         self.rando2 = rs
+
+        self.log.info('Ending self.roi_segmentation')
 
     def region_of_interest(self, rows, columns, med_blur_distance=9,
                            med_blur_height=100, bkg_multiplier=0, diff_segmentation=True):
@@ -116,6 +144,8 @@ class SXDMFrameset():
                summed_data, corr_summed_data, summed_data_roi_vals]
         """
 
+        self.log.info('Starting self.region_of_interest')
+
         self.roi_analysis_total_rows = rows
         self.roi_analysis_total_columns = columns
 
@@ -128,8 +158,25 @@ class SXDMFrameset():
 
         print('Results Stored As self.roi_results')
 
+        self.log.info('Ending self.region_of_interest')
+
     def roi_viewer(self):
+        """Takes the self.roi_results variable and displays it in a GUI format
+
+        Parameters
+        ==========
+        self (SXDMFrameset)
+            the sxdmframeset object
+
+        Returns
+        =======
+        Nothing
+        """
+        self.log.info('Starting self.roi_viewer')
+
         initiate_roi_viewer(self)
+
+        self.log.info('Ending self.roi_viewer')
 
     def centroid_analysis(self, rows, columns, med_blur_distance=2,
                  med_blur_height=1, stdev_min=25, bkg_multiplier=0):
@@ -155,6 +202,9 @@ class SXDMFrameset():
         =======
         the analysis results in the form of self.results
         """
+
+        self.log.info('Starting self.centroid_analysis')
+
         self.analysis_total_rows = rows
         self.analysis_total_columns = columns
         self.results = best_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
@@ -166,11 +216,16 @@ class SXDMFrameset():
 
         print('Results Stored As self.results')
 
+        self.log.info('Ending self.centroid_analysis')
+
     def save(self):
         """Save self.results (Centroid Data) to _savedata.h5
 
         Unable to efficiently save ROI data
         """
+
+        self.log.info('Starting self.save')
+
         save_filename = self.file[0:-3] + '_savedata.h5'
         self.save_file = save_filename
         acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi', 'ttheta_corr', 'ttheta_centroid', 'chi_corr',
@@ -190,6 +245,8 @@ class SXDMFrameset():
             except:
                 h5replace_data(save_filename, self.dataset_name + '/{}'.format(value), np.asarray(readable_results2))
 
+        self.log.info('Ending self.save')
+
     def centroid_viewer(self, diffraction_load=False):
         """Allow the user to view the data in a convenient format
 
@@ -204,6 +261,9 @@ class SXDMFrameset():
         =======
         Nothing - displays viewer
         """
+
+        self.log.info('Starting self.centroid_viewer')
+
         warnings.warn('The Starting Parameters In The Viewer May Not Be Identical The Parameters Used For The Analysis')
         try:
             fluor_image = centering_det(self)
@@ -212,6 +272,8 @@ class SXDMFrameset():
             fluor_image = sum_error()
         self.diffraction_load = diffraction_load
         run_viewer(self, fluor_image)
+
+        self.log.info('Ending self.centroid_viewer')
 
     def reload_save(self, summed_dif_return=True):
         """Allow the user to reload Centroid saved data
@@ -227,6 +289,11 @@ class SXDMFrameset():
         =======
         Nothing
         """
+
+        self.log.info('Starting self.reload_save')
+
         self.save_filename = self.file[0:-3] + '_savedata.h5'
         self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return=summed_dif_return)
         self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')
+
+        self.log.info('Ending self.reload_save')

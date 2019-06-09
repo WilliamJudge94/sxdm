@@ -23,6 +23,7 @@ def alignment_function(self):
     =======
     Nothing
     """
+
     # Check to see if /dxdy group exsists if not make it and set attributes
     if h5path_exists(file=self.file, loc=self.dataset_name + '/dxdy') == True:
         warnings.warn('Previous Data Found')
@@ -130,6 +131,7 @@ def alignment_function(self):
 
     elif redo_alignment == 'n':
         print('Staying With Current Alignment Parameters')
+
 
 def reset_dxdy(self):
     h5del_group(self.file, self.dataset_name + '/dxdy')
