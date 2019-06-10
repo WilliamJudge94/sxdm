@@ -93,7 +93,7 @@ class SXDMFrameset():
 
         self.log.info('Ending self.chi_determination')
 
-    def roi_segmentation(self):
+    def roi_segmentation(self, bkg_multiplier=0):
         """Allows the User to create a summed diffraction pattern bounding box for region_of_interest analysis
 
         Parameters
@@ -107,7 +107,7 @@ class SXDMFrameset():
         """
         self.log.info('Starting self.roi_segmentation')
 
-        dif_im = summed2d_all_data(self)
+        dif_im = summed2d_all_data(self=self, bkg_multiplier=bkg_multiplier)
         roi, rs = start_bounding_box(dif_im, self)
         self.rando1 = roi
         self.rando2 = rs

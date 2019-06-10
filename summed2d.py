@@ -11,13 +11,13 @@ from mis import grab_fov_dimensions
 
 
 
-def summed2d_all_data(self):
+def summed2d_all_data(self, bkg_multiplier=0):
     dims = grab_fov_dimensions(self)
     rows = dims[1] - 1
     columns = dims[2] - 1
     image_array = self.image_array
 
-    bkg = scan_background(self=self, multiplier=0)
+    bkg = scan_background(self=self, multiplier=bkg_multiplier)
 
     total = []
     for column in range(0, columns):
