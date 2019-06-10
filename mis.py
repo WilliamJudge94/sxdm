@@ -485,7 +485,7 @@ def ram_check():
 
 
 def median_blur(input_array, median_blur_distance,
-                cut_off_value_above_mean):
+                cut_off_value_above_mean, with_low=False):
     """Median Blur a 1D array. Used for eliminating hot or dead pixels
 
     Parameters
@@ -523,6 +523,8 @@ def median_blur(input_array, median_blur_distance,
         # Replace a high value with the median value
         if input_array[j] > np.median(
                 median_array) + cut_off_value_above_mean:
+            input_array[j] = np.median(median_array)
+        elif with_low == True and input_array[j]<np.median(median_array)-cut_off_value_above_mean:
             input_array[j] = np.median(median_array)
         else:
             pass

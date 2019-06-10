@@ -2,6 +2,7 @@
 
 import numpy as np
 import h5py
+from tqdm import tqdm
 
 
 from pixel import grab_pix, sum_pixel
@@ -20,7 +21,7 @@ def summed2d_all_data(self, bkg_multiplier=0):
     bkg = scan_background(self=self, multiplier=bkg_multiplier)
 
     total = []
-    for column in range(0, columns):
+    for column in tqdm(range(0, columns)):
         for row in range(0, rows):
 
             pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)

@@ -345,7 +345,9 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
         # median blur it and store
         ttheta_copy = median_blur(input_array=ttheta_copy,
                     median_blur_distance=median_blur_distance,
-                    cut_off_value_above_mean=median_blur_height)
+                    cut_off_value_above_mean=median_blur_height,
+                                  with_low=True)
+
         corr_scan_data.append(ttheta_copy)
 
         # sum to single value and store
@@ -364,7 +366,7 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
     if diff_segments != False:
 
         # for each bounding box
-        for segment in self.diff_segment_sqaures:
+        for segment in self.diff_segment_squares:
             # segment the summed diffraction pattern
             segmented_diffraction = summed_dif[int(segment[0]):int(segment[1]),
                                     int(segment[2]):int(segment[3])]

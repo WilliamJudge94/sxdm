@@ -123,7 +123,7 @@ def on_scan_click(event, figure_class, user_class, types='scan'):
                         new_idx = 5
                     for array in results[begin][new_idx]:
                         a = array.copy()
-                        data.append(median_blur(a, med_dis, med_h))
+                        data.append(median_blur(a, med_dis, med_h, with_low=True))
 
                     for ar in data:
                         figure_class.scan_med_data_ax.plot(ar)

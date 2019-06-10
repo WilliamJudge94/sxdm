@@ -151,10 +151,10 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
 
     # If you can't load in previous analysis parameters, set them to default
     try:
-        med_blur_dis = str(self.analysis_params[0])
-        med_blur_hei = str(self.analysis_params[1])
-        stdev = str(self.analysis_params[2])
-        bkg_x = str(self.analysis_params[3])
+        med_blur_dis = str(int(self.analysis_params[0]))
+        med_blur_hei = str(int(self.analysis_params[1]))
+        stdev = str(int(self.analysis_params[2]))
+        bkg_x = str(int(self.analysis_params[3]))
     except:
         med_blur_dis = '2'
         med_blur_hei = '1' 
