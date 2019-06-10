@@ -15,6 +15,7 @@ from postprocess import *
 from chi_determination import *
 from roi_bounding import *
 from roi import *
+from summed2d import *
 
 from tqdm import tqdm
 
@@ -106,7 +107,7 @@ class SXDMFrameset():
         """
         self.log.info('Starting self.roi_segmentation')
 
-        dif_im = results_2dsum(self)
+        dif_im = summed2d_all_data(self)
         roi, rs = start_bounding_box(dif_im, self)
         self.rando1 = roi
         self.rando2 = rs
