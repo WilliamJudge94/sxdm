@@ -267,6 +267,7 @@ def best_analysis(self, rows, columns, med_blur_distance=4,
     self.median_blur_distance = med_blur_distance
     self.median_blur_height = med_blur_height
     self.stdev_min = stdev_min
+    self.centroid_bkg_multiplier = multiplier
 
     # Create a background for the scans
     background_dic_basic = scan_background(self, multiplier=multiplier)
@@ -365,14 +366,9 @@ def roi_analysis(self, rows, columns, med_blur_distance=4,
                                        self.median_blur_distance,
                                        self.median_blur_height,
                                        diff_segmentation)
-    readable_results = []
 
-    # Make the results readable
-    for re in results:
-        readable_results.append(np.asarray(re))
-    readable_results = np.asarray(readable_results)
 
-    return readable_results
+    return results
 
 
 def create_imagearray(self, center_around=False):

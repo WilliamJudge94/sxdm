@@ -28,10 +28,13 @@ def summed2d_all_data(self, bkg_multiplier=0):
             destination = h5get_image_destination(self=self, pixel=pix)
             each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
 
-            # Background Correction
-            backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
+            if bkg_multiplier != 0:
+                # Background Correction
+                backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
 
-            each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
+                each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
+            else:
+                each_scan_diffraction_post = each_scan_diffraction
 
             # print(np.shape(each_scan_diffraction_post))
             summed_dif = np.sum(each_scan_diffraction_post, axis=0)

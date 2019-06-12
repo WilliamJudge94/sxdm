@@ -301,6 +301,9 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
     Returns
     =======
     the analysis results as an nd.array
+    [(row, column), idxs,
+               raw_scan_data, corr_scan_data, scan_data_roi_vals,
+               summed_data, corr_summed_data, summed_data_roi_vals]
     """
 
     image_array = self.image_array
