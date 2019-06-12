@@ -277,6 +277,7 @@ def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_heigh
 
     return results
 
+
 def roi_pixel_analysis(self, row, column, median_blur_distance,
                        median_blur_height, diff_segments=False):
     """The analysis done on a single pixel - this will get the new roi for each theta
@@ -371,8 +372,8 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
         # for each bounding box
         for segment in self.diff_segment_squares:
             # segment the summed diffraction pattern
-            segmented_diffraction = summed_dif[int(segment[0]):int(segment[1]),
-                                    int(segment[2]):int(segment[3])]
+            segmented_diffraction = summed_dif[int(segment[2]):int(segment[3]),
+                                    int(segment[0]):int(segment[1])]
 
             # sum it down an axis and store
             ttheta = np.sum(segmented_diffraction, axis=0)

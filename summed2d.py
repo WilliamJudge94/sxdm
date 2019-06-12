@@ -11,7 +11,6 @@ from background import scan_background_finder, scan_background
 from mis import grab_fov_dimensions
 
 
-
 def summed2d_all_data(self, bkg_multiplier=0):
     dims = grab_fov_dimensions(self)
     rows = dims[1] - 1
@@ -36,11 +35,8 @@ def summed2d_all_data(self, bkg_multiplier=0):
             else:
                 each_scan_diffraction_post = each_scan_diffraction
 
-            # print(np.shape(each_scan_diffraction_post))
             summed_dif = np.sum(each_scan_diffraction_post, axis=0)
-            # print(np.shape(summed_dif))
 
             total.append(summed_dif)
     total2 = np.sum(total, axis=0)
     return total2
-
