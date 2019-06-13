@@ -33,7 +33,7 @@ def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,
     the edited (median blured) sum down the y axis as a numpy array
     """
     ttheta = np.sum(summed_dif, axis=0)
-    ttheta = median_blur(ttheta, median_blur_distance, median_blur_height)
+    ttheta = median_blur(ttheta, median_blur_distance, median_blur_height, with_low=True)
     ttheta2 = np.asarray(ttheta)
     ttheta_centroid_finder, ttheta_centroid = centroid_finder(ttheta2, stdev_min)
     if q == False:
@@ -66,7 +66,7 @@ def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q
     the edited (median blured) sum down the x axis as a numpy array
     """
     chi = np.sum(summed_dif, axis=1)
-    chi = median_blur(chi, median_blur_distance, median_blur_height)
+    chi = median_blur(chi, median_blur_distance, median_blur_height, with_low=True)
     chi2 = np.asarray(chi)
     chi_centroid_finder, chi_centroid = centroid_finder(chi2, stdev_min)
     if q == False:

@@ -738,7 +738,7 @@ def reprocessbtn_click(event, user_class, figure_class):
     Nothing - loads figure formatting
     """
     make_pink(figure_class)
-    user_class.analysis(user_class.analysis_total_rows,
+    user_class.centroid_analysis(user_class.analysis_total_rows,
                         user_class.analysis_total_columns,
                         med_blur_distance=figure_class.med_blur_dis_val,
                         med_blur_height=figure_class.med_blur_h_val,
