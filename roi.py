@@ -173,7 +173,11 @@ def start_bounding_roi(user_class):
     display_right_roi(figure_class=bounding_roi, im=right_roi(user_class, types='bounding'))
     display_left_roi(figure_class=bounding_roi, user_class=user_class, types='bounding')
 
-    user_class.roi_sum_im = results_2dsum(user_class)
+    try:
+        user_class.roi_sum_im = results_2dsum(user_class)
+    except:
+        user_class.roi_sum_im = user_class.dif_im
+
     sum_fig = ROI_FiguresClass()
     bounding_box_setup(sum_fig)
     bounding_tb_setup(sum_fig)

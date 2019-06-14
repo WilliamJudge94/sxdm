@@ -189,7 +189,11 @@ def shape_check(self):
             self.shape_checker = True
             print('Hybrid Scan Shapes Are Equivalent')
     except Exception as ex:
-        print('shape_check', ex)
+        print('shape_check', ex, '\n')
+
+        for i, array in enumerate(hybrid_x):
+            print('Shapes Of All Imported Scans')
+            print(self.scan_numbers[i], np.shape(array))
         warnings.warn('Cannot Check Shape. Some .mda Files Might Be Missing...')
 
 

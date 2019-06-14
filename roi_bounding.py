@@ -124,7 +124,7 @@ def start_bounding_box(summed_diff_pattern, user_class):
 
     roi.im = summed_diff_pattern
 
-    roi.summed_dif_ax.imshow(roi.im, vmax=1000)
+    roi.summed_dif_ax.imshow(roi.im, vmin=0, vmax=1000)
 
     p_line_select_callback = partial(line_select_callback, figure_class=roi)
     p_contbtn_click = partial(contbtn_click, figure_class=roi, user_class=user_class)

@@ -37,6 +37,10 @@ def summed2d_all_data(self, bkg_multiplier=0):
 
             summed_dif = np.sum(each_scan_diffraction_post, axis=0)
 
-            total.append(summed_dif)
-    total2 = np.sum(total, axis=0)
+            try:
+                total2 = np.add(total2, summed_dif)
+            except:
+                total2 = summed_dif
+            #total.append(summed_dif)
+    #total2 = np.sum(total, axis=0)
     return total2

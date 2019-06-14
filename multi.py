@@ -68,10 +68,34 @@ def initialize_vectorize(self, num_rows, num_columns):
     master_row = []
     master_column = []
     if isinstance(num_rows, int) and isinstance(num_columns, int):
-        for i in range(0, num_rows):
-            for j in range(0, num_columns):
-                master_row.append(i)
-                master_column.append(j)
+        start_row = 0
+        end_row = num_rows
+        start_column = 0
+        end_column = num_columns
+
+    elif isinstance(num_rows, int) and isinstance(num_columns, tuple):
+        start_row = 0
+        end_row = num_rows
+        start_column = num_columns[0]
+        end_column = num_columns[1]
+
+    elif isinstance(num_rows, tuple) and isinstance(num_columns, int):
+        start_row = num_rows[0]
+        end_row = num_rows[1]
+        start_column = 0
+        end_column = num_columns
+
+    elif isinstance(num_rows, tuple) and isinstance(num_columns, tuple):
+        start_row = num_rows[0]
+        end_row = num_rows[1]
+        start_column = num_columns[0]
+        end_column = num_columns[1]
+
+    for i in range(start_row, end_row):
+        for j in range(start_column, end_column):
+            master_row.append(i)
+            master_column.append(j)
+
     its = master_row, master_column
 
     return its
@@ -385,5 +409,8 @@ def create_imagearray(self, center_around=False):
     =======
     Nothing - sets the self.image_array value
     """
-    image_array = centering_det(self, group='filenumber', center_around=center_around)
-    self.image_array = np.asarray(image_array)
+    try:
+        image_array = centering_det(self, group='filenumber', center_around=center_around)
+        self.image_array = np.asarray(image_array)
+    except Exception as ex:
+        print('Possibly No Alignment Data', 'multi.py/create_imagearray', ex)
