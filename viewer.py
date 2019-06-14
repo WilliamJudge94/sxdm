@@ -14,8 +14,11 @@ import h5py
 from postprocess import pixel_analysis_return, saved_return
 from mis import median_blur, centering_det, results_2dsum
 from postprocess import centroid_roi_map, pooled_return
-from pixel import theta_maths, chi_maths
+from pixel import theta_maths, chi_maths, grab_pix, sum_pixel
 from clicks import check_mouse_ax, fig_leave
+from h5 import h5get_image_destination
+from background import scan_background_finder
+from summed2d import summed2d_all_data
 
 
 def figure_setup():
@@ -207,8 +210,14 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
         fluor_image = roi_im
 
     try:
-        summed_dif = np.sum(results[:, 1], axis=0)
-        summed_dif_ax.imshow(summed_dif, vmin=vmin_sum, vmax=vmax_sum)
+        try:
+            summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif, vmin=vmin_sum, vmax=vmax_sum)
+        except:
+            user_class.centroid_viewer_summed_dif = summed2d_all_data(self=user_class, bkg_multiplier=1)
+            summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif, vmin=vmin_sum, vmax=vmax_sum)
+
+        #summed_dif = np.sum(results[:, 1], axis=0)
+        #summed_dif_ax.imshow(summed_dif, vmin=vmin_sum, vmax=vmax_sum)
     except:
         try:
             summed_dif_ax.imshow(results_2dsum(ERRORuser_class))
@@ -258,6 +267,24 @@ def reload_some_static_data(results, roi_ax,
     roi_ax.imshow(roi_im, cmap='inferno')
 
 
+def spot_dif_ram_save(self):
+    image_array = self.image_array
+
+    pix = grab_pix(array=image_array, row=self.row, column=self.column, int_convert=True)
+    destination = h5get_image_destination(self=self, pixel=pix)
+    each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
+
+    # Background Correction
+    backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
+    each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
+
+    summed_dif = np.sum(each_scan_diffraction_post, axis=0)
+
+
+    return summed_dif
+
+
+
 def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
                       ttheta_centroid_ax, chi_centroid_ax, med_blur_distance,
                       med_blur_height, stdev_min, row, column, self):
@@ -298,14 +325,18 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
     ttheta_centroid_ax.cla()
     chi_centroid_ax.cla()
 
+    #print(row, column)
     # Grab pixel data
-    return_dic = pixel_analysis_return(results, row, column)
+    #return_dic = pixel_analysis_return(results, row, column)
 
     try:
         pre1, pre2, = self.row, self.column
+
     except:
         self.row = 0
         self.column = 0
+
+    return_dic = pixel_analysis_return(results, self.row, self.column)
 
     # Grab RAM required summed diffraction
     try:
@@ -313,20 +344,27 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
 
             spot_dif = return_dic['summed_dif']
 
+            spot_dif = spot_dif_ram_save(self)
+            self.centroid_viewer_spot_diff = spot_dif
+
         elif self.diffraction_load == False:
 
-            f = h5py.File(self.save_filename, 'r')
-            finder = False
-            new_idx = 0
-            while finder == False:
-                position = f['{}/row_column'.format(self.dataset_name)][new_idx]
-                if position[0] == self.row and position[1] == self.column:
-                    finder = True
-                else:
-                    new_idx = new_idx + 1
-            spot_dif = f['{}/summed_dif'.format(self.dataset_name)][new_idx]
+            #f = h5py.File(self.save_filename, 'r')
+            #finder = False
+            #new_idx = 0
+            #while finder == False:
+            #    position = f['{}/row_column'.format(self.dataset_name)][new_idx]
+            #    if position[0] == self.row and position[1] == self.column:
+            #        finder = True
+            #    else:
+            #        new_idx = new_idx + 1
+            #spot_dif = f['{}/summed_dif'.format(self.dataset_name)][new_idx]
 
-            f.close()
+            #f.close()
+
+            spot_dif = spot_dif_ram_save(self)
+            self.centroid_viewer_spot_diff = spot_dif
+
     except Exception as ex:
         print('viewer.py/load_dynamic_data', ex)
 
@@ -396,9 +434,22 @@ def run_viewer(user_class, fluor_image):
     =======
     Nothing - loads figure data
     """
+    ro = user_class.analysis_total_rows
+    co = user_class.analysis_total_columns
+
+    if isinstance(ro, tuple):
+        st_row = ro[0]
+    else:
+        st_row = 0
+
+    if isinstance(co, tuple):
+        st_column = co[0]
+    else:
+        st_column = 0
+
     try:
         results = user_class.results
-        return_dic = pixel_analysis_return(user_class.results, 0, 0)
+        return_dic = pixel_analysis_return(user_class.results, st_row, st_column)
         if np.shape(return_dic['summed_dif']) == () and user_class.diffraction_load == True:
             user_class.reload_save(summed_dif_return=user_class.diffraction_load)
             results = user_class.results
@@ -422,8 +473,20 @@ def run_viewer(user_class, fluor_image):
     try:
         dummy = current_figure.row
     except:
-        current_figure.row = 10
-        current_figure.column = 10
+        ro = user_class.analysis_total_rows
+        co = user_class.analysis_total_columns
+
+        if isinstance(ro, tuple):
+            current_figure.row = ro[0]
+        else:
+            current_figure.row = 0
+
+        if isinstance(co, tuple):
+            current_figure.column = co[0]
+        else:
+            current_figure.column = 0
+
+
         current_figure.viewer_currentax = 'roi'
 
     current_figure.results = results
@@ -493,13 +556,13 @@ def run_viewer(user_class, fluor_image):
 
 
 def spot_change(text, self):
-    """When the user changes spots on the image, reload all the data for the new spot
+    """When the user changes texbox value spots on the image, reload all the data for the new spot
     Parameters
     ==========
     text (texbox text event)
         textbox text event
-    self (SXDMFrameset)
-        the sxdmframeset
+    self (CurrentFigure Class)
+        the currecnt figure class
     Returns
     =======
     Nothing - loads figure data
@@ -508,32 +571,43 @@ def spot_change(text, self):
     self.spot_diff_ax.cla()
     self.summed_dif_ax.cla()
 
-    return_dic = pixel_analysis_return(self.results, self.row, self.column)
+    im = self.user_class.centroid_viewer_summed_dif
+
+    return_dic = pixel_analysis_return(self.results, self.user_class.row, self.user_class.column)
+
+
     if self.diffraction_load == True:
-        spot_dif = return_dic['summed_dif']
+        #spot_dif = return_dic['summed_dif']
+        spot_dif = self.user_class.centroid_viewer_spot_diff
+
     elif self.diffraction_load == False:
         # print(self.diffraction_load)
-        f = h5py.File(self.save_filename, 'r')
-        finder = False
-        new_idx = 0
-        while finder == False:
-            position = f['{}/row_column'.format(self.dataset_name)][new_idx]
-            if position[0] == self.row and position[1] == self.column:
-                finder = True
-            else:
-                new_idx = new_idx + 1
-        spot_dif = f['{}/summed_dif'.format(self.dataset_name)][new_idx]
+        spot_dif = self.user_class.centroid_viewer_spot_diff
+        #f = h5py.File(self.save_filename, 'r')
+        #finder = False
+        #new_idx = 0
+        #while finder == False:
+        #    position = f['{}/row_column'.format(self.dataset_name)][new_idx]
+        #    if position[0] == self.row and position[1] == self.column:
+        #        finder = True
+        #    else:
+        #        new_idx = new_idx + 1
+        #spot_dif = f['{}/summed_dif'.format(self.dataset_name)][new_idx]
         # print('Row: {}, Column: {}, L_Row_column: {}'.format(self.row, self.column,
                                                              # f['{}/row_column'.format(self.dataset_name)][new_idx]))
-        f.close()
+        #f.close()
+
+
     self.vmin_spot_val = int(self.vmin_spot_tb.text)
     self.vmax_spot_val = int(self.vmax_spot_tb.text)
     self.vmin_sum_val = int(self.vmin_sum_tb.text)
     self.vmax_sum_val = int(self.vmax_sum_tb.text)
 
     try:
-        summed_dif = np.sum(self.results[:, 1], axis=0)
+        #summed_dif = np.sum(self.results[:, 1], axis=0)
+        summed_dif = im
         self.summed_dif_ax.imshow(summed_dif, vmin=self.vmin_sum_val, vmax=self.vmax_sum_val)
+
     except:
 
         try:
@@ -574,7 +648,7 @@ def analysis_change(text, self):
     load_dynamic_data(self.results, self.vmin_spot_val, self.vmax_spot_val,
                       self.spot_diff_ax, self.ttheta_centroid_ax, self.chi_centroid_ax,
                       self.med_blur_dis_val, self.med_blur_h_val, self.stdev_val,
-                      self.row, self.column, self)
+                      self.row, self.column, self.user_class)
 
 
 class FiguresClass():
@@ -661,6 +735,9 @@ def viewer_mouse_click(event, self):
     if self.viewer_currentax in [self.fluor_ax, self.roi_ax] and self.viewer_currentax != None:
         self.row = int(np.floor(event.ydata))
         self.column = int(np.floor(event.xdata))
+        self.user_class.row = self.row
+        self.user_class.column = self.column
+
         try:
             self.fluor_ax.lines[1].remove()
             self.fluor_ax.lines[0].remove()
@@ -686,7 +763,7 @@ def viewer_mouse_click(event, self):
 
         load_dynamic_data(self.results, self.vmin_spot_val, self.vmax_spot_val, self.spot_diff_ax,
                               self.ttheta_centroid_ax, self.chi_centroid_ax, self.med_blur_dis_val,
-                              self.med_blur_h_val, self.stdev_val, self.row, self.column, self)
+                              self.med_blur_h_val, self.stdev_val, self.row, self.column, self.user_class)
 
         plt.draw()
     else:
@@ -735,4 +812,3 @@ def savingbtn_click(event, user_class, figure_class):
     user_class.save()
     reload_some_static_data(user_class.results, figure_class.roi_ax,
                             figure_class.ttheta_map_ax, figure_class.chi_map_ax)
-    

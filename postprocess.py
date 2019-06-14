@@ -100,6 +100,7 @@ def pixel_analysis_return(results, row, column, show_accep_vals=False):
     chi_val = np.asarray(rs[:, 7])
     roi = np.asarray(rs[:, 8])
 
+
     # Find the right pixel an store index
     for i, value in enumerate(row_col):
         if value == (row, column):

@@ -258,6 +258,9 @@ def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_heigh
 
     full_roi = np.sum(ttheta2)
 
+    # Setting this to zero to solve high RAM usage
+    summed_dif = 0
+
     results = [(row, column), summed_dif, ttheta, chi, ttheta_centroid_finder,
                ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi]
 
