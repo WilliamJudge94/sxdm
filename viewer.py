@@ -215,6 +215,7 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
         except:
             user_class.centroid_viewer_summed_dif = summed2d_all_data(self=user_class, bkg_multiplier=1)
             summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif, vmin=vmin_sum, vmax=vmax_sum)
+            user.dif_im = user_class.centroid_viewer_summed_dif
 
         #summed_dif = np.sum(results[:, 1], axis=0)
         #summed_dif_ax.imshow(summed_dif, vmin=vmin_sum, vmax=vmax_sum)
