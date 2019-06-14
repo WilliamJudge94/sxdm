@@ -9,16 +9,13 @@ from h5 import h5grab_data
 
 def centroid_roi_map(results, map_type='chi_centroid'):
     """Returns the centroid or roi
-
     Parameters
     ==========
-
     results (nd.array)
         self.results or the output of self.analysis
     map_type (str)
         the value the user would like to return
         acceptable values are chi_centroid, ttheta_centroid, or full_roi
-
     Returns
     =======
     the user selected map in an nd.array
@@ -48,12 +45,10 @@ def centroid_roi_map(results, map_type='chi_centroid'):
 
 def twodsummed(results):
     """Returns the summed diffraction pattern for the analysis output
-
     Parameters
     ==========
     results (nd.array)
         the self.results or output of self.analysis
-
     Returns
     =======
     the summed diffraction patter from the analysis output
@@ -63,21 +58,17 @@ def twodsummed(results):
 
 def pixel_analysis_return(results, row, column, show_accep_vals=False):
     """Easy return of the results based on the input row and column value
-
     Parameters
     ==========
-
     results (nd.array)
         self.results or output of self.analysis
     row (int)
         the row the user would like to look at
     column (int)
         the column the user would like to look at
-
     Returns
     =======
     A dictionary with entries:
-
     'row_column',
     'summed_dif',
     'ttheta',
@@ -87,7 +78,6 @@ def pixel_analysis_return(results, row, column, show_accep_vals=False):
     'ttheta_cent',
     'chi_cent',
     'roi'
-
     """
     acceptable_values = ['row_column', 'summed_dif', 'ttheta',
                          'chi', 'ttheta_corr', 'ttheta_cent', 'chi_corr',
@@ -134,7 +124,6 @@ def make_video(image_folder, output_folder=False, outimg=None, fps=23, size=None
                is_color=True, format="XVID"):
     """DEPRECIATED
     Create a video from a list of images.
-
     @param      outvid      output video
     @param      images      list of images to use in the video
     @param      fps         frame per second
@@ -142,7 +131,6 @@ def make_video(image_folder, output_folder=False, outimg=None, fps=23, size=None
     @param      is_color    color
     @param      format      see http://www.fourcc.org/codecs.php
     @return                 see http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_gui/py_video_display/py_video_display.html
-
     The function relies on http://opencv-python-tutroals.readthedocs.org/en/latest/.
     By default, the video will have the size of the first image.
     It will resize every image to this size before adding them to the video.
@@ -174,15 +162,12 @@ def make_video(image_folder, output_folder=False, outimg=None, fps=23, size=None
 
 def maps_correct(user_map, new_bounds):
     """Takes the centroid_rou_map() function output and gives it new bounds
-
     Parameters
     ==========
-
     user_map (nd.array)
         the output of the centroid_roi_map function
     new_bounds (np.linspace)
         np.linspace(lowerbound, higherbound, dim of image)
-
     Returns
     =======
     nd.array of the user_map, but with new bounds rather than with the dimensions
@@ -205,10 +190,8 @@ def maps_correct(user_map, new_bounds):
 
 def saved_return(file, group, summed_dif_return=False):
     """Load saved data
-
     Parameters
     ==========
-
     file (str)
         a user defined hdf5 file
     group (str)
@@ -216,11 +199,9 @@ def saved_return(file, group, summed_dif_return=False):
     summed_dif_return (bool)
         if True this will import all data. it is set to False because
         this import take up a lot of RAM
-
     Returns
     =======
     a nd.array thay can be set to the self.results value
-
     """
     acceptable_values = ['row_column', 'summed_dif', 'ttheta', 'chi',
                          'ttheta_corr', 'ttheta_centroid', 'chi_corr',

@@ -20,7 +20,6 @@ from clicks import check_mouse_ax, fig_leave
 
 def figure_setup():
     """Set up the viewer figure
-
     Returns
     =======
     All axes for the figure
@@ -73,7 +72,6 @@ def figure_setup():
 
 def sum_error():
     """If there is an error loading data, import psyduck
-
     Return
     ======
     psyduck image
@@ -90,14 +88,12 @@ def sum_error():
 
 def btn_setup(reproocessbtn_ax, savingbtn_ax):
     """Set up the reprocess and saving button
-
     Parameters
     ==========
     reproocessbtn_ax (matplotlib axis)
         the reproocess button figure axis
     savingbtn_ax (matplotlib axis)
         the saving button figure axis
-
     Return
     ======
     reprocess and saving button
@@ -121,10 +117,8 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
              stdev_ax, multiplier_ax, self):
 
     """Set up all textboxes
-
     Parameters
     ==========
-
     vmin_spot_ax (matplotlib axis)
         the figure axis that goes to the vmin change for the spot diffraction
     vmax_spot_ax (matplotlib axis)
@@ -143,7 +137,6 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
         the figure axis that goes to the background multiplier value
     self (SXDMFrameset)
         the sxdmframset
-
     Returns
     =======
     All textboxes associated with these axis
@@ -157,7 +150,7 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
         bkg_x = str(int(self.analysis_params[3]))
     except:
         med_blur_dis = '2'
-        med_blur_hei = '1' 
+        med_blur_hei = '1'
         stdev = '25'
         bkg_x = '0'
 
@@ -179,10 +172,8 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
 def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
                      summed_dif_ax, ttheta_map_ax, chi_map_ax, fluor_image, user_class=False):
     """Load all the static data for the viewer
-
     Parameters
     ==========
-
     results (nd.array)
         the output of the self.analysis function or the self.results value
     vmin_sum (int)
@@ -201,7 +192,6 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
         the figure axis for the chi centroid map
     fluor_image (image array)
         the fluorescence image the user would like to display in the figure
-
     Returns
     =======
     Nothing - displays figure images
@@ -239,7 +229,6 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
 def reload_some_static_data(results, roi_ax,
                      ttheta_map_ax, chi_map_ax):
     """Reloading some of the static data when you save/reload image
-
     Parameters
     ==========
     results (nd.array)
@@ -250,7 +239,6 @@ def reload_some_static_data(results, roi_ax,
         the figure axis for the 2theta centroid map
     chi_map_ax (matplotlib axis)
         the figure axis for the chi centroid map
-
     Returns
     =======
     Nothing - displays figure images
@@ -274,7 +262,6 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
                       ttheta_centroid_ax, chi_centroid_ax, med_blur_distance,
                       med_blur_height, stdev_min, row, column, self):
     """Load the dynamic data in the viewer based on the user inputs
-
     Parameters
     ==========
     results (nd.array)
@@ -301,7 +288,6 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         the bolumn the user would like to load the data for
     self (SXDMFramset)
         the sxdmframset
-
     Returns
     =======
     Nothing - loads figure data
@@ -400,14 +386,12 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
 
 def run_viewer(user_class, fluor_image):
     """Function that compiles functions to get the viewer working
-
     Parameters
     ==========
     user_class (SXDMFrameset)
         the sxdmframeset
     fluor_image (image)
         the fluorescence image the user would like to load into the viewer
-
     Returns
     =======
     Nothing - loads figure data
@@ -510,14 +494,12 @@ def run_viewer(user_class, fluor_image):
 
 def spot_change(text, self):
     """When the user changes spots on the image, reload all the data for the new spot
-
     Parameters
     ==========
     text (texbox text event)
         textbox text event
     self (SXDMFrameset)
         the sxdmframeset
-
     Returns
     =======
     Nothing - loads figure data
@@ -574,14 +556,12 @@ def spot_change(text, self):
 
 def analysis_change(text, self):
     """When analysis values change, make the plots change as well to fit analysis parameters
-
     Parameters
     ==========
     text (textbox text event)
         textbox text event
     self (SXDMFrameset)
         the sxdmframeset
-
     Returns
     =======
     Nothing - loads figure data
@@ -599,19 +579,16 @@ def analysis_change(text, self):
 
 class FiguresClass():
     """A class function which will make it easier to move variable in and out of functions
-
     """
     pass
 
 
 def make_red(self):
     """Show the user which figures are not current by turning them red
-
     Parameters
     ==========
     self (SXDMFrameset)
         the sxdmframeset
-
     Returns
     =======
     Nothing - loads figure formatting
@@ -622,17 +599,15 @@ def make_red(self):
     for ax in axes:
         for side in sides:
             ax.spines[side].set_color('red')
-    plt.draw() 
+    plt.draw()
 
 
 def make_pink(self):
     """Show the user which values have not been saved by turning them pink
-
     Parameters
     ==========
     self (SXDMFrameset)
         the sxdmframeset
-
     Returns
     =======
     Nothing - loads figure formatting
@@ -652,12 +627,10 @@ def make_pink(self):
 
 def make_black(self):
     """Reset figures to black when everything is up to date
-
     Parameters
     ==========
     self (SXDMFrameset)
         the sxdmframeset
-
     Returns
     =======
     Nothing - loads figure formatting
@@ -670,19 +643,17 @@ def make_black(self):
     for ax in axes:
         for side in sides:
             ax.spines[side].set_color('black')
-    plt.draw() 
+    plt.draw()
 
 
 def viewer_mouse_click(event, self):
     """Based on what is clicked in the figure change the viewer accordingly
-
     Parameters
     ==========
     event (matplotlib event)
         matplotlib event
     self (SXDMFrameset)
         the sxdmframeset
-
     Returns
     =======
     Nothing - loads figure formatting
@@ -732,7 +703,6 @@ def reprocessbtn_click(event, user_class, figure_class):
         the sxdmframeset
     figure_class (FigureClass)
         the figureclass
-
     Returns
     =======
     Nothing - loads figure formatting
@@ -749,7 +719,6 @@ def reprocessbtn_click(event, user_class, figure_class):
 
 def savingbtn_click(event, user_class, figure_class):
     """Calls the self.save function and reloads data to the viewer
-
     Parameters
     ==========
     event (matplotlib event)
@@ -758,7 +727,6 @@ def savingbtn_click(event, user_class, figure_class):
         the sxdmframeset
     figure_class (FigureClass)
         the figureclass
-
     Returns
     =======
     Nothing - loads figure formatting
@@ -767,3 +735,4 @@ def savingbtn_click(event, user_class, figure_class):
     user_class.save()
     reload_some_static_data(user_class.results, figure_class.roi_ax,
                             figure_class.ttheta_map_ax, figure_class.chi_map_ax)
+    

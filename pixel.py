@@ -11,7 +11,6 @@ from datetime import datetime
 
 def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q=False):
     """Determine the centroid of the theta axis
-
     Parameters
     ==========
     summed_dif (nd.array image)
@@ -24,7 +23,6 @@ def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,
         the standard deviation above the noise to consider the signal valid
     q (bool)
         used for an old multi processing function - unused now - might be put in at a later date
-
     Returns
     =======
     the edited (median blured) sum down the y axis
@@ -44,7 +42,6 @@ def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,
 
 def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q=False):
     """Determine the centroid of the chi axis
-
     Parameters
     ==========
     summed_dif (nd.array image)
@@ -57,7 +54,6 @@ def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q
         the standard deviation above the noise to consider the signal valid
     q (bool)
         used for an old multi processing function - unused now - might be put in at a later date
-
     Returns
     =======
     the edited (median blured) sum down the x axis
@@ -77,14 +73,12 @@ def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q
 
 def centroid_finder(oneDarray_start, stdev_min=35):
     """Determine the centroid function
-
     Parameters
     ==========
     oneDarray_start (numpy array)
         a one dimensions numpy array
     stdev_min (int)
         the standard deviation minimum the user would like to section the data off with
-
     Returns
     =======
     the corrected one dimensional array and the centroid of the array
@@ -108,7 +102,6 @@ def centroid_finder(oneDarray_start, stdev_min=35):
 
 def grab_pix(array, row, column, int_convert=False):
     """Return a pixel at a given row and column value
-
     Parameters
     ==========
     array (nd.array)
@@ -119,7 +112,6 @@ def grab_pix(array, row, column, int_convert=False):
         the column the user would like to grab
     int_convert (bool)
         if the user would like to change np.nans to integers set this to True
-
     Returns
     =======
     All data associated with the set row and column for the 3 dimensional array
@@ -139,14 +131,12 @@ def grab_pix(array, row, column, int_convert=False):
 
 def sum_pixel(self, images_loc):
     """Sum a pixel
-
     Parameters
     ==========
     self (SXDMFrameset)
         the sxdmframset
     image_loc (list of str)
         the full image location in the hdf5 file
-
     Returns
     =======
     all images set in the image_loc variable
@@ -160,7 +150,6 @@ def sum_pixel(self, images_loc):
 def pixel_analysis(self, row, column, image_array,
                    median_blur_distance, median_blur_height, stdev_min):
     """Depreciated for pixel_analysis_v2
-
     :param self:
     :param row:
     :param column:
@@ -219,10 +208,8 @@ def pixel_analysis(self, row, column, image_array,
 
 def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_height, stdev_min):
     """The analysis done on a single pixel
-
     Parameters
     ==========
-
     self (SXDMFrameset)
         the sxdmframset
     rows: (int)
@@ -237,7 +224,6 @@ def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_heigh
         standard deviation above the mean of signal to ignore
     bkg_multiplier: (int)
         multiplier for the background signal to be subtracted
-
     Returns
     =======
     the analysis results as an nd.array
@@ -282,10 +268,8 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
                        median_blur_height, diff_segments=False):
     """The analysis done on a single pixel - this will get the new roi for each theta
     and be able to segment out diffraction areas and create the roi for them
-
     Parameters
     ==========
-
     self (SXDMFrameset)
         the sxdmframset
     rows: (int)
@@ -298,7 +282,6 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
         the height cut off for the median blur
     diff_segments: (array)
         array used for segmenting the diffraction patterns
-
     Returns
     =======
     the analysis results as an nd.array
