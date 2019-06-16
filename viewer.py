@@ -31,39 +31,40 @@ def figure_setup():
     fig = plt.figure(figsize=(12, 6))
     mpl.rcParams['axes.linewidth'] = 2
 
-    # Initiate the axes
+    # Initiate the basic axes
     fluor_ax = plt.subplot2grid((4, 5), (1, 0), colspan=1, rowspan=2)
     roi_ax = plt.subplot2grid((4, 5), (1, 4), colspan=1, rowspan=2)
     spot_diff_ax = plt.subplot2grid((4, 5), (0, 1), colspan=1, rowspan=1)
     summed_dif_ax = plt.subplot2grid((4, 5), (0, 3), colspan=1, rowspan=1)
 
+    # Initiate the ttheta axes
     ttheta_map_ax = plt.subplot2grid((4, 5), (2, 1), colspan=1, rowspan=1)
     ttheta_map_ax.set_xticks([])
     ttheta_map_ax.set_yticks([])
     ttheta_centroid_ax = plt.subplot2grid((4, 5), (2, 2), colspan=2, rowspan=1)
 
+    # Initiate the chi axes
     chi_map_ax = plt.subplot2grid((4, 5), (3, 1), colspan=1, rowspan=1)
     chi_map_ax.set_xticks([])
     chi_map_ax.set_yticks([])
     chi_centroid_ax = plt.subplot2grid((4, 5), (3, 2), colspan=2, rowspan=1)
 
+    # Initiate the buttons
     reprocessbtn_ax = plt.subplot2grid((4, 5), (3, 0), colspan=1, rowspan=1)
     savingbtn_ax = plt.subplot2grid((4, 5), (3, 4), colspan=1, rowspan=1)
 
+    # Initiate the vmin/vmax textbox axes for the spot diffraction
     vmin_spot_ax = plt.axes([0.1, 0.85, 0.1, 0.05])
-
     vmax_spot_ax = plt.axes([0.1, 0.78, 0.1, 0.05])
 
+    # Initiate the vmin/vmax textbox axes for the summed diffraction
     vmin_sum_ax = plt.axes([0.82, 0.85, 0.1, 0.05])
-
     vmax_sum_ax = plt.axes([0.82, 0.78, 0.1, 0.05])
 
+    # Initiate the analysis textbox axes
     med_blur_dis_ax = plt.axes([0.40, 0.60, 0.06, 0.05])
-
     med_blur_h_ax = plt.axes([0.40, 0.53, 0.06, 0.05])
-
     stdev_ax = plt.axes([0.6, 0.6, 0.06, 0.05])
-
     multiplier_ax = plt.axes([0.6, 0.53, 0.06, 0.05])
 
     return fig, fluor_ax, roi_ax, spot_diff_ax,\
@@ -195,6 +196,8 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
         the figure axis for the chi centroid map
     fluor_image (image array)
         the fluorescence image the user would like to display in the figure
+    user_class (SXDMFrameset)
+        the sxdmframeset object or False
     Returns
     =======
     Nothing - displays figure images
@@ -204,32 +207,41 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
     roi_im = centroid_roi_map(results, 'full_roi')
     chi_centroid = centroid_roi_map(results, 'chi_centroid')
     ttheta_centroid = centroid_roi_map(results, 'ttheta_centroid')
+
+    # If there is no fluor image display the roi image in its place
     if np.shape(fluor_image) != ():
         pass
     else:
         fluor_image = roi_im
 
+    # Grabbing the summed diffraction pattern
     try:
         try:
+            # If the diffraction pattern has already been loaded, reload the image
             summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif, vmin=vmin_sum, vmax=vmax_sum)
         except:
+            # If it hasn't the create the image and store it to difference sxdmframeset.variables
             user_class.centroid_viewer_summed_dif = summed2d_all_data(self=user_class, bkg_multiplier=1)
             summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif, vmin=vmin_sum, vmax=vmax_sum)
-            user.dif_im = user_class.centroid_viewer_summed_dif
+            user_class.dif_im = user_class.centroid_viewer_summed_dif
 
+        # Depreciated Code
         #summed_dif = np.sum(results[:, 1], axis=0)
         #summed_dif_ax.imshow(summed_dif, vmin=vmin_sum, vmax=vmax_sum)
+
     except:
         try:
+            # If above fails try to reload the summed data from the user_class.results variable
             summed_dif_ax.imshow(results_2dsum(ERRORuser_class))
             summed_dif_ax.set_xticks = []
             summed_dif_ax.set_yticks = []
         except:
+            # If this also fails throw the psyduck error
             summed_dif_ax.imshow(sum_error())
             summed_dif_ax.set_xticks = []
             summed_dif_ax.set_yticks = []
 
-    # Plot image data
+    # Plot other image data
     ttheta_map_ax.imshow(ttheta_centroid)
     chi_map_ax.imshow(chi_centroid, cmap='magma')
     roi_ax.imshow(roi_im, cmap='inferno')
@@ -269,6 +281,18 @@ def reload_some_static_data(results, roi_ax,
 
 
 def spot_dif_ram_save(self):
+    """Allows the program to take all the user_class.image_array images and sum them together to get a
+    single summed diffraction image
+
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset object
+
+    Returns
+    =======
+    the summed diffraction image for the entire FOV set by the create_imagearray() function
+    """
     image_array = self.image_array
 
     pix = grab_pix(array=image_array, row=self.row, column=self.column, int_convert=True)
@@ -279,8 +303,8 @@ def spot_dif_ram_save(self):
     backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
     each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
 
+    # Make the summed diffraction image
     summed_dif = np.sum(each_scan_diffraction_post, axis=0)
-
 
     return summed_dif
 
@@ -337,13 +361,14 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         self.row = 0
         self.column = 0
 
+    # return all the data from the analysis function
     return_dic = pixel_analysis_return(results, self.row, self.column)
 
     # Grab RAM required summed diffraction
     try:
         if self.diffraction_load == True:
 
-            spot_dif = return_dic['summed_dif']
+            #spot_dif = return_dic['summed_dif']
 
             spot_dif = spot_dif_ram_save(self)
             self.centroid_viewer_spot_diff = spot_dif
@@ -372,7 +397,8 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
     # Grab spot diffraction
     try:
         spot_dif_ax.imshow(spot_dif, vmin=vmin_spot, vmax=vmax_spot)
-    except:
+    except Exception as ex:
+        print('viewer.py/load_dynamic_data - 2', ex)
         spot_dif_ax.imshow(sum_error())
         spot_dif_ax.set_xticks = []
         spot_dif_ax.set_yticks = []
@@ -380,7 +406,6 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
     try:
 
         # Calculate centroid map data and analysis
-
         ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = theta_maths(spot_dif,
                                                                                med_blur_distance,
                                                                                med_blur_height,
