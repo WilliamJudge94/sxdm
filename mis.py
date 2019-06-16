@@ -245,6 +245,9 @@ def resolution_check(self, user_resolution_um=0.0005):
         hybrid_x = return_det(self.file, self.scan_numbers, group='hybrid_x')[0]
         hybrid_y = return_det(self.file, self.scan_numbers, group='hybrid_y')[0]
 
+        self.resolution_hybrid_x = hybrid_x
+        self.resolution_hybrid_y = hybrid_y
+
         shape_hybrid_x = np.asarray([np.shape(scan) for scan in hybrid_x]) - [1, 1]
         shape_hybrid_y = np.asarray([np.shape(scan) for scan in hybrid_y]) - [1, 1]
 
@@ -306,6 +309,11 @@ def resolution_check(self, user_resolution_um=0.0005):
     except Exception as ex:
         print('mis.py/resolution_check', ex)
         warnings.warn('Cannot Check Resolution. Some .mda Files Might Be Missing...')
+
+
+def show_hybrid_dimensions(self):
+    for scan, dim in self.scan_numbers, self.resolution_hybrid_x:
+        print('Scan {} has dimensions {}'.format(scan, dim))
 
 
 def image_numbers(self):
