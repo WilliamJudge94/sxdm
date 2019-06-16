@@ -309,7 +309,6 @@ def spot_dif_ram_save(self):
     return summed_dif
 
 
-
 def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
                       ttheta_centroid_ax, chi_centroid_ax, med_blur_distance,
                       med_blur_height, stdev_min, row, column, self):
