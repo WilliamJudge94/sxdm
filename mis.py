@@ -312,8 +312,8 @@ def resolution_check(self, user_resolution_um=0.0005):
 
 
 def show_hybrid_dimensions(self):
-    for scan, dim in self.scan_numbers, self.resolution_hybrid_x:
-        print('Scan {} has dimensions {}'.format(scan, dim))
+    for i, dim in self.resolution_hybrid_x:
+        print('Scan {} has dimensions {}'.format(scan[i], dim))
 
 
 def image_numbers(self):
