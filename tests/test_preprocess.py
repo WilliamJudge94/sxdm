@@ -55,10 +55,14 @@ class PreprocessTestCase(unittest.TestCase):
                          fill_num=4)
 
         x, y = gaus_check(testing, center_around=True, default=True)
+
         test_x = [56509.170099431816, 56509.170099431816]
-        test_y = [452057.90625000006, 451941.90625000006]
+        test_y = [452057.90625, 451941.90625]
+
+
         x_equal = all(np.equal(np.asarray(x), test_x))
         y_equal = all(np.equal(np.asarray(y), test_y))
+
         self.assertTrue(x_equal)
         self.assertTrue(y_equal)
 
