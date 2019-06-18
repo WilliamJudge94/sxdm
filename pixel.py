@@ -304,7 +304,8 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
     if column == 0:
         if ram_check() > 90:
             return False
-    t = datetime.now()
+
+
     pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
     destination = h5get_image_destination(self=self, pixel=pix)
 

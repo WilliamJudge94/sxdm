@@ -477,9 +477,11 @@ def run_viewer(user_class, fluor_image):
     try:
         results = user_class.results
         return_dic = pixel_analysis_return(user_class.results, st_row, st_column)
-        if np.shape(return_dic['summed_dif']) == () and user_class.diffraction_load == True:
-            user_class.reload_save(summed_dif_return=user_class.diffraction_load)
-            results = user_class.results
+
+        #if np.shape(return_dic['summed_dif']) == () and user_class.diffraction_load == True:
+        #    user_class.reload_save(summed_dif_return=user_class.diffraction_load)
+        #    results = user_class.results
+
     except:
         print('No Results Found. Importing From Saved File...')
 
