@@ -103,11 +103,13 @@ def pixel_analysis_return(results, row, column, show_accep_vals=False):
 
     # Find the right pixel an store index
     for i, value in enumerate(row_col):
+        #print(value, row, column)
         if value == (row, column):
+            #print('hi')
             idx = i
         else:
             pass
-
+    print('hyyyyy', idx)
     # Store results
     master_array = [row_col[idx], sumed[idx], thetas[idx], chis[idx],
                     ttheta_corr[idx], ttheta_val[idx], chi_corr[idx],

@@ -30,6 +30,7 @@ def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,
     the cropped data to find the centroid
     the edited (median blured) sum down the y axis as a numpy array
     """
+
     ttheta = np.sum(summed_dif, axis=0)
     ttheta = median_blur(ttheta, median_blur_distance, median_blur_height, with_low=True)
     ttheta2 = np.asarray(ttheta)
@@ -228,6 +229,7 @@ def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_heigh
     =======
     the analysis results as an nd.array
     """
+
     image_array = self.image_array
     try:
         self.pbar_val = self.pbar_val + 1

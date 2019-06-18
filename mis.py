@@ -242,8 +242,8 @@ def resolution_check(self, user_resolution_um=0.0005):
     Nothing - sets resolution values
     """
     try:
-        hybrid_x = return_det(self.file, self.scan_numbers, group='hybrid_x')[0]
-        hybrid_y = return_det(self.file, self.scan_numbers, group='hybrid_y')[0]
+        hybrid_x = return_det(self.file, self.scan_numbers, group='hybrid_x', dim_correction=False)[0]
+        hybrid_y = return_det(self.file, self.scan_numbers, group='hybrid_y', dim_correction=False)[0]
 
         self.resolution_hybrid_x = hybrid_x
         self.resolution_hybrid_y = hybrid_y
@@ -264,6 +264,7 @@ def resolution_check(self, user_resolution_um=0.0005):
         res_y = []
 
         for i, value in enumerate(dif_x):
+
             len_hybrid_x = shape_hybrid_x[i][1]
             len_hybrid_y = shape_hybrid_y[i][0]
             current_x = dif_x[i]
@@ -400,7 +401,7 @@ def array_shift(self, arrays2shift, centering_idx):
         trans = translation_array[array]
         movement_x = trans[0]
         movement_y = trans[1]
-        shifted_arrays.append(shift(arrays2shift[i], (movement_y, movement_x), cval=np.nan))
+        shifted_arrays.append(shift(arrays2shift[i], (movement_y, movement_x), cval=np.nan, order=0))
 
     return shifted_arrays
 
@@ -513,6 +514,7 @@ def median_blur(input_array, median_blur_distance,
     =======
     a 1 dimensional numpy array that has been median blurred
     """
+
     iteration_number = np.shape(input_array)[0]
     # Finds out the length of the array you want to median blur. This equals the number of iterations you will perform
 
@@ -698,3 +700,5 @@ def results_2dsum(self):
             f.close()
 
     return store
+
+

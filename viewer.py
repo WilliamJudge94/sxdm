@@ -466,11 +466,13 @@ def run_viewer(user_class, fluor_image):
         st_row = ro[0]
     else:
         st_row = 0
+    user_class.row = st_row
 
     if isinstance(co, tuple):
         st_column = co[0]
     else:
         st_column = 0
+    user_class.column = st_column
 
     try:
         results = user_class.results
@@ -597,6 +599,8 @@ def spot_change(text, self):
     self.summed_dif_ax.cla()
 
     im = self.user_class.centroid_viewer_summed_dif
+
+    #print(user_class.row, user_class.column)
 
     return_dic = pixel_analysis_return(self.results, self.user_class.row, self.user_class.column)
 

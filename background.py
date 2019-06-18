@@ -46,9 +46,15 @@ def scan_background(self, amount2ave=3, multiplier=1):
     for i, array in enumerate(store):
         background_sub = []
         for number in array:
-            corrected_number = str(int(np.round(number, 0))).zfill(6)
-            background_sub.append('images/{}/{}'.format(scans[i], corrected_number))
-        background_loc_store.append(background_sub)
+            try:
+                corrected_number = str(int(np.round(number, 0))).zfill(6)
+                background_sub.append('images/{}/{}'.format(scans[i], corrected_number))
+            except:
+                pass
+            try:
+                background_loc_store.append(background_sub)
+            except:
+                pass
 
     background_store = []
 

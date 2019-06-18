@@ -4,7 +4,6 @@ from tqdm import tqdm
 
 from h5 import h5group_list, h5create_dataset, h5grab_data, h5del_group, h5list_group
 
-
 def space_check(fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis):
     """Based on the input variables this checks to see if the user has put any spaces into their group names.
 
@@ -239,7 +238,7 @@ def disp_det_chan(file):
         print(base)
 
 
-def return_det(file, scan_numbers, group='fluor', default=False):
+def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=True):
     """Returns all information for a given detector channel for an array of scan numbers
 
     Parameters
@@ -290,8 +289,58 @@ def return_det(file, scan_numbers, group='fluor', default=False):
                                          data_loc='mda/' + scan + '/' + det)
                     fluor_array.append(fluors)
                 end = True
-                return fluor_array, user_val
+
+                if dim_correction == True:
+                    m_row, m_column = max_dims(fluor_array)
+                    n_fluor_array = det_dim_fix(fluor_array, m_row, m_column)
+
+                else:
+                    n_fluor_array = fluor_array
+
+                return n_fluor_array, user_val
             else:
                 warnings.warn('Please Type In An Acceptable Value')
     else:
         warnings.warn('Please Type In An Acceptable Value')
+
+def max_dims(array):
+    m_row = []
+    m_column = []
+    for im in array:
+        shape = np.shape(im)
+        #print(shape)
+        m_row.append(shape[0])
+        m_column.append(shape[1])
+    max_row = max(m_row)
+    max_column = max(m_column)
+
+    return max_row, max_column
+
+
+def add_column(im, max_column):
+    shape = np.shape(im)
+    its = max_column - shape[1]
+
+    a = np.empty((shape[0], its,))
+    a[:] = np.nan
+
+    return np.hstack((im, a))
+
+
+def add_row(im, max_row):
+    shape = np.shape(im)
+    its = max_row - shape[0]
+
+    a = np.empty((its, shape[1],))
+    a[:] = np.nan
+
+    return np.vstack((im, a))
+
+
+def det_dim_fix(array, max_row, max_column):
+    master = []
+    for im in array:
+        first = add_column(im, max_column)
+        second = add_row(first, max_row)
+        master.append(second)
+    return master
