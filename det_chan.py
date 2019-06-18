@@ -304,6 +304,11 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
         warnings.warn('Please Type In An Acceptable Value')
 
 def max_dims(array):
+    """Get the max dimensions for an array of 2D images
+
+    :param array:
+    :return:
+    """
     m_row = []
     m_column = []
     for im in array:
@@ -318,6 +323,12 @@ def max_dims(array):
 
 
 def add_column(im, max_column):
+    """Add a numpy.nan column to an image array based on how many columns in the max amount of columns
+
+    :param im:
+    :param max_column:
+    :return:
+    """
     shape = np.shape(im)
     its = max_column - shape[1]
 
@@ -328,6 +339,8 @@ def add_column(im, max_column):
 
 
 def add_row(im, max_row):
+    """Add a numpy.nan rows to an image array based on how many rows in the max amount of rows
+    """
     shape = np.shape(im)
     its = max_row - shape[0]
 
@@ -338,6 +351,13 @@ def add_row(im, max_row):
 
 
 def det_dim_fix(array, max_row, max_column):
+    """Add columns and rows to image matrix to make everything the same dimensions
+
+    :param array:
+    :param max_row:
+    :param max_column:
+    :return:
+    """
     master = []
     for im in array:
         first = add_column(im, max_column)
