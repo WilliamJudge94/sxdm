@@ -257,7 +257,7 @@ class SXDMFrameset():
 
         self.log.info('Ending self.save')
 
-    def centroid_viewer(self, diffraction_load=False):
+    def centroid_viewer(self):
         """Allow the user to view the data in a convenient format
 
         Parameters
@@ -271,6 +271,11 @@ class SXDMFrameset():
         =======
         Nothing - displays viewer
         """
+
+        # Depreciated code would not import the diffraction patterns to save RAM
+        # Steps have been taken to never fully load all diffraction patterns
+        # diffraction_load variable will be phased out in future versions
+        diffraction_load = True
 
         self.log.info('Starting self.centroid_viewer')
 
