@@ -268,6 +268,29 @@ def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_heigh
 
     return results
 
+def segment_diffraction_roi(diffraction):
+
+    ttheta = np.sum(diffraction, axis=0)
+    ttheta_copy = ttheta.copy()
+
+    # store this to an array
+    raw_scan_data.append(ttheta)
+
+    # median blur it and store
+    ttheta_copy = median_blur(input_array=ttheta_copy,
+                              median_blur_distance=median_blur_distance,
+                              cut_off_value_above_mean=median_blur_height,
+                              with_low=True)
+
+    corr_scan_data.append(ttheta_copy)
+
+    # sum to single value and store
+    scan_roi_val = np.sum(ttheta_copy)
+    scan_data_roi_vals.append(scan_roi_val)
+
+
+    return ttheta, ttheta_copy, np.sum(ttheta_copy), scan_roi_val
+
 
 def roi_pixel_analysis(self, row, column, median_blur_distance,
                        median_blur_height, diff_segments=False):
@@ -326,6 +349,7 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
 
     # SCAN DATA
     # For each of the scan_diffraction_post
+    t1 = datetime.now()
     for diffraction in each_scan_diffraction_post:
 
         # sum down an axis
@@ -346,6 +370,7 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
         # sum to single value and store
         scan_roi_val = np.sum(ttheta_copy)
         scan_data_roi_vals.append(scan_roi_val)
+    #print('first',datetime.now() - t1)
 
     # start roi bounding arrays
     summed_data = []
@@ -356,6 +381,7 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
     summed_dif = np.sum(each_scan_diffraction_post, axis=0)
 
     # only do this is the user wants it done
+    t2 = datetime.now()
     if diff_segments != False:
 
         # for each bounding box
@@ -378,6 +404,7 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
             # sum to single value and store
             summed_data_roi_val = np.sum(ttheta_copy)
             summed_data_roi_vals.append(summed_data_roi_val)
+        #print('second', datetime.now() - t2)
 
     results = [(row, column), idxs,
                raw_scan_data, corr_scan_data, scan_data_roi_vals,

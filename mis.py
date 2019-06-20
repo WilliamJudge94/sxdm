@@ -2,6 +2,7 @@ import warnings
 import numpy as np
 import os
 from scipy.ndimage import shift
+import scipy.signal as me_blur
 import psutil
 import warnings
 
@@ -514,6 +515,14 @@ def median_blur(input_array, median_blur_distance,
     =======
     a 1 dimensional numpy array that has been median blurred
     """
+
+    input_array = me_blur.medfilt(input_array, median_blur_distance)
+
+    return input_array
+
+
+def depreciated_median_blur(input_array, median_blur_distance,
+                cut_off_value_above_mean, with_low=False):
 
     iteration_number = np.shape(input_array)[0]
     # Finds out the length of the array you want to median blur. This equals the number of iterations you will perform

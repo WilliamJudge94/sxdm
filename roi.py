@@ -174,7 +174,7 @@ def start_bounding_roi(user_class):
     display_left_roi(figure_class=bounding_roi, user_class=user_class, types='bounding')
 
     try:
-        user_class.roi_sum_im = results_2dsum(user_class)
+        user_class.roi_sum_im = user_class.dif_im #results_2dsum(user_class)
     except:
         user_class.roi_sum_im = user_class.dif_im
 
