@@ -311,6 +311,7 @@ def best_analysis(self, rows, columns, med_blur_distance=4,
     self.pbar = ProgressBar(widgets=widgets, maxval=len(row)+1)
     self.pbar.start()
 
+    # Start the analysis
     results = vectorize_pixel_analysis(self, row, column,
                                        self.median_blur_distance,
                                        self.median_blur_height,

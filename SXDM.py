@@ -7,6 +7,7 @@ from mis import *
 from clicks import *
 from preprocess import *
 from multi import *
+from multi_update import *
 from pixel import *
 from alignment import *
 from logger import *
@@ -124,7 +125,7 @@ class SXDMFrameset():
         self.log.info('Ending self.roi_segmentation')
 
     def region_of_interest(self, rows, columns, med_blur_distance=9,
-                           med_blur_height=100, bkg_multiplier=0, diff_segmentation=True):
+                           med_blur_height=100, bkg_multiplier=0, diff_segmentation=True, slow=False):
         """Create a region of interest map for each scan and center the region of interest maps.
         If the diff segmentation is True this will also create a region of interest map based on
         a user defined sub region of interests
@@ -159,9 +160,17 @@ class SXDMFrameset():
         self.roi_analysis_total_rows = rows
         self.roi_analysis_total_columns = columns
 
-        self.roi_results = roi_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
-                                     med_blur_height=med_blur_height, multiplier=bkg_multiplier,
-                                     center_around=1, diff_segmentation=diff_segmentation)
+
+
+        if slow == True:
+            self.roi_results = roi_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
+                                        med_blur_height=med_blur_height, multiplier=bkg_multiplier,
+                                        center_around=1, diff_segmentation=diff_segmentation)
+        else:
+            self.roi_results = roi_analysis_v2(self, rows=rows, columns=columns, med_blur_distance=med_blur_distance,
+                                                med_blur_height=med_blur_height, bkg_multiplier=bkg_multiplier,
+                                                 diff_segments=diff_segmentation)
+
         if False in self.roi_results:
             warnings.warn('RAM Usage Too High. ROI Analysis Stopped')
         self.roi_analysis_params = [med_blur_distance, med_blur_height, bkg_multiplier]
@@ -189,7 +198,7 @@ class SXDMFrameset():
         self.log.info('Ending self.roi_viewer')
 
     def centroid_analysis(self, rows, columns, med_blur_distance=2,
-                 med_blur_height=1, stdev_min=25, bkg_multiplier=0):
+                 med_blur_height=1, stdev_min=25, bkg_multiplier=0, slow=False):
         """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
 
         Parameters
@@ -213,13 +222,25 @@ class SXDMFrameset():
         the analysis results in the form of self.results
         """
 
+        try:
+            dummy = self.image_array
+        except:
+            create_imagearray(self)
+
         self.log.info('Starting self.centroid_analysis')
 
         self.analysis_total_rows = rows
         self.analysis_total_columns = columns
-        self.results = best_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
-                                     med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier,
-                                     center_around=1)
+
+
+        if slow == True:
+            self.results = best_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
+                                        med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier,
+                                        center_around=1)
+        else:
+            self.results = centroid_analysis_v2(self, rows=rows, columns=columns, med_blur_distance=med_blur_distance,
+                                                med_blur_height=med_blur_height, stdev=stdev_min, bkg_multiplier=bkg_multiplier)
+
         if False in self.results:
             warnings.warn('RAM Usage Too High. Centroid Analysis Stopped')
         self.analysis_params = [med_blur_distance, med_blur_height, stdev_min, bkg_multiplier]

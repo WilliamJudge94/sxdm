@@ -498,7 +498,7 @@ def ram_check():
     return round(mems[2], 1)
 
 
-def median_blur(input_array, median_blur_distance,
+def median_blur2(input_array, median_blur_distance,
                 cut_off_value_above_mean, with_low=False):
     """Median Blur a 1D array. Used for eliminating hot or dead pixels
 
@@ -521,7 +521,7 @@ def median_blur(input_array, median_blur_distance,
     return input_array
 
 
-def depreciated_median_blur(input_array, median_blur_distance,
+def median_blur(input_array, median_blur_distance,
                 cut_off_value_above_mean, with_low=False):
 
     iteration_number = np.shape(input_array)[0]
