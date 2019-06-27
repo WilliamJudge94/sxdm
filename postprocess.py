@@ -122,46 +122,6 @@ def pixel_analysis_return(results, row, column, show_accep_vals=False):
     return output_dic
 
 
-def make_video(image_folder, output_folder=False, outimg=None, fps=23, size=None,
-               is_color=True, format="XVID"):
-    """DEPRECIATED
-    Create a video from a list of images.
-    @param      outvid      output video
-    @param      images      list of images to use in the video
-    @param      fps         frame per second
-    @param      size        size of each frame
-    @param      is_color    color
-    @param      format      see http://www.fourcc.org/codecs.php
-    @return                 see http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_gui/py_video_display/py_video_display.html
-    The function relies on http://opencv-python-tutroals.readthedocs.org/en/latest/.
-    By default, the video will have the size of the first image.
-    It will resize every image to this size before adding them to the video.
-    """
-
-    if output_folder == False:
-        output_folder = '/home/will/Desktop/video.mp4'
-    images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
-    images = sorted(images)
-
-    from cv2 import VideoWriter, VideoWriter_fourcc, imread, resize
-    fourcc = VideoWriter_fourcc(*format)
-    vid = None
-    for image in images:
-        image = image_folder + '/' + image
-        if not os.path.exists(image):
-            raise FileNotFoundError(image)
-        img = imread(image)
-        if vid == None:
-            if size == None:
-                size = img.shape[1], img.shape[0]
-            vid = VideoWriter(output_folder, fourcc, float(fps), size, is_color)
-        if size[0] != img.shape[1] and size[1] != img.shape[0]:
-            img = resize(img, size)
-        vid.write(img)
-    vid.release()
-    return vid
-
-
 def maps_correct(user_map, new_bounds):
     """Takes the centroid_rou_map() function output and gives it new bounds
     Parameters

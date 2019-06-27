@@ -195,62 +195,6 @@ def pooled_return(results, user_val):
         warnings.warn('Acceptable Values Are: ' + ', '.join(acceptable_values))
 
 
-def better_multi(self, rows, columns, med_blur_distance=4,
-                 med_blur_height=10, stdev_min=35, nprocs=1):
-
-    """DEPRECIATED
-
-    :param self:
-    :param rows:
-    :param columns:
-    :param med_blur_distance:
-    :param med_blur_height:
-    :param stdev_min:
-    :param nprocs:
-    :return:
-    """
-
-    def worker(its, out_q):
-        major_out = []
-        for chunk in its:
-            self, row, column, image_array, median_blur_distance, median_blur_height, stdev_min = chunk
-            out = pixel_analysis(self, row, column, image_array, median_blur_distance, median_blur_height, stdev_min)
-            major_out.append(out)
-        out_q.put(major_out)
-
-    self.median_blur_distance = med_blur_distance
-    self.median_blur_height = med_blur_height
-    self.stdev_min = stdev_min
-    background_dic_basic = scan_background(self, multiplier = 0)
-    image_array = centering_det(self, group='filenumber')
-    self.image_array = np.asarray(image_array)
-    its = iterations(self, rows, columns)
-    chunksize = int(math.ceil(len(its) / float(nprocs)))
-
-    out_q = Queue()
-    procs = []
-
-    for i in tqdm(range(nprocs), desc="Procs"):
-        chunk_its = its[chunksize * i:chunksize * (i + 1)]
-        p = Process(
-            target=worker, args=(chunk_its, out_q))
-        procs.append(p)
-        p.start()
-
-    resultdict = []
-    for i in tqdm(range(nprocs), desc="Results"):
-        resultdict.append(out_q.get())
-
-    for pr in tqdm(procs, desc="Join"):
-        pr.join()
-
-    master_results = []
-    for re in resultdict:
-        master_results.extend(re)
-
-    return master_results
-
-
 def best_analysis(self, rows, columns, med_blur_distance=4,
                   med_blur_height=10,
                   stdev_min=35, multiplier=1,
@@ -388,7 +332,6 @@ def roi_analysis(self, rows, columns, med_blur_distance=4,
                                        self.median_blur_distance,
                                        self.median_blur_height,
                                        diff_segmentation)
-
 
     return results
 

@@ -18,6 +18,7 @@ def alignment_function(self):
     Parameters
     ==========
     self: (SXDMFrameset)
+        the sxdmframeset object
 
     Returns
     =======
@@ -134,8 +135,22 @@ def alignment_function(self):
 
 
 def reset_dxdy(self):
+    """Resets the dxdy movements used for alignment of the frames
+
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset object
+
+    Returns
+    =======
+    Nothing
+    """
+    # Delete old dataset
     h5del_group(self.file, self.dataset_name + '/dxdy')
+    # Start new one
     init_dxdy(self)
     new_dic = self.dxdy_store
+    # Save the dataset we just made
     h5create_dataset(file=self.file, ds_path=self.dataset_name + '/dxdy',
                      ds_data=dic2array(new_dic))

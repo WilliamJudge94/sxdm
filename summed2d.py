@@ -19,7 +19,6 @@ def summed2d_all_data(self, bkg_multiplier=0):
 
     bkg = scan_background(self=self, multiplier=bkg_multiplier)
 
-    total = []
     for column in tqdm(range(0, columns)):
         for row in range(0, rows):
 
@@ -41,6 +40,5 @@ def summed2d_all_data(self, bkg_multiplier=0):
                 total2 = np.add(total2, summed_dif)
             except:
                 total2 = summed_dif
-            #total.append(summed_dif)
-    #total2 = np.sum(total, axis=0)
+
     return total2

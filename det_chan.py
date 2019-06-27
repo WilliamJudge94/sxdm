@@ -141,6 +141,7 @@ def setup_det_chan(file,
             else:
                 if det_type not in ['filenumber', 'sample_theta', 'hybrid_x', 'hybrid_y']:
                     for entry in dic:
+
                         # Create the Entry And Save Data
                         try:
                             h5create_dataset(file=file,
@@ -249,6 +250,10 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
         an array of scan numbers the user wants to get a specific detector channel information for
     group: (str)
         a string corresponding to a group value that the user wants to return
+    default: (bool)
+        If True this will default to the first acceptable detector_channel in the hdf5 file
+    dim_correction: (bool)
+        If False this will not add rows and columns to the returned array to make them all the same shape
 
     Returns
     =======
@@ -290,6 +295,7 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
                     fluor_array.append(fluors)
                 end = True
 
+                # Correct the dimensions of each scan to make sure they are all the same
                 if dim_correction == True:
                     m_row, m_column = max_dims(fluor_array)
                     n_fluor_array = det_dim_fix(fluor_array, m_row, m_column)
@@ -306,14 +312,19 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
 def max_dims(array):
     """Get the max dimensions for an array of 2D images
 
-    :param array:
-    :return:
+    Parameters
+    ==========
+    array (np.ndarray)
+        a 3 dimensional array
+
+    Returns
+    =======
+    the max rows and the max columns round for the 3 dimensionsal array
     """
     m_row = []
     m_column = []
     for im in array:
         shape = np.shape(im)
-        #print(shape)
         m_row.append(shape[0])
         m_column.append(shape[1])
     max_row = max(m_row)
@@ -325,9 +336,16 @@ def max_dims(array):
 def add_column(im, max_column):
     """Add a numpy.nan column to an image array based on how many columns in the max amount of columns
 
-    :param im:
-    :param max_column:
-    :return:
+    Parameters
+    ==========
+    im (a 2D array)
+        the image array to add columns to
+    max_column (int)
+        the final amount of columns the user want to make the im array
+
+    Returns
+    =======
+    a new im array with the User selected max_column
     """
     shape = np.shape(im)
     its = max_column - shape[1]
@@ -340,6 +358,17 @@ def add_column(im, max_column):
 
 def add_row(im, max_row):
     """Add a numpy.nan rows to an image array based on how many rows in the max amount of rows
+
+    Parameters
+    ==========
+    im (a 2D array)
+        the image array to add columns to
+    max_row (int)
+        the final amount of rows the user want to make the im array
+
+    Returns
+    =======
+    a new im array with the User selected max_row
     """
     shape = np.shape(im)
     its = max_row - shape[0]
@@ -353,10 +382,18 @@ def add_row(im, max_row):
 def det_dim_fix(array, max_row, max_column):
     """Add columns and rows to image matrix to make everything the same dimensions
 
-    :param array:
-    :param max_row:
-    :param max_column:
-    :return:
+    Parameters
+    ==========
+    array (np.ndarray)
+        a 3D array of images
+    max_row (int)
+        the max amount of rows the User would like to make all the images
+    max_column (int)
+        the max amount of columns the User would like to make all the images
+
+    Returns
+    =======
+    the 3D image array with dimensions (#images, max_row, max_column)
     """
     master = []
     for im in array:

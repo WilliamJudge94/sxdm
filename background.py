@@ -100,4 +100,4 @@ def scan_background_finder(destination, background_dic):
         background.append(background_dic[scan])
         #scan4background.append(scan)
 
-    return background #np.array(background)
+    return background

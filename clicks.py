@@ -61,7 +61,6 @@ def onclick_2(event, self):
 
     Parameters
     ==========
-
     event (matplotlib event)
         Unsure. Needed to be the first variable in a matplotlib event click
 
@@ -70,7 +69,6 @@ def onclick_2(event, self):
     """
 
     # Storing the click data
-    button = ['left', 'middle', 'right']
     toolbar = plt.get_current_fig_manager().toolbar
     if toolbar.mode != '':
         print("You clicked on something, but toolbar is in mode {:s}.".format(toolbar.mode))
@@ -97,7 +95,7 @@ def fig1_click(event, self, fig, images):
     Nothing - deals with the clicks on the first image
     """
 
-    # Set up figure
+    # Set up new figure
     fig2, axs2 = plt.subplots(1, 1, figsize=(10, 10), facecolor='w', edgecolor='k')
     try:
         plt.imshow(images[self.clicks['ax']])
@@ -116,6 +114,7 @@ def fig1_click(event, self, fig, images):
 
     circ = Circle((self.clicks['loc'][0], self.clicks['loc'][1]), 0.3, color='r')
 
+    # Try to remove circles if they exist
     try:
         [p.remove() for p in reversed(self.loc_axs[self.clicks['ax']].patches)]
     except:
@@ -137,6 +136,7 @@ def save_alignment(event, self):
     Parameters
     ==========
     self (SXDMFrameset)
+        the sxdmframeset object
 
     Returns
     =======
@@ -144,7 +144,7 @@ def save_alignment(event, self):
     as adding alingment_group and alignment_subgroup attributes
     """
 
-    # Save/Replace the dxdy data
+    # Try saving the data
     if h5path_exists(file=self.file,
                      loc=self.dataset_name + '/dxdy') == False:
         h5create_dataset(file=self.file,
@@ -161,6 +161,7 @@ def save_alignment(event, self):
                    attribute_val=self.alignment_subgroup)
     else:
 
+        # Try replacing the data
         try:
             h5replace_data(file=self.file,
                            group=self.dataset_name + '/dxdy',
@@ -175,6 +176,8 @@ def save_alignment(event, self):
                        loc=self.dataset_name + '/dxdy',
                        attribute_name='alignment_subgroup',
                        attribute_val=self.alignment_subgroup)
+
+        # Delete group and create a new dataset
         except Exception as ex:
             print('clicks.py/save_alignment', ex)
             print('Deleted Group')
@@ -232,4 +235,3 @@ def fig_leave(event, self):
     Nothing
     """
     self.viewer_currentax = None
-

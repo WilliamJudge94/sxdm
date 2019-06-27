@@ -143,7 +143,6 @@ def h5create_dataset(file, ds_path, ds_data):
     Nothing
     """
     with h5py.File(file, 'a') as hdf:
-        # g1 = hdf.create_group(group)
         hdf.create_dataset(ds_path, data=ds_data)
 
 
@@ -270,6 +269,7 @@ def h5group_list(file, group_name='base'):
     =======
     a list of all the subgroups inside the user defined group
     """
+    # Parenthesis are needed - keep them
     with h5py.File(file, 'r') as hdf:
         if group_name == 'base':
             return (list(hdf.items()))
@@ -300,7 +300,6 @@ def h5path_exists(file, loc):
             else:
                 return True
         except:
-
             return False
 
 

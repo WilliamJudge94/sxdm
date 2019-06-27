@@ -412,6 +412,8 @@ def scan_slider_setup(figure_class, user_class):
     Nothing
     """
     amount = len(user_class.scan_theta) - 1
+    if amount == 0:
+        amount = 0.1
     sld1 = Slider(ax=figure_class.scan_slider_ax, label='Scan', valmin=0, valmax=amount, valinit=0, valstep=1)
     plt.draw()
     user_class.scan_slider = sld1

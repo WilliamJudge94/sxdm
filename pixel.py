@@ -148,65 +148,6 @@ def sum_pixel(self, images_loc):
     return pixel_store
 
 
-def pixel_analysis(self, row, column, image_array,
-                   median_blur_distance, median_blur_height, stdev_min):
-    """Depreciated for centroid_pixel_analysis
-    :param self:
-    :param row:
-    :param column:
-    :param image_array:
-    :param median_blur_distance:
-    :param median_blur_height:
-    :param stdev_min:
-    :return:
-    """
-    if column == 0:
-        if ram_check() > 90:
-            return False
-
-    pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
-    destination = h5get_image_destination(self=self, pixel=pix)
-    each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
-
-    # Background Correction
-    backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
-    each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
-
-    summed_dif = np.sum(each_scan_diffraction_post, axis=0)
-
-    # pooled: Work In Progress
-    # q_theta = Queue()
-    # q_chi = Queue()
-
-    # ttheta_pool_results = Process(target = theta_maths, args =
-    # (summed_dif, median_blur_distance, median_blur_height,stdev_min,q_theta))
-    # chi_pool_results = Process(target = chi_maths, args =
-    # (summed_dif, median_blur_distance, median_blur_height,stdev_min,q_chi))
-
-    # ttheta_pool_results.start()
-    # chi_pool_results.start()
-
-    # ttheta_pool_results.join()
-    # chi_pool_results.join()
-
-    # ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = q_theta.get()
-    # chi, chi_centroid, chi_centroid_finder = q_chi.get()
-
-    # seperate analysis (SLOW)
-
-    ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = theta_maths(summed_dif,
-                                                                           median_blur_distance,
-                                                                           median_blur_height, stdev_min)
-    chi, chi_centroid, chi_centroid_finder = chi_maths(summed_dif,
-                                                       median_blur_distance,
-                                                       median_blur_height, stdev_min)
-
-    full_roi = np.sum(ttheta2)
-
-    return (row, column), summed_dif, ttheta, chi,\
-           ttheta_centroid_finder, ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi
-
-
 def centroid_pixel_analysis(self, row, column, median_blur_distance, median_blur_height, stdev_min):
     """The analysis done on a single pixel
     Parameters
@@ -269,6 +210,17 @@ def centroid_pixel_analysis(self, row, column, median_blur_distance, median_blur
     return results
 
 def segment_diffraction_roi(diffraction):
+    """Creates a roi value and the raw data analysis for the ROI maps
+
+    Parameters
+    ==========
+    diffraction (image)
+        the summed diffraction image
+
+    Returns
+    =======
+    ttheta, ttheta_copy, np.sum(ttheta_copy), scan_roi_val
+    """
 
     ttheta = np.sum(diffraction, axis=0)
     ttheta_copy = ttheta.copy()

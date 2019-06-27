@@ -48,21 +48,29 @@ def return_chi_images_loc(file,
 
     # Attempt to pull chi determination scan information
     try:
+        # Grab the detector channel data
         scan = h5grab_data(file=file,
                            data_loc=detector_channel_loc)
         scan_str = str(scan).zfill(zfill_num)
+
+        # Grab the scans in the images and mda group
         im_loc = h5grab_data(file=file,
                              data_loc='images/{}'.format(scan_str))
         mda_loc = h5grab_data(file=file,
                               data_loc='mda/{}'.format(scan_str))
+
+        # See if the images or mda group exsists
         im_check = h5path_exists(file=file,
                                  loc='images/{}'.format(scan_str))
         mda_check = h5path_exists(file=file,
                                   loc='mda/{}'.format(scan_str))
+
+        # Formatting the image locations
         images_loc = ['images/{}/{}'.format(scan_str,
                                             loc) for loc in im_loc]
         chi_figures.images_location = images_loc
 
+        # Based on what the user rocked to get the chi scan this will pull different values
         if chi_figures.user_rocking == 'spl':
             theta = return_det(file=file,
                                scan_numbers=[scan_str],
@@ -70,7 +78,6 @@ def return_chi_images_loc(file,
             chi_figures.scan_theta = theta[0]
 
         elif chi_figures.user_rocking == 'det':
-            # chi_figures.scan_theta = chi_figures.user_det_theta
             det_find = 'D'+str(h5grab_data(file=file,
                                            data_loc='detector_channels/mis/2Theta')).zfill(2)
             theta = h5grab_data(file=file,
@@ -86,6 +93,7 @@ def return_chi_images_loc(file,
                       'Correct The detector_channel_loc or Import Correct Data')
         chi_figures.images_location = None
 
+    # Throw error if the images or mda group does not exist
     if im_check == False or mda_check == False:
         warnings.warn('You Have Failed To Load In The Correct Detector Channel. '
                       'Correct The detector_channel_loc or Import Correct Data '
@@ -114,25 +122,25 @@ def return_chi_images(file, chi_figures):
         for image in images_loc:
             image_array.append(h5grab_data(file=file,
                                            data_loc=image))
-    # If it errors then load psyduck
 
+    # If it errors then load psyduck
     elif images_loc == None:
         image_array = [sum_error(), sum_error()]
+
     chi_figures.images = image_array
 
 
 def first_chi_figure_setup(self):
     """Setting up the chi figure GUI
 
-
     Parameters
     ==========
     self (SXDMFrameset)
-        the sxdmframeset
+        the sxdmframeset object
 
     Returns
     =======
-    The Chi_FigureClass created by the function
+    The Chi_FigureClass object created by the function
     """
     # Initiate the figure
     chi_figures = Chi_FiguresClass()
@@ -163,6 +171,7 @@ def first_chi_figure_setup(self):
     vmin_spot_tb, vmax_spot_tb = minmax_tb_setup(vmin_spot_ax=vmin_spot_ax,
                                                  vmax_spot_ax=vmax_spot_ax)
 
+    # Initiate the fig, axes, and other tb
     chi_figures.first_fig = fig
     chi_figures.first_axs = axs
     chi_figures.vmin_spot_tb = vmin_spot_tb
@@ -251,6 +260,7 @@ def second_chi_figure_setup(chi_figures):
     closebtn_start(chi_figures=chi_figures,
                    btn_ax=close_button_ax)
 
+    # Initiate the fig, axs, and other tb
     chi_figures.second_fig = fig
     chi_figures.second_axs = axs
     chi_figures.small_idx_tb = small_idx_tb
@@ -348,12 +358,18 @@ def closebtn_press(event, self, chi_figures):
     =======
     Nothing - runs chis() function. see documentation for values set
     """
-
+    # Subtract the two sample/detector angles
     self.chi_angle_difference = abs(np.subtract(chi_figures.angle1, chi_figures.angle2))
+
+    # Subtract the two pixel center values
     self.chi_position_difference = abs(np.subtract(chi_figures.pos1, chi_figures.pos2))
+
+    # Get the image dimensions
     self.chi_image_dimensions = chi_figures.image_dimensions
 
     plt.close('all')
+
+    # Determining broadening, numberical aperature, chi bounds, and other stuff
     chis(self)
 
 
@@ -532,6 +548,7 @@ def chis(self):
                                                       self.NA_mrads,
                                                       self.broadening_in_pix))
 
+    # Making sure the output is OK
     self.testing_chi_output = [self.chi,
                                self.focal_length_mm,
                                self.NA_mrads,
@@ -553,6 +570,7 @@ def broadening_in_pixles(self):
     self.broadening_in_pix
     """
 
+    # Read attributes set by the User
     Kev = float(h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='Kev'))
     D_um = float(h5grab_data(file=self.file,
                              data_loc='zone_plate/D_um'))
