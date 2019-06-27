@@ -21,10 +21,10 @@ test_fs = SXDMFrameset(test_data_file_path,dataset_name, scan_numbers = scan_num
 
 class PixelTestCase(unittest.TestCase):
 
-    def test_pixel_analysis_v2(self):
+    def test_centroid_pixel_analysis(self):
         background_dic_basic = scan_background(test_fs, amount2ave=2, multiplier=1)
         create_imagearray(test_fs, center_around=-1)
-        output = pixel_analysis_v2(test_fs, 1, 1, 1, 1, 2)
+        output = centroid_pixel_analysis(test_fs, 1, 1, 1, 1, 2)
 
         check_output = np.load(pixel_analysis_checker_path, allow_pickle=True)
 

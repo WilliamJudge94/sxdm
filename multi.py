@@ -298,7 +298,7 @@ def best_analysis(self, rows, columns, med_blur_distance=4,
 
     # Initialize verctorization
     row, column = initialize_vectorize(rows, columns)
-    vectorize_pixel_analysis = np.vectorize(pixel_analysis_v2,
+    vectorize_pixel_analysis = np.vectorize(centroid_pixel_analysis,
                                             excluded=['self', 'median_blur_distance',
                                                       'median_blur_height', 'stdev_min'])
     # Create progress bar

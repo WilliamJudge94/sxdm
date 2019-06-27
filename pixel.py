@@ -150,7 +150,7 @@ def sum_pixel(self, images_loc):
 
 def pixel_analysis(self, row, column, image_array,
                    median_blur_distance, median_blur_height, stdev_min):
-    """Depreciated for pixel_analysis_v2
+    """Depreciated for centroid_pixel_analysis
     :param self:
     :param row:
     :param column:
@@ -207,7 +207,7 @@ def pixel_analysis(self, row, column, image_array,
            ttheta_centroid_finder, ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi
 
 
-def pixel_analysis_v2(self, row, column, median_blur_distance, median_blur_height, stdev_min):
+def centroid_pixel_analysis(self, row, column, median_blur_distance, median_blur_height, stdev_min):
     """The analysis done on a single pixel
     Parameters
     ==========
