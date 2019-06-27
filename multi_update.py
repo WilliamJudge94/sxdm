@@ -11,7 +11,8 @@ from pixel import theta_maths, chi_maths, centroid_finder, grab_pix
 from multi import initialize_vectorize
 
 
-def centroid_pixel_analysis_multi(row, column, median_blur_distance, median_blur_height, stdev_min, image_array, scan_numbers, background_dic, file):
+def centroid_pixel_analysis_multi(row, column, median_blur_distance, median_blur_height,
+                                  stdev_min, image_array, scan_numbers, background_dic, file):
     """The analysis done on a single pixel
     Parameters
     ==========
@@ -220,7 +221,8 @@ def roi_pixel_analysis_multi(row, column, median_blur_distance,
 
 def roi_pre_analysis(inputs, meds_d, meds_h, image_array, scan_numbers, background_dic, file, diff_segments):
     row, column = inputs
-    results = roi_pixel_analysis_multi(row, column, meds_d, meds_h, image_array, scan_numbers, background_dic, file, diff_segments)
+    results = roi_pixel_analysis_multi(row, column, meds_d, meds_h,
+                                       image_array, scan_numbers, background_dic, file, diff_segments)
     return results
 
 
@@ -240,8 +242,10 @@ def roi_analysis_multi(self, rows, columns, med_blur_distance=9,
         diff_segments = self.diff_segment_squares
 
 
-    p_roi_pre_analysis = partial(roi_pre_analysis, meds_d=med_blur_distance, meds_h=med_blur_height, image_array=self.image_array,
-                                 background_dic=background_dic, file=self.file, diff_segments=diff_segments, scan_numbers=self.scan_numbers)
+    p_roi_pre_analysis = partial(roi_pre_analysis, meds_d=med_blur_distance,
+                                 meds_h=med_blur_height, image_array=self.image_array,
+                                 background_dic=background_dic, file=self.file,
+                                 diff_segments=diff_segments, scan_numbers=self.scan_numbers)
 
 
     with multiprocessing.Pool() as pool:
@@ -253,7 +257,8 @@ def roi_analysis_multi(self, rows, columns, med_blur_distance=9,
 
 def centroid_pre_analysis(inputs, meds_d, meds_h, st, image_array, scan_numbers, background_dic, file):
     row, column = inputs
-    results = centroid_pixel_analysis_multi(row, column, meds_d, meds_h, st, image_array, scan_numbers, background_dic, file)
+    results = centroid_pixel_analysis_multi(row, column, meds_d, meds_h, st,
+                                            image_array, scan_numbers, background_dic, file)
     return results
 
 
@@ -271,8 +276,10 @@ def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
     background_dic = scan_background(self, multiplier=bkg_multiplier)
 
 
-    p_centroid_pre_analysis = partial(centroid_pre_analysis, meds_d=med_blur_distance, meds_h=med_blur_height, image_array=self.image_array,
-                                 background_dic=background_dic, file=self.file, st=stdev, scan_numbers=self.scan_numbers)
+    p_centroid_pre_analysis = partial(centroid_pre_analysis, meds_d=med_blur_distance,
+                                      meds_h=med_blur_height, image_array=self.image_array,
+                                 background_dic=background_dic, file=self.file,
+                                      st=stdev, scan_numbers=self.scan_numbers)
 
     with multiprocessing.Pool() as pool:
         # add chunksize
