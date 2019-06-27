@@ -2,12 +2,12 @@ import warnings
 import os
 from tqdm import tqdm
 
-from mis import delimeter_func, tif_separation, zfill_scan, order_dir
+from mis import delimiter_func, tif_separation, zfill_scan, order_dir
 from h5 import h5images_wra, h5path_exists
 
 
 def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
-                  import_type='uint32', delimeter_function=delimeter_func, force_reimport=False):
+                  import_type='uint32', delimiter_function=delimiter_func, force_reimport=False):
 
     """Allows the user to import all .tif images into the .h5 file
 
@@ -25,7 +25,7 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
         if True all the data from the selected scans will be set to zero
     import_type (str)
         a string value passed into imageio.imread().astype(import_type)
-    delimeter_function (function)
+    delimiter_function (function)
         a function which determines the image number. redefine this if 26 - ID -C naming scheme changes
     force_reimport (bool)
         set to True if you would like to force reimport images
@@ -36,7 +36,6 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
     """
 
     # Get a list of files in directory
-
     sorted_images_loc = sorted(os.listdir(images_loc))
 
     if scans != False:
@@ -60,7 +59,7 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
         directory = images_loc+'/'+folder
         im_loc, im_name = order_dir(path=directory)
         im_name = [tif_separation(string=string,
-                                  func=delimeter_function) for string in im_name]
+                                  func=delimiter_function) for string in im_name]
 
         path2exsist = '/images/{}'.format(zfill_sorted_images_loc[i])
 
@@ -69,6 +68,7 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
             print("Scan {} Already Imported. Will Not Continue. "
                   "Force Reimport With force_reimport = True".format(sorted_images_loc[i]))
 
+        # If the path already exsists but the User wants to force reimport then reimport
         elif h5path_exists(file, path2exsist) == True and force_reimport == True:
             print("Deleting Scan {} And Reimporting".format(sorted_images_loc[i]))
             h5images_wra(file=file,

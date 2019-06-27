@@ -48,13 +48,12 @@ def iterations(self, num_rows, num_columns):
     return its
 
 
-def initialize_vectorize(self, num_rows, num_columns):
+def initialize_vectorize(num_rows, num_columns):
     """ Places the row and column number next to each other in an iterable array.
         Used for starmap multiprocessing pixels.
 
     Parameters
     ==========
-    self: (SXDMFrameset)
     num_rows: (int)
         Total number of rows the user wants to calculate
     num_columns: (int)
@@ -96,9 +95,7 @@ def initialize_vectorize(self, num_rows, num_columns):
             master_row.append(i)
             master_column.append(j)
 
-    its = master_row, master_column
-
-    return its
+    return master_row, master_column
 
 
 def analysis(self, rows, columns, default_cores=True,
@@ -300,7 +297,7 @@ def best_analysis(self, rows, columns, med_blur_distance=4,
     create_imagearray(self, center_around=center_around)
 
     # Initialize verctorization
-    row, column = initialize_vectorize(self, rows, columns)
+    row, column = initialize_vectorize(rows, columns)
     vectorize_pixel_analysis = np.vectorize(pixel_analysis_v2,
                                             excluded=['self', 'median_blur_distance',
                                                       'median_blur_height', 'stdev_min'])
@@ -375,7 +372,7 @@ def roi_analysis(self, rows, columns, med_blur_distance=4,
     create_imagearray(self, center_around=center_around)
 
     # Initialize verctorization
-    row, column = initialize_vectorize(self, rows, columns)
+    row, column = initialize_vectorize(rows, columns)
 
     vectorize_roi_pixel_analysis = np.vectorize(roi_pixel_analysis,
                                             excluded=['self', 'median_blur_distance',

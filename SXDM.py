@@ -43,6 +43,15 @@ class SXDMFrameset():
     def alignment(self, reset=False):
         """Allows the user to align all scans based on Fluorescence Maps or ROI Maps
 
+        Parameters
+        ==========
+        reset (bool)
+            if True this will clear all the alignment data. Use this when adding new scans to a group
+
+        Returns
+        =======
+        Nothing - sets alignment data
+
         """
         self.log.info('Starting self.alignment')
 
@@ -94,13 +103,15 @@ class SXDMFrameset():
 
         self.log.info('Ending self.chi_determination')
 
-    def roi_segmentation(self, bkg_multiplier=0, restart=False):
+    def roi_segmentation(self, bkg_multiplier=1, restart=False):
         """Allows the User to create a summed diffraction pattern bounding box for region_of_interest analysis
 
         Parameters
         ==========
-        self (SXDMFrameset)
-            the sxdmframeset object
+        bkg_multiplier (int)
+            the scaler applied to the background images
+        restart (bool)
+            if True this clears all bounding boxes when loading the segmentation data
 
         Returns
         =======
@@ -125,16 +136,16 @@ class SXDMFrameset():
         self.log.info('Ending self.roi_segmentation')
 
     def region_of_interest(self, rows, columns, med_blur_distance=9,
-                           med_blur_height=100, bkg_multiplier=0, diff_segmentation=True, slow=False):
+                           med_blur_height=100, bkg_multiplier=1, diff_segmentation=True, slow=False):
         """Create a region of interest map for each scan and center the region of interest maps.
         If the diff segmentation is True this will also create a region of interest map based on
         a user defined sub region of interests
 
         Parameters
         ==========
-        rows (int)
+        rows (int) or (tup)
             the total amount of rows the user wants to do analysis on
-        columns (int)
+        columns (int) or (tup)
             the total amount of columns the user wants to do analysis on
         med_blur_distance (int)
             the amount of values to scan for median blur
@@ -157,17 +168,16 @@ class SXDMFrameset():
 
         self.log.info('Starting self.region_of_interest')
 
+        # Setting total rows and columns for the roi_viewer
         self.roi_analysis_total_rows = rows
         self.roi_analysis_total_columns = columns
-
-
 
         if slow == True:
             self.roi_results = roi_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
                                         med_blur_height=med_blur_height, multiplier=bkg_multiplier,
                                         center_around=1, diff_segmentation=diff_segmentation)
         else:
-            self.roi_results = roi_analysis_v2(self, rows=rows, columns=columns, med_blur_distance=med_blur_distance,
+            self.roi_results = roi_analysis_multi(self, rows=rows, columns=columns, med_blur_distance=med_blur_distance,
                                                 med_blur_height=med_blur_height, bkg_multiplier=bkg_multiplier,
                                                  diff_segments=diff_segmentation)
 
@@ -197,8 +207,8 @@ class SXDMFrameset():
 
         self.log.info('Ending self.roi_viewer')
 
-    def centroid_analysis(self, rows, columns, med_blur_distance=2,
-                 med_blur_height=1, stdev_min=25, bkg_multiplier=0, slow=False):
+    def centroid_analysis(self, rows, columns, med_blur_distance=9,
+                 med_blur_height=10, stdev_min=25, bkg_multiplier=1, slow=False):
         """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
 
         Parameters
@@ -238,7 +248,7 @@ class SXDMFrameset():
                                         med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier,
                                         center_around=1)
         else:
-            self.results = centroid_analysis_v2(self, rows=rows, columns=columns, med_blur_distance=med_blur_distance,
+            self.results = centroid_analysis_multi(self, rows=rows, columns=columns, med_blur_distance=med_blur_distance,
                                                 med_blur_height=med_blur_height, stdev=stdev_min, bkg_multiplier=bkg_multiplier)
 
         if False in self.results:

@@ -96,8 +96,8 @@ def scan_background_finder(destination, background_dic):
     scans = [value.split('/')[1] for value in destination]
 
     background = []
-    scan4background = []
     for scan in scans:
         background.append(background_dic[scan])
-        scan4background.append(scan)
-    return background
+        #scan4background.append(scan)
+
+    return background #np.array(background)
