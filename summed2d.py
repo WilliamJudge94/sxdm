@@ -1,5 +1,3 @@
-# make a way to sum all the difraction images inside of a user defined group - no centering, grab the full roi
-
 import numpy as np
 import h5py
 from tqdm import tqdm
@@ -35,7 +33,7 @@ def summed2d_all_data(self, bkg_multiplier=0):
 
     bkg = scan_background(self=self, multiplier=bkg_multiplier)
 
-    for column in tqdm(range(0, columns)):
+    for column in tqdm(range(0, columns), desc='Loading 2D'):
         for row in range(0, rows):
 
             # Getting scan locations

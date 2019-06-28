@@ -156,3 +156,69 @@ def make_video(image_folder, output_folder=False, outimg=None, fps=23, size=None
         vid.write(img)
     vid.release()
     return vid
+
+#multi.py
+def analysis(self, rows, columns, default_cores=True,
+             stdev_min=35, med_blur_distance=4,
+             med_blur_height=10, multiplier=1):
+    """Runs the pixel_analysis function defined in pixel.py through starmap multiprocessing
+
+    Paramters
+    =========
+
+    self
+
+    rows
+
+    columns
+
+    default_cores
+
+    stdev_min
+
+    med_blur_distance
+
+    med_blur_height
+
+    multiplier
+
+    Return
+    ======
+    A multi-dimesional array consisting of:
+    row_column - row and column values 'for the current index'
+    summed_dif - summed diffraction ' '
+    ttheta - a 1D 2theta array  ' '
+    chi - a 1D chi array ' '
+    ttheta_corr - a 1D 2theta array that has been median blurred ' '
+    ttheta_centroid - a multi-dimensional array consisting of 2theta centroid values ' '
+    chi_cor -  - a 1D chi array that has been median blurred ' '
+    chi_centroid - a multi-dimensional array consisting of chi centroid values ' '
+    full_roi - a corrected region of interest on the current selection
+    """
+
+    # Add background correction to analysis
+
+    self.median_blur_distance = med_blur_distance
+    self.median_blur_height = med_blur_height
+    self.stdev_min = stdev_min
+    background_dic_basic = scan_background(self, multiplier=multiplier)
+
+    if default_cores == True:
+        core_count = int(cpu_count()/2)
+    else:
+        core_count = default_cores
+    image_array = centering_det(self, group='filenumber')
+    self.image_array = np.asarray(image_array)
+    its = iterations(self, rows, columns)
+    pool = Pool(core_count)
+
+    # Run multiprocessing on pixel iterations
+    results = parallel_progbar(pixel_analysis, its, nprocs=default_cores, starmap=True)
+
+    pool.close()
+    pool.join()
+
+    if False in results:
+        warnings.warn('Not Enough RAM For Batch Processing. Program Auto Quit. Please Use Slower Functionality')
+    self.results = results
+    print('Results Saved As self.results')

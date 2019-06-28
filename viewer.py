@@ -435,7 +435,10 @@ def run_viewer(user_class, fluor_image):
     =======
     Nothing - loads figure data
     """
-
+    try:
+        dummy = user_class.centroid_viewer_summed_dif
+    except:
+        user_class.centroid_viewer_summed_dif = summed2d_all_data(self=user_class, bkg_multiplier=1)
     # Determine that the starting row and column values should be
     ro = user_class.analysis_total_rows
     co = user_class.analysis_total_columns

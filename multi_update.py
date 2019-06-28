@@ -16,18 +16,24 @@ def centroid_pixel_analysis_multi(row, column, median_blur_distance, median_blur
     """The analysis done on a single pixel
     Parameters
     ==========
-    rows: (int)
-        the total number of rows you want to iterate through
-    columns: (int)
-        the total number of columns you want to iterate through
+    row: (int)
+        the row the User wants to do analysis on
+    column: (int)
+        the column the User wants to do analysis on
     med_blur_distance: (int)
         the amount of values to scan for median blur
     med_blur_height:  (int)
         the height cut off for the median blur
     stdev_min: (int)
         standard deviation above the mean of signal to ignore
-    bkg_multiplier: (int)
-        multiplier for the background signal to be subtracted
+    image_array: (nd.array)
+        the image location array - can be created with create_imagearray(self)
+    scan_numbers: (nd.array)
+        the list of scan numbers used
+    background_dic: (dic)
+        the background scan dictionary entry - can be made with scan_backgrounnd(self)
+    file: (str)
+        the hdf5 file location
     Returns
     =======
     the analysis results as an nd.array
@@ -70,9 +76,8 @@ def h5get_image_destination_multi(scan_numbers, pixel):
 
     Parameters
     ==========
-    self (SXDMFramset)
-        the sxdmframset
-
+    scan_numbers (nd.array)
+        the scan numbers the user wants to get
     pixel (str array)
         the image number from each scan that corresponds to a certain pixel
 
@@ -93,8 +98,8 @@ def sum_pixel_multi(file, images_loc):
     """Sum a pixel
     Parameters
     ==========
-    self (SXDMFrameset)
-        the sxdmframset
+    file (str)
+        the full file location of the hdf5 file
     image_loc (list of str)
         the full image location in the hdf5 file
     Returns
@@ -112,16 +117,22 @@ def roi_pixel_analysis_multi(row, column, median_blur_distance,
     and be able to segment out diffraction areas and create the roi for them
     Parameters
     ==========
-    self (SXDMFrameset)
-        the sxdmframset
-    rows: (int)
+    row: (int)
         the total number of rows you want to iterate through
-    columns: (int)
+    column: (int)
         the total number of columns you want to iterate through
-    med_blur_distance: (int)
+    median_blur_distance: (int)
         the amount of values to scan for median blur
-    med_blur_height:  (int)
+    median_blur_height: (int)
         the height cut off for the median blur
+    image_array: (nd.array)
+        the location for all the pixels - can be created through create_imagearray(self)
+    scan_numbers: (array)
+        the list of scan numbers
+    background_dic: (dic)
+        the dictionary for the background images - created through scan_background(self)
+    file: (str)
+        the location to the hdf5 file
     diff_segments: (array)
         array used for segmenting the diffraction patterns
     Returns
@@ -220,6 +231,31 @@ def roi_pixel_analysis_multi(row, column, median_blur_distance,
 
 
 def roi_pre_analysis(inputs, meds_d, meds_h, image_array, scan_numbers, background_dic, file, diff_segments):
+    """Allows Python to run the roi analysis in a pool.map function
+
+    Parameters
+    ==========
+    inputs: (nd.array)
+        the iterable inputs of rows and columns
+    meds_d: (int)
+        the median blur distance value
+    meds_h: (int)
+        the median_blur height value
+    image_array: (nd.array)
+        the total locations of all the images - created by create_imagearray(self)
+    scan_numbers: (nd.array)
+        the list of all the scan numbers
+    background_dic: (dic)
+        the dictionary of all the background images - created by scan_background(self)
+    file: (str)
+        the full hdf5 file location
+    diff_segments: (bool)
+        if True this will run the segmentation analysis as well
+
+    Returns
+    =======
+    the results from the roi_pixel_analysis_multi() function
+    """
     row, column = inputs
     results = roi_pixel_analysis_multi(row, column, meds_d, meds_h,
                                        image_array, scan_numbers, background_dic, file, diff_segments)
@@ -228,7 +264,31 @@ def roi_pre_analysis(inputs, meds_d, meds_h, image_array, scan_numbers, backgrou
 
 def roi_analysis_multi(self, rows, columns, med_blur_distance=9,
                            med_blur_height=100, bkg_multiplier=0, diff_segments=True):
+    """Runs the region of interest analysis in a pool.map function
 
+    Parameters
+    ==========
+    self: (SXDMFrameset)
+        the sxdmframeset object
+    rows: (int or tup)
+        the total amount of rows the User wants to analyze or a tuple of the rows
+    columns: (int or tup)
+        the total amount of columns the User wants to analyze or a tuple of the columns
+    med_blur_distance: (int)
+        the median blur distance - must be odd
+    med_blur_height: (int)
+        the median blur height
+    bkg_multiplier: (int)
+        the multiplier to the background images
+    diff_segments: (bool)
+        if True this will analyze the roi segmentations
+
+    Returns
+    =======
+    a pooled results from the roi_pixel_analysis_multi() function
+    """
+
+    # Creating the iterable used for pool.map
     master_rows, master_columns = initialize_vectorize(num_rows=rows, num_columns=columns)
 
     inputs = zip(master_rows, master_columns)
@@ -236,26 +296,51 @@ def roi_analysis_multi(self, rows, columns, med_blur_distance=9,
     inputs = tqdm(inputs, total=len(master_rows),
               desc="Progress", unit='pixles')
 
-
+    # Creating the background file
     background_dic = scan_background(self, multiplier=bkg_multiplier)
     if diff_segments==True:
         diff_segments = self.diff_segment_squares
 
-
+    # Creating a partial function
     p_roi_pre_analysis = partial(roi_pre_analysis, meds_d=med_blur_distance,
                                  meds_h=med_blur_height, image_array=self.image_array,
                                  background_dic=background_dic, file=self.file,
                                  diff_segments=diff_segments, scan_numbers=self.scan_numbers)
 
-
+    # Starting multiprocessing
     with multiprocessing.Pool() as pool:
         results = pool.map(p_roi_pre_analysis, inputs)
-
 
     return results
 
 
 def centroid_pre_analysis(inputs, meds_d, meds_h, st, image_array, scan_numbers, background_dic, file):
+    """Allows Python to run the centroid analysis in a pool.map function
+
+     Parameters
+     ==========
+     inputs: (nd.array)
+         the iterable inputs of rows and columns
+     meds_d: (int)
+         the median blur distance value
+     meds_h: (int)
+         the median_blur height value
+     image_array: (nd.array)
+         the total locations of all the images - created by create_imagearray(self)
+     scan_numbers: (nd.array)
+         the list of all the scan numbers
+     background_dic: (dic)
+         the dictionary of all the background images - created by scan_background(self)
+     file: (str)
+         the full hdf5 file location
+     diff_segments: (bool)
+         if True this will run the segmentation analysis as well
+
+     Returns
+     =======
+     the results from the centroid_pixel_analysis_multi() function
+     """
+
     row, column = inputs
     results = centroid_pixel_analysis_multi(row, column, meds_d, meds_h, st,
                                             image_array, scan_numbers, background_dic, file)
@@ -264,7 +349,31 @@ def centroid_pre_analysis(inputs, meds_d, meds_h, st, image_array, scan_numbers,
 
 def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
                            med_blur_height=100, stdev=35, bkg_multiplier=0):
+    """Runs the centroid analysis in a pool.map function
 
+    Parameters
+    ==========
+    self: (SXDMFrameset)
+        the sxdmframeset object
+    rows: (int or tup)
+        the total amount of rows the User wants to analyze or a tuple of the rows
+    columns: (int or tup)
+        the total amount of columns the User wants to analyze or a tuple of the columns
+    med_blur_distance: (int)
+        the median blur distance - must be odd
+    med_blur_height: (int)
+        the median blur height
+    stdev: (int)
+        the standard deviation used to segment data
+    bkg_multiplier: (int)
+        the multiplier to the background images
+
+    Returns
+    =======
+    a pooled results from the centroid_pixel_analysis_multi() function
+    """
+
+    # Creating the iterable to pool.map
     master_rows, master_columns = initialize_vectorize(num_rows=rows, num_columns=columns)
 
     inputs = zip(master_rows, master_columns)
@@ -272,15 +381,16 @@ def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
     inputs = tqdm(inputs, total=len(master_rows),
               desc="Progress", unit='pixles')
 
-
+    # Creating the background images
     background_dic = scan_background(self, multiplier=bkg_multiplier)
 
-
+    # Creating a partial function
     p_centroid_pre_analysis = partial(centroid_pre_analysis, meds_d=med_blur_distance,
                                       meds_h=med_blur_height, image_array=self.image_array,
                                  background_dic=background_dic, file=self.file,
                                       st=stdev, scan_numbers=self.scan_numbers)
 
+    # Start multiprocessing
     with multiprocessing.Pool() as pool:
         # add chunksize
         results = pool.map(p_centroid_pre_analysis, inputs)

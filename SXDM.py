@@ -244,7 +244,7 @@ class SXDMFrameset():
 
 
         if slow == True:
-            self.results = best_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
+            self.results = centroid_map_analysis(self, rows, columns, med_blur_distance=med_blur_distance,
                                         med_blur_height=med_blur_height, stdev_min=stdev_min, multiplier=bkg_multiplier,
                                         center_around=1)
         else:

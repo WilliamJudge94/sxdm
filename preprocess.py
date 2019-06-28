@@ -304,16 +304,6 @@ def initialize_scans(self, scan_numbers=False, fill_num=4):
             self.scan_numbers = scan_num_convert(list(import_scans), fill_num=fill_num)
         self.det_smpl_theta = str(h5grab_data(self.file, 'detector_channels/sample_theta')[0]).zfill(2)
 
-        # Determine Shape of all the imported files
-
-        # Determine the resolution of all the imported files
-        # If different resolution tell user that certain files have different resolution
-        # set limit for resolution difference
-        # will be addressed in new version
-
-        # If the same resolution but different shapes then store how many rows and columns to add to the
-        # small arrays
-
         scan_theta_grab = [h5grab_data(self.file, 'mda/' + scan + '/D' + self.det_smpl_theta)
                            for scan in self.scan_numbers]
 
