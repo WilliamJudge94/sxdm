@@ -81,8 +81,10 @@ def sum_error():
     psyduck image
     """
 
+    # Obtain the module location
     full_path = os.path.realpath(__file__)
     new = full_path.split('/')[0:-1]
+    # Grab the psyduck image
     new2 = np.append(new, ['templates', 'psy.png'])
     new3 = '/'.join(new2)
     im = imageio.imread(new3)
@@ -103,6 +105,7 @@ def btn_setup(reproocessbtn_ax, savingbtn_ax):
     reprocess and saving button
     """
 
+    # Start the reprocess and saving buttons
     reproocessbtn = Button(ax=reproocessbtn_ax,
                            label='Reprocess',
                            color='teal',
@@ -112,6 +115,7 @@ def btn_setup(reproocessbtn_ax, savingbtn_ax):
                        color='teal',
                        hovercolor='tomato')
     plt.draw()
+
     return reproocessbtn, savingbtn
 
 
@@ -152,6 +156,7 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
         med_blur_hei = str(int(self.analysis_params[1]))
         stdev = str(int(self.analysis_params[2]))
         bkg_x = str(int(self.analysis_params[3]))
+
     except:
         med_blur_dis = '2'
         med_blur_hei = '1'
@@ -225,10 +230,6 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
             summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif, vmin=vmin_sum, vmax=vmax_sum)
             user_class.dif_im = user_class.centroid_viewer_summed_dif
 
-        # Depreciated Code
-        #summed_dif = np.sum(results[:, 1], axis=0)
-        #summed_dif_ax.imshow(summed_dif, vmin=vmin_sum, vmax=vmax_sum)
-
     except:
         try:
             # If above fails try to reload the summed data from the user_class.results variable
@@ -295,6 +296,7 @@ def spot_dif_ram_save(self):
     """
     image_array = self.image_array
 
+    # Grab the diffraction images
     pix = grab_pix(array=image_array, row=self.row, column=self.column, int_convert=True)
     destination = h5get_image_destination(self=self, pixel=pix)
     each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
@@ -349,10 +351,7 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
     ttheta_centroid_ax.cla()
     chi_centroid_ax.cla()
 
-    #print(row, column)
-    # Grab pixel data
-    #return_dic = pixel_analysis_return(results, row, column)
-
+    # See if the User has selected a pixel - if not set it to the 0, 0 pixel
     try:
         pre1, pre2, = self.row, self.column
 
@@ -360,35 +359,21 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         self.row = 0
         self.column = 0
 
-    # return all the data from the analysis function
+    # Return all the data from the analysis function
     return_dic = pixel_analysis_return(results, self.row, self.column)
 
     # Grab RAM required summed diffraction
+    # Redundent - used to have difference functions for self.diffraction_load True vs False
     try:
         if self.diffraction_load == True:
 
-            #spot_dif = return_dic['summed_dif']
-
-            spot_dif = spot_dif_ram_save(self)
-            self.centroid_viewer_spot_diff = spot_dif
+            self.centroid_viewer_spot_diff = spot_dif_ram_save(self)
 
         elif self.diffraction_load == False:
 
-            #f = h5py.File(self.save_filename, 'r')
-            #finder = False
-            #new_idx = 0
-            #while finder == False:
-            #    position = f['{}/row_column'.format(self.dataset_name)][new_idx]
-            #    if position[0] == self.row and position[1] == self.column:
-            #        finder = True
-            #    else:
-            #        new_idx = new_idx + 1
-            #spot_dif = f['{}/summed_dif'.format(self.dataset_name)][new_idx]
+            self.centroid_viewer_spot_diff = spot_dif_ram_save(self)
 
-            #f.close()
-
-            spot_dif = spot_dif_ram_save(self)
-            self.centroid_viewer_spot_diff = spot_dif
+        spot_dif = self.centroid_viewer_spot_diff
 
     except Exception as ex:
         print('viewer.py/load_dynamic_data', ex)
@@ -414,17 +399,8 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
                                                            med_blur_height,
                                                            stdev_min)
 
-        # Plot the analysis
-
-        ttheta_centroid_ax.plot(ttheta, color='blue')
-        ttheta_centroid_ax.plot(ttheta_centroid_finder, color='red')
-        ttheta_centroid_ax.axvline(x=ttheta_centroid, color='black')
-
-        chi_centroid_ax.plot(chi, color='blue')
-        chi_centroid_ax.plot(chi_centroid_finder, color='red')
-        chi_centroid_ax.axvline(x=chi_centroid)
-
-    except:
+    except Exception as ex:
+        print('viewer.py/load_dynamic_data', ex)
 
         # If you can't calculate centroid, pull data from save file
         # SET TITLE COLOR TO RED
@@ -437,14 +413,14 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         chi_centroid_finder = return_dic['chi_corr']
         chi_centroid = return_dic['chi_cent']
 
-        ttheta_centroid_ax.plot(ttheta, color='blue')
-        ttheta_centroid_ax.plot(ttheta_centroid_finder, color='red')
-        ttheta_centroid_ax.axvline(x=ttheta_centroid, color='black')
+    # Plot the analysis
+    ttheta_centroid_ax.plot(ttheta, color='blue')
+    ttheta_centroid_ax.plot(ttheta_centroid_finder, color='red')
+    ttheta_centroid_ax.axvline(x=ttheta_centroid, color='black')
 
-
-        chi_centroid_ax.plot(chi, color='blue')
-        chi_centroid_ax.plot(chi_centroid_finder, color='red')
-        chi_centroid_ax.axvline(chi_centroid, color='black')
+    chi_centroid_ax.plot(chi, color='blue')
+    chi_centroid_ax.plot(chi_centroid_finder, color='red')
+    chi_centroid_ax.axvline(x=chi_centroid, color='black')
 
 
 def run_viewer(user_class, fluor_image):
@@ -459,6 +435,8 @@ def run_viewer(user_class, fluor_image):
     =======
     Nothing - loads figure data
     """
+
+    # Determine that the starting row and column values should be
     ro = user_class.analysis_total_rows
     co = user_class.analysis_total_columns
 
@@ -474,14 +452,12 @@ def run_viewer(user_class, fluor_image):
         st_column = 0
     user_class.column = st_column
 
+    # Show results for the starting row and column
     try:
         results = user_class.results
         return_dic = pixel_analysis_return(user_class.results, st_row, st_column)
 
-        #if np.shape(return_dic['summed_dif']) == () and user_class.diffraction_load == True:
-        #    user_class.reload_save(summed_dif_return=user_class.diffraction_load)
-        #    results = user_class.results
-
+    # If nothing found try to reload the data from the save file
     except:
         print('No Results Found. Importing From Saved File...')
 
@@ -499,6 +475,7 @@ def run_viewer(user_class, fluor_image):
     current_figure.save_filename = user_class.save_filename
     current_figure.dataset_name = user_class.dataset_name
 
+    # See if there has been an analysis and set the row and column values
     try:
         dummy = current_figure.row
     except:
@@ -520,6 +497,7 @@ def run_viewer(user_class, fluor_image):
 
     current_figure.results = results
 
+    # Setting up axis
     current_figure.fig, current_figure.fluor_ax, current_figure.roi_ax, current_figure.spot_diff_ax, \
     current_figure.summed_dif_ax, current_figure.ttheta_map_ax, current_figure.ttheta_centroid_ax, \
     current_figure.chi_map_ax, current_figure.chi_centroid_ax, current_figure.reprocessbtn_ax, \
@@ -529,8 +507,11 @@ def run_viewer(user_class, fluor_image):
     current_figure.med_blur_dis_ax, current_figure.med_blur_h_ax, current_figure.stdev_ax,\
     current_figure.multiplier_ax = figure_setup()
 
+    # Setting up buttons
     current_figure.reproocessbtn, current_figure.savingbtn = btn_setup(current_figure.reprocessbtn_ax,
                                                                        current_figure.savingbtn_ax)
+
+    # Setting up textboxes
     current_figure.vmin_spot_tb, current_figure.vmax_spot_tb, current_figure.vmin_sum_tb,\
     current_figure.vmax_sum_tb, \
     current_figure.med_blur_dis_tb, current_figure.med_blur_h_tb, current_figure.stdev_tb,\
@@ -539,6 +520,7 @@ def run_viewer(user_class, fluor_image):
                  current_figure.vmax_sum_ax, current_figure.med_blur_dis_ax,
                  current_figure.med_blur_h_ax, current_figure.stdev_ax, current_figure.multiplier_ax, user_class)
 
+    # Finding current textbox values
     current_figure.vmin_spot_val = int(current_figure.vmin_spot_tb.text)
     current_figure.vmax_spot_val = int(current_figure.vmax_spot_tb.text)
     current_figure.vmin_sum_val = int(current_figure.vmin_sum_tb.text)
@@ -548,16 +530,19 @@ def run_viewer(user_class, fluor_image):
     current_figure.stdev_val = float(current_figure.stdev_tb.text)
     current_figure.bkgx_val = float(current_figure.multiplier_tb.text)
 
+    # Loading all static data
     load_static_data(current_figure.results, current_figure.vmin_sum_val, current_figure.vmax_sum_val,
                      current_figure.fluor_ax,
                      current_figure.roi_ax, current_figure.summed_dif_ax,
                      current_figure.ttheta_map_ax, current_figure.chi_map_ax, fluor_image, user_class=user_class)
 
+    # Loading initial dynamic data
     load_dynamic_data(current_figure.results, current_figure.vmin_spot_val, current_figure.vmax_spot_val,
                       current_figure.spot_diff_ax, current_figure.ttheta_centroid_ax, current_figure.chi_centroid_ax,
                       current_figure.med_blur_dis_val, current_figure.med_blur_h_val, current_figure.stdev_val,
                       current_figure.row, current_figure.column, user_class)
 
+    # Functions used for matplotlib interactions
     p_check_mouse_ax = partial(check_mouse_ax, self=current_figure)
     p_viewer_mouse_click = partial(viewer_mouse_click, self=current_figure)
     p_analysis_change = partial(analysis_change, self=current_figure)
@@ -597,63 +582,40 @@ def spot_change(text, self):
     Nothing - loads figure data
     """
 
+    # Clearing axes
     self.spot_diff_ax.cla()
     self.summed_dif_ax.cla()
 
+    # Reloading summed diffraction image
     im = self.user_class.centroid_viewer_summed_dif
-
-    #print(user_class.row, user_class.column)
 
     return_dic = pixel_analysis_return(self.results, self.user_class.row, self.user_class.column)
 
-
     if self.diffraction_load == True:
-        #spot_dif = return_dic['summed_dif']
         spot_dif = self.user_class.centroid_viewer_spot_diff
 
     elif self.diffraction_load == False:
-        # print(self.diffraction_load)
         spot_dif = self.user_class.centroid_viewer_spot_diff
-        #f = h5py.File(self.save_filename, 'r')
-        #finder = False
-        #new_idx = 0
-        #while finder == False:
-        #    position = f['{}/row_column'.format(self.dataset_name)][new_idx]
-        #    if position[0] == self.row and position[1] == self.column:
-        #        finder = True
-        #    else:
-        #        new_idx = new_idx + 1
-        #spot_dif = f['{}/summed_dif'.format(self.dataset_name)][new_idx]
-        # print('Row: {}, Column: {}, L_Row_column: {}'.format(self.row, self.column,
-                                                             # f['{}/row_column'.format(self.dataset_name)][new_idx]))
-        #f.close()
 
-
+    # Obtaining new vmin and vmax values
     self.vmin_spot_val = int(self.vmin_spot_tb.text)
     self.vmax_spot_val = int(self.vmax_spot_tb.text)
     self.vmin_sum_val = int(self.vmin_sum_tb.text)
     self.vmax_sum_val = int(self.vmax_sum_tb.text)
 
+    # Replotting diffraction images with new vmin and vmax
     try:
-        #summed_dif = np.sum(self.results[:, 1], axis=0)
         summed_dif = im
         self.summed_dif_ax.imshow(summed_dif, vmin=self.vmin_sum_val, vmax=self.vmax_sum_val)
 
     except:
-
-        try:
-            self.summed_dif_ax.imshow(results_2dsum(ERRORself.user_class))
-            self.summed_dif_ax.set_xticks = []
-            self.summed_dif_ax.set_yticks = []
-        except:
-            self.summed_dif_ax.imshow(sum_error())
-            self.summed_dif_ax.set_xticks = []
-            self.summed_dif_ax.set_yticks = []
+        self.summed_dif_ax.imshow(sum_error())
+        self.summed_dif_ax.set_xticks = []
+        self.summed_dif_ax.set_yticks = []
 
     try:
         self.spot_diff_ax.imshow(spot_dif, vmin=self.vmin_spot_val, vmax=self.vmax_spot_val)
     except:
-
         self.spot_diff_ax.imshow(sum_error())
         self.spot_diff_ax.set_xticks = []
         self.spot_diff_ax.set_yticks = []
@@ -671,11 +633,16 @@ def analysis_change(text, self):
     =======
     Nothing - loads figure data
     """
+    # Make boarders red as an indicator to the User
     make_red(self)
+
+    # Obtaining new textbox values
     self.med_blur_dis_val = int(self.med_blur_dis_tb.text)
     self.med_blur_h_val = int(self.med_blur_h_tb.text)
     self.stdev_val = float(self.stdev_tb.text)
     self.bkgx_val = float(self.multiplier_tb.text)
+
+    # Reloading dynamic data
     load_dynamic_data(self.results, self.vmin_spot_val, self.vmax_spot_val,
                       self.spot_diff_ax, self.ttheta_centroid_ax, self.chi_centroid_ax,
                       self.med_blur_dis_val, self.med_blur_h_val, self.stdev_val,
@@ -701,6 +668,7 @@ def make_red(self):
     axes = [self.ttheta_map_ax, self.chi_map_ax,
             self.reprocessbtn_ax]
     sides = ['left', 'right', 'top', 'bottom']
+    # Making all the axes red
     for ax in axes:
         for side in sides:
             ax.spines[side].set_color('red')
@@ -722,6 +690,7 @@ def make_pink(self):
             self.med_blur_h_ax, self.stdev_ax,
             self.multiplier_ax]
     sides = ['left', 'right', 'top', 'bottom']
+    # Making all the axis pink or black
     for ax in axes:
         for side in sides:
             ax.spines[side].set_color('fuchsia')
@@ -745,6 +714,7 @@ def make_black(self):
             self.med_blur_h_ax, self.stdev_ax,
             self.multiplier_ax]
     sides = ['left', 'right', 'top', 'bottom']
+    # Making all axes black
     for ax in axes:
         for side in sides:
             ax.spines[side].set_color('black')
@@ -764,12 +734,14 @@ def viewer_mouse_click(event, self):
     Nothing - loads figure formatting
     """
     if self.viewer_currentax in [self.fluor_ax, self.roi_ax] and self.viewer_currentax != None:
+        # Grabbing the x and y event data for the row and column values
         self.row = int(np.floor(event.ydata))
         self.column = int(np.floor(event.xdata))
         self.user_class.row = self.row
         self.user_class.column = self.column
 
         try:
+            # Resetting plots
             self.fluor_ax.lines[1].remove()
             self.fluor_ax.lines[0].remove()
             self.roi_ax.lines[1].remove()
@@ -780,6 +752,7 @@ def viewer_mouse_click(event, self):
             self.chi_map_ax.lines[0].remove()
         except:
             pass
+        # Replotting plots
         self.fluor_ax.axvline(x=self.column, color='w', linewidth=1)
         self.fluor_ax.axhline(y=self.row, color='w', linewidth=1)
 
@@ -815,6 +788,7 @@ def reprocessbtn_click(event, user_class, figure_class):
     =======
     Nothing - loads figure formatting
     """
+    # Running analysis once button has been pressed
     make_pink(figure_class)
     user_class.centroid_analysis(user_class.analysis_total_rows,
                         user_class.analysis_total_columns,
@@ -822,7 +796,7 @@ def reprocessbtn_click(event, user_class, figure_class):
                         med_blur_height=figure_class.med_blur_h_val,
                         stdev_min=figure_class.stdev_val,
                         bkg_multiplier=figure_class.bkgx_val)
-    # Set Attrs For reprocessbtn
+    # Set Attrs For reprocessbtn?
 
 
 def savingbtn_click(event, user_class, figure_class):
@@ -841,5 +815,6 @@ def savingbtn_click(event, user_class, figure_class):
     """
     make_black(figure_class)
     user_class.save()
+    # Reloading data
     reload_some_static_data(user_class.results, figure_class.roi_ax,
                             figure_class.ttheta_map_ax, figure_class.chi_map_ax)

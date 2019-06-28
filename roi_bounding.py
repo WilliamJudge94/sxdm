@@ -65,9 +65,11 @@ def textbox_btn_dropdown_setup(figure_class):
     =======
     Nothing
     """
+    # Starting the textboxes
     figure_class.vmin_tb = TextBox(figure_class.vmin_ax, 'vmin', initial='0')
     figure_class.vmax_tb = TextBox(figure_class.vmax_ax, 'vmax', initial='1000')
 
+    # Starting the buttons
     figure_class.rm_box_btn = Button(ax=figure_class.rm_box_btn_ax,
                            label='Remove\nPrevious\nBox',
                            color='teal',
@@ -96,14 +98,16 @@ def line_select_callback(eclick, erelease, figure_class):
     =======
     Nothing
     """
+    # Obtain the User event data
     x1, y1 = eclick.xdata, eclick.ydata
     x2, y2 = erelease.xdata, erelease.ydata
 
-    rect = plt.Rectangle( (min(x1, x2),min(y1, y2)), np.abs(x1-x2), np.abs(y1-y2),
+    # Create a rectangle
+    rect = plt.Rectangle((min(x1, x2), min(y1, y2)), np.abs(x1-x2), np.abs(y1-y2),
                          fill=False, color='w')
     figure_class.summed_dif_ax.add_patch(rect)
 
-    # append stored array - if it doesn't exist make it
+    # Append stored array - if it doesn't exist make it
     try:
         figure_class.pre_roi_bounding.append([x1, x2, y1, y2])
     except:
@@ -126,11 +130,13 @@ def start_bounding_box(summed_diff_pattern, user_class):
 
     roi.summed_dif_ax.imshow(roi.im, vmin=0, vmax=1000)
 
+    # Functions for clicking on figure
     p_line_select_callback = partial(line_select_callback, figure_class=roi)
     p_contbtn_click = partial(contbtn_click, figure_class=roi, user_class=user_class)
     p_vs_change = partial(vs_change, figure_class=roi)
     p_rm_box_click = partial(rm_box_click, figure_class=roi)
 
+    # Selecting a rectangle
     rs = RectangleSelector(roi.summed_dif_ax, p_line_select_callback,
                            drawtype='box', useblit=False, button=[1],
                            minspanx=5, minspany=5, spancoords='pixels',
@@ -229,12 +235,15 @@ def rm_box_click(event, figure_class):
         all_boxes = figure_class.pre_roi_bounding
     except:
         pass
+
+    # Clear axis and reload image
     vmin = int(figure_class.vmin_tb.text)
     vmax = int(figure_class.vmax_tb.text)
     figure_class.summed_dif_ax.cla()
     figure_class.summed_dif_ax.imshow(figure_class.im, vmin=vmin, vmax=vmax)
     store_bound = []
 
+    # Remove the last bounding box created
     try:
         for r in all_boxes[0:-1]:
             x1 = r[0]

@@ -12,7 +12,23 @@ from mis import grab_fov_dimensions
 
 
 def summed2d_all_data(self, bkg_multiplier=0):
+    """Loads the summed diffraction patter without using a large amount of RAM
+
+    Parameters
+    ==========
+    self (SXDMFrameset)
+        the sxdmframeset object
+    bkg_multiplier (int)
+        the multiplier for the background images
+
+    Returns
+    =======
+    the 2D summed diffraction pattern
+    """
+    # Grab the fov dimensions
     dims = grab_fov_dimensions(self)
+
+    # Determining the rows and columns
     rows = dims[1] - 1
     columns = dims[2] - 1
     image_array = self.image_array
@@ -22,8 +38,10 @@ def summed2d_all_data(self, bkg_multiplier=0):
     for column in tqdm(range(0, columns)):
         for row in range(0, rows):
 
+            # Getting scan locations
             pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
             destination = h5get_image_destination(self=self, pixel=pix)
+            # Getting diffraction images
             each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
 
             if bkg_multiplier != 0:
@@ -32,6 +50,7 @@ def summed2d_all_data(self, bkg_multiplier=0):
 
                 each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
             else:
+                # If bkg is set to zero no need for background correction
                 each_scan_diffraction_post = each_scan_diffraction
 
             summed_dif = np.sum(each_scan_diffraction_post, axis=0)
