@@ -180,7 +180,7 @@ def centroid_pixel_analysis(self, row, column, median_blur_distance, median_blur
     if column == 0:
         if ram_check() > 90:
             return False
-    t = datetime.now()
+
     pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
     destination = h5get_image_destination(self=self, pixel=pix)
     each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
@@ -301,7 +301,6 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
 
     # SCAN DATA
     # For each of the scan_diffraction_post
-    t1 = datetime.now()
     for diffraction in each_scan_diffraction_post:
 
         # sum down an axis
@@ -322,7 +321,6 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
         # sum to single value and store
         scan_roi_val = np.sum(ttheta_copy)
         scan_data_roi_vals.append(scan_roi_val)
-    #print('first',datetime.now() - t1)
 
     # start roi bounding arrays
     summed_data = []

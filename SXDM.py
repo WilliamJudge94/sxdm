@@ -127,7 +127,10 @@ class SXDMFrameset():
             else:
                 dif_im = self.dif_im
         except:
-            dif_im = summed2d_all_data(self=self, bkg_multiplier=bkg_multiplier)
+            try:
+                dif_im = self.centroid_viewer_summed_dif
+            except:
+                dif_im = summed2d_all_data(self=self, bkg_multiplier=bkg_multiplier)
             self.dif_im = dif_im
         roi, rs = start_bounding_box(dif_im, self)
         self.rando1 = roi

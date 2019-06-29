@@ -20,9 +20,9 @@ def centroid_pixel_analysis_multi(row, column, median_blur_distance, median_blur
         the row the User wants to do analysis on
     column: (int)
         the column the User wants to do analysis on
-    med_blur_distance: (int)
+    median_blur_distance: (int)
         the amount of values to scan for median blur
-    med_blur_height:  (int)
+    median_blur_height:  (int)
         the height cut off for the median blur
     stdev_min: (int)
         standard deviation above the mean of signal to ignore
@@ -187,7 +187,6 @@ def roi_pixel_analysis_multi(row, column, median_blur_distance,
         # sum to single value and store
         scan_roi_val = np.sum(ttheta_copy)
         scan_data_roi_vals.append(scan_roi_val)
-    #print('first',datetime.now() - t1)
 
     # start roi bounding arrays
     summed_data = []
@@ -221,7 +220,6 @@ def roi_pixel_analysis_multi(row, column, median_blur_distance,
             # sum to single value and store
             summed_data_roi_val = np.sum(ttheta_copy)
             summed_data_roi_vals.append(summed_data_roi_val)
-        #print('second', datetime.now() - t2)
 
     results = [(row, column), idxs,
                raw_scan_data, corr_scan_data, scan_data_roi_vals,

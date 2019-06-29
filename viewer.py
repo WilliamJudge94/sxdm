@@ -23,6 +23,7 @@ from summed2d import summed2d_all_data
 
 def figure_setup():
     """Set up the viewer figure
+
     Returns
     =======
     All axes for the figure
@@ -76,6 +77,7 @@ def figure_setup():
 
 def sum_error():
     """If there is an error loading data, import psyduck
+
     Return
     ======
     psyduck image
@@ -84,6 +86,7 @@ def sum_error():
     # Obtain the module location
     full_path = os.path.realpath(__file__)
     new = full_path.split('/')[0:-1]
+
     # Grab the psyduck image
     new2 = np.append(new, ['templates', 'psy.png'])
     new3 = '/'.join(new2)
@@ -94,12 +97,14 @@ def sum_error():
 
 def btn_setup(reproocessbtn_ax, savingbtn_ax):
     """Set up the reprocess and saving button
+
     Parameters
     ==========
-    reproocessbtn_ax (matplotlib axis)
+    reproocessbtn_ax: (matplotlib axis)
         the reproocess button figure axis
-    savingbtn_ax (matplotlib axis)
+    savingbtn_ax: (matplotlib axis)
         the saving button figure axis
+
     Return
     ======
     reprocess and saving button
