@@ -8,6 +8,8 @@ import os
 import sys
 from functools import partial
 from time import time
+import warnings
+import time
 
 import h5py
 
@@ -440,6 +442,8 @@ def run_viewer(user_class, fluor_image):
     =======
     Nothing - loads figure data
     """
+    image_array_bkg_check(user_class)
+
     try:
         dummy = user_class.centroid_viewer_summed_dif
     except:
@@ -826,3 +830,20 @@ def savingbtn_click(event, user_class, figure_class):
     # Reloading data
     reload_some_static_data(user_class.results, figure_class.roi_ax,
                             figure_class.ttheta_map_ax, figure_class.chi_map_ax)
+
+
+def image_array_bkg_check(self):
+    try:
+        im_array = self.image_array
+
+    except:
+        warnings.warn('Please Run The create_immagearray(self) Function')
+
+    print(' ')
+    time.sleep(0.5)
+    try:
+        bkg = self.scan_background
+
+    except:
+        warnings.warn('Please Run The scan_background(self) Function')
+

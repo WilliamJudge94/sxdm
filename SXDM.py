@@ -313,7 +313,7 @@ class SXDMFrameset():
 
         self.log.info('Starting self.centroid_viewer')
 
-        warnings.warn('The Starting Parameters In The Viewer May Not Be Identical The Parameters Used For The Analysis')
+        warnings.warn('The Starting Parameters In The Viewer May Not Be\nIdentical To The Parameters Used For The Analysis')
         try:
             fluor_image = centering_det(self)
             fluor_image = fluor_image[0]

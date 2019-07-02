@@ -36,3 +36,11 @@ from roi_bounding import *
 from SXDM import *
 from summed2d import *
 from viewer import *
+
+
+def warning_on_one_line(message, category, filename, lineno, file=None, line=None):
+    """Warning formatter
+    """
+    return ' %s:%s: %s:%s' % (filename, lineno, category.__name__, message)
+
+warnings.formatwarning = warning_on_one_line

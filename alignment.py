@@ -37,6 +37,7 @@ def alignment_function(self):
                 self.alignment_group = h5read_attr(file=self.file,
                                                    loc=self.dataset_name + '/dxdy',
                                                    attribute_name='alignment_group')
+
                 self.alignment_subgroup = h5read_attr(file=self.file,
                                                       loc=self.dataset_name + '/dxdy',
                                                       attribute_name='alignment_subgroup')
@@ -57,7 +58,7 @@ def alignment_function(self):
         else:
             try:
                 print('Previous Alignment Done On - {} - {}'.format(self.alignment_group,
-                                                                self.alignment_subgroup))
+                                                                    self.alignment_subgroup))
             except Exception as ex:
                 print('alignment.py/alignment_function 1', ex)
 
@@ -76,7 +77,7 @@ def alignment_function(self):
         # Ask which images the user wants to align to
         while cont == True:
             user_val = input('Would You Like To Align On fluor Or roi? ')
-            if user_val == 'fluor' or user_val == 'roi':
+            if user_val in ['fluor', 'roi']:
                 cont = False
             else:
                 warnings.warn('Please Type In An Acceptable Values: ')
@@ -85,6 +86,8 @@ def alignment_function(self):
         det_return = return_det(file=self.file,
                                 scan_numbers=self.scan_numbers,
                                 group=user_val)
+
+        # Setting up figure data
         images = det_return[0]
         self.alignment_subgroup = det_return[1]
         self.alignment_group = user_val
@@ -102,6 +105,7 @@ def alignment_function(self):
         # Try to ravel axis - if data is 1D continue to the except code
         try:
             self.loc_axs = axs.ravel()
+
         except:
             warnings.warn('Ravel Function Not Called. Possible 1D Image Trying To Load')
             self.loc_axs = [axs]
@@ -116,6 +120,7 @@ def alignment_function(self):
         for i, image in enumerate(images):
             self.loc_axs[i].imshow(image)
             axs_store.append(self.loc_axs[i].get_position())
+
         if redo_alignment == 'y':
             for num, old_ax in enumerate(retrieve_old_data):
                 old_clicks = retrieve_old_data[old_ax]
@@ -148,9 +153,11 @@ def reset_dxdy(self):
     """
     # Delete old dataset
     h5del_group(self.file, self.dataset_name + '/dxdy')
+
     # Start new one
     init_dxdy(self)
     new_dic = self.dxdy_store
+
     # Save the dataset we just made
     h5create_dataset(file=self.file, ds_path=self.dataset_name + '/dxdy',
                      ds_data=dic2array(new_dic))

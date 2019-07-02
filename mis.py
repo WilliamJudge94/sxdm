@@ -760,5 +760,3 @@ def total_rows_int_tup(input, difference=False):
         return start, end
     elif difference == True:
         return end - start
-
-

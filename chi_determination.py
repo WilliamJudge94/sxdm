@@ -287,6 +287,7 @@ def closebtn_start(chi_figures, btn_ax):
                       label='Finish',
                       color='teal',
                       hovercolor='tomato')
+
     chi_figures.closebtn = closebtn
 
 
