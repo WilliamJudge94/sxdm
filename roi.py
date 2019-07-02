@@ -516,9 +516,16 @@ def close_all(event):
 def display_summed_ims(figure_class, user_class):
     """Show the summed diffraction pattern with all assigned bounding boxes
 
-    :param figure_class:
-    :param user_class:
-    :return:
+    Parameters
+    ==========
+    figure_class: (ROI_FigureClass)
+        the roi_figureclass object
+    user_class: (SXDMFrameset)
+        the sxdmframeset object
+
+    Returns
+    =======
+    Nothing - displays the summed diffraction pattern along with the User selected bounding boxes
     """
 
     rect = user_class.diff_segment_squares
@@ -562,10 +569,18 @@ def display_summed_ims(figure_class, user_class):
 def display_summed_ims_reload(val, figure_class, user_class):
     """Allows the summed diffraction images to be displayed
 
-    :param val:
-    :param figure_class:
-    :param user_class:
-    :return:
+    Parameters
+    ==========
+    val: (matplotlib val)
+        matplotlib variable
+    figure_class: (ROI_FigureClass)
+        the roifigureclass object
+    user_class: (SXDMFrameset)
+        the sxdmframeset object
+
+    Return
+    ======
+    Nothing - reloads the summed diffraction images in the figure
     """
     display_summed_ims(figure_class=figure_class, user_class=user_class)
 
@@ -573,8 +588,14 @@ def display_summed_ims_reload(val, figure_class, user_class):
 def bounding_box_total_setup(user_class):
     """Complete setup of the summed diffraction pattern with the bounding boxes on top of them
 
-    :param user_class:
-    :return:
+    Parameters
+    ==========
+    user_class: (SXDMFrameset)
+        the sxdmframeset object
+
+    Returns
+    =======
+    Nothing - sets up all the bounding box figures and loads all items
     """
     user_class.roi_sum_im = results_2dsum(user_class)
     sum_fig = ROI_FiguresClass()
@@ -586,10 +607,18 @@ def bounding_box_total_setup(user_class):
 def top_plot_start(figure_class, user_class, types='scan'):
     """Initiate the gaus plot
 
-    :param figure_class:
-    :param user_class:
-    :param types:
-    :return:
+    Parameters
+    ==========
+    figure_class: (ROI_FigureClass)
+        the roi_figureclass object
+    user_class: (SXDMFrameset)
+        the sxdmframeset object
+    types: (str)
+        either 'scan' or 'bounding' allow the User to choose which figure they are working on
+
+    Returns
+    =======
+    Nothing
     """
     figure_class.gaus_ax.cla()
 
