@@ -2,6 +2,7 @@ import numpy as np
 from multiprocessing.pool import ThreadPool
 from multiprocessing import Process, Queue
 import logging
+import h5py
 
 from mis import ram_check, median_blur, get_idx4roi
 from h5 import h5get_image_destination, h5grab_data
@@ -143,8 +144,17 @@ def sum_pixel(self, images_loc):
     all images set in the image_loc variable
     """
     pixel_store = []
-    for image in images_loc:
-        pixel_store.append(h5grab_data(self.file, image))
+
+    with h5py.File(self.file, 'r') as hdf:
+        for image in images_loc:
+
+            data = hdf.get(image)
+            data = np.array(data)
+            pixel_store.append(data)
+
+    #for image in images_loc:
+    #    pixel_store.append(h5grab_data(self.file, image))
+
     return pixel_store
 
 

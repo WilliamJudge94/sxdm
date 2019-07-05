@@ -1,4 +1,5 @@
 import numpy as np
+import h5py
 
 from h5 import h5grab_data
 from mis import centering_det
@@ -59,13 +60,19 @@ def scan_background(self, amount2ave=3, multiplier=1):
     background_store = []
 
     # Average each scans images together
-    for scan in background_loc_store:
-        middle_store = []
-        for location in scan:
-            data = h5grab_data(file=self.file,
-                               data_loc=location)
-            middle_store.append(data)
-        background_store.append(np.mean(middle_store, axis=0))
+
+    with h5py.File(self.file, 'r') as hdf:
+
+        for scan in background_loc_store:
+            middle_store = []
+
+            for location in scan:
+                data = hdf.get(location)
+                data = np.array(data)
+
+                middle_store.append(data)
+
+            background_store.append(np.mean(middle_store, axis=0))
 
     # Create a dictionary of these entries so it is easier to get info out
     background_dic = {}

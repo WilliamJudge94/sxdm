@@ -39,6 +39,7 @@ def summed2d_all_data(self, bkg_multiplier=0):
             # Getting scan locations
             pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
             destination = h5get_image_destination(self=self, pixel=pix)
+
             # Getting diffraction images
             each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
 
