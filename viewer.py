@@ -827,13 +827,18 @@ def savingbtn_click(event, user_class, figure_class):
     """
     make_black(figure_class)
     user_class.save()
-    
+
     # Reloading data
     reload_some_static_data(user_class.results, figure_class.roi_ax,
                             figure_class.ttheta_map_ax, figure_class.chi_map_ax)
 
 
 def image_array_bkg_check(self):
+    """Warns the User if they have not started the create_imagearray() or scan_background() functions
+
+    :param self:
+    :return:
+    """
     try:
         im_array = self.image_array
 
