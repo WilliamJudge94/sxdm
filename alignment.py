@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import warnings
 from matplotlib.widgets import Button
 
-from h5 import h5path_exists, h5read_attr, h5grab_data
+from h5 import h5path_exists, h5read_attr, h5grab_data, h5set_attr
 from mis import array2dic, figure_size_finder
 from clicks import *
 from det_chan import return_det
@@ -60,7 +60,7 @@ def alignment_function(self):
                 print('Previous Alignment Done On - {} - {}'.format(self.alignment_group,
                                                                     self.alignment_subgroup))
             except Exception as ex:
-                print('alignment.py/alignment_function 1', ex)
+                print('alignment.py/alignment_function 2', ex)
 
             # Grabbing old alignment and setting alignment circles
             retrieve_old_data = array2dic(array=h5grab_data(file=self.file,
@@ -151,6 +151,10 @@ def reset_dxdy(self):
     =======
     Nothing
     """
+    # Get old alignment group data
+    old_group = h5read_attr(self.file, '{}/dxdy'.format(self.dataset_name), 'alignment_group')
+    old_subgroup = h5read_attr(self.file, '{}/dxdy'.format(self.dataset_name), 'alignment_subgroup')
+
     # Delete old dataset
     h5del_group(self.file, self.dataset_name + '/dxdy')
 
@@ -161,3 +165,7 @@ def reset_dxdy(self):
     # Save the dataset we just made
     h5create_dataset(file=self.file, ds_path=self.dataset_name + '/dxdy',
                      ds_data=dic2array(new_dic))
+
+    # Reset old alignment group data
+    h5set_attr(self.file, '{}/dxdy'.format(self.dataset_name), 'alignment_group', old_group)
+    h5set_attr(self.file, '{}/dxdy'.format(self.dataset_name), 'alignment_subgroup', old_subgroup)

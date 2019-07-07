@@ -164,13 +164,16 @@ def rec_select_setup(figure_class):
     =======
     Nothing
     """
+    # Create a partial function for ease of use
     p_line_select_callback = partial(line_select_callback, ax=figure_class.summed_dif_ax)
 
+    # Make a rectangle selector
     rs = RectangleSelector(figure_class.summed_dif_ax, p_line_select_callback,
                            drawtype='box', useblit=False, button=[1],
                            minspanx=5, minspany=5, spancoords='pixels',
                            interactive=True)
 
+    # This allows the User to see the box being drawn when they click and drag
     plt.show(block=True)
 
 
@@ -188,8 +191,10 @@ def contbtn_click(event, figure_class, user_class):
     =======
     Nothing
     """
+    # Setting the bounding box data
     user_class.diff_segment_squares =figure_class.pre_roi_bounding
 
+    # Close all figures
     plt.close(figure_class.fig)
 
 
@@ -207,13 +212,17 @@ def vs_change(text, figure_class):
     =======
     Nothing
     """
+    # Obtain the vmin and vmax values
     vmin = int(figure_class.vmin_tb.text)
     vmax = int(figure_class.vmax_tb.text)
 
+    # Clear the axes
     figure_class.summed_dif_ax.cla()
 
+    # Show the image
     figure_class.summed_dif_ax.imshow(figure_class.im, vmin=vmin, vmax=vmax)
 
+    # Do this
     figure_class.pre_roi_bounding = []
 
 

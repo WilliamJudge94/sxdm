@@ -1,11 +1,3 @@
-
-# scan_roi
-# Top plot of the gaussian check
-# bottom left have a way to flick through the rois
-# bottom right summed roi
-# be able to click on the scan_roi and pull up the median_blur_data for it
-# show the median_blur_data
-
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.widgets import Button, TextBox, Slider
@@ -645,11 +637,20 @@ def top_plot_start(figure_class, user_class, types='scan'):
 def top_plot_reload(val, figure_class, user_class, types='scan'):
     """Reloads the gaus plot
 
-    :param val:
-    :param figure_class:
-    :param user_class:
-    :param types:
-    :return:
+    Parameters
+    ==========
+    val: (matplotlib val)
+        the value for matplot lib events
+    figure_class: (ROIFigure_Class)
+        the roifigure_class objects
+    user_class: (SXDMFrameset)
+        the sxdmframeset object
+    types: (str)
+        either 'scan' or 'bounding' - determines which plots need to be reloaded
+
+    Returns
+    =======
+    Nothing - reloads the top plot in the roi figures
     """
     top_plot_start(figure_class=figure_class, user_class=user_class, types=types)
 
@@ -657,74 +658,122 @@ def top_plot_reload(val, figure_class, user_class, types='scan'):
 def grab_int_v_scan(user_class, types='scan'):
     """Grab the data needed for the gaus plot
 
-    :param user_class:
-    :param types:
-    :return:
+    Parameters
+    ==========
+    user_class: (SXDMFrameset)
+        the sxdmframeset object
+    types: (str)
+        either 'scan' or 'bounding' - determines which plots the User would like to get information for
+
+    Returns
+    =======
+    Nothing - sets up the x and y values for the top plot of either the Scan ROI or the Bounding Box ROI
     """
+
+    # Return the ROI data for each scan
     output = create_rois(user_class)
 
+    # If we are looking at the scans as a whole
     if types == 'scan':
+        # Grab the scan thetas
         theta = np.asarray(user_class.scan_theta)
+
+        # Get their indexes when they are in order
         inds = theta.argsort()
+
+        # Make sure data isn't overwritten
         copy_theta = theta.copy()
 
+        # Get the corrected scan theta order
         user_class.ordered_scan_theta = copy_theta[inds]
         user_class.scan_theta_inds = inds
 
+        # Make sure data isn't overwritten
         copy_output = output[0].copy()
 
+        # Place the scan ROI's in the same order
         user_class.ordered_scan_roi = []
         user_class.ordered_scan_roi = copy_output[inds]
         x = theta[inds]
 
+        # Add the ROI's together
         pre_y = add_rois(output, types='scan')
 
+        # Make sure the summed values are in order
         y = pre_y[inds]
+
+        # Save the data so it can be called later
         user_class.scan_top_x = x.copy()
         user_class.scan_top_y = np.nan_to_num(y).copy()
 
 
     elif types == 'bounding':
+        # Determine how many bounding boxes there are
         x = np.arange(0, len(output[1]))
+
+        # Add up all the bounding box data
         y = add_rois(output, types='bounding')
+
+        # Store their data so it can be called later
         user_class.ordered_bounding_roi = output[1].copy()
         user_class.bounding_top_x = x
         user_class.bounding_top_y = np.nan_to_num(y)
 
 
 def add_rois(rois, types='scan'):
-    """add the create_rois output and return the correct plots
+    """Add the create_rois output and return the correct plots
 
-    :param rois:
-    :param types:
-    :return:
+    Parameters
+    ==========
+    rois: (nd.array)
+        the rois the user would like to add together
+    types: (str)
+        either 'scan' or 'bounding' - depends on what roi's the User sets for the rois variable
+
+    Returns
+    =======
+    1d.array of the roi's summed
     """
     summed = []
 
+    # Get the right roi location based on User types input
     if types == 'scan':
         master_roi = rois[0]
     elif types == 'bounding':
         master_roi = rois[1]
 
+    # For each roi sum the value and store it
     for array in master_roi:
         ar = array.copy()
         s = np.nansum(ar)
         c = np.count_nonzero(np.isnan(ar)) * np.nanmedian(ar)
         summed.append(s)
 
+    # Return the stored array
     return np.asarray(summed)
 
 
 def right_roi(user_class, types='scan'):
     """Plots the right roi plot
 
-    :param user_class:
-    :param types:
-    :return:
+    Parameters
+    ==========
+    user_class: (SXDMFrameset)
+        the sxdmframeset object
+    types: (str)
+        either 'scan' or 'bounding' - depends on which figure is being called
+
+    Returns
+    =======
+    The entire summed region of interest for either the scans or the bounding boxes
     """
+
+    # Obtain the ROI's
     output = create_rois(user_class)
     output = np.asarray(output)
     output2 = output.copy()
+
+    # Return the right axis
     if types == 'scan':
         return np.nansum(output2[0], axis=0)
     elif types == 'bounding':
@@ -734,29 +783,67 @@ def right_roi(user_class, types='scan'):
 def display_right_roi(figure_class, im):
     """Displays the right roi plot
 
-    :param figure_class:
-    :param im:
-    :return:
+    Parameters
+    ==========
+    figure_class: (ROI_FigureClass)
+        the roi_figureclass object
+    im: (nd.array)
+        the image array to be displayed
+
+    Returns
+    =======
+    Nothing - displays the right roi image
     """
+    # Obtain the vmin and vmax values for the imshow function
     vmin = int(figure_class.vmin_sum_tb.text)
     vmax = int(figure_class.vmax_sum_tb.text)
+
+    # Display the image
     figure_class.summed_roi_ax.imshow(im, vmin=vmin, vmax=vmax)
 
 def display_right_roi_reload(val, figure_class, im):
+    """Load the Right ROI data
+
+    Parameters
+    ==========
+    val: (matplotlib event)
+        the val matplotlib event
+    figure_class: (ROI_FigureClass)
+        the roi_figureclass object
+    im: (nd.array)
+        the image to be displayed
+
+    Returns
+    =======
+    Nothing - reloads the right figure data
+    """
     display_right_roi(figure_class=figure_class, im=im)
 
 
 def display_left_roi(figure_class, user_class, types='scan'):
     """Sets up the display for the left roi plot
 
-    :param figure_class:
-    :param user_class:
-    :param types:
-    :return:
+    Parameters
+    ==========
+    figure_class: (ROI_FigureClass)
+        the roi_figureclass object
+    user_class: (SXDMFrameset)
+        the sxdmframeset object
+    types: (str)
+        either 'scan' or 'bounding'
+
+    Returns
+    =======
+    Nothing - displays the left roi figure
     """
+    # Clear the axis
     figure_class.scan_roi_ax.cla()
+
+    # Grab the vmin and vmax values
     vmin = int(figure_class.vmin_scan_tb.text)
     vmax = int(figure_class.vmax_scan_tb.text)
+
+    # Grab the correct image to be displayed
     if types == 'scan':
         im = user_class.ordered_scan_roi
         idx = int(user_class.scan_slider.val)
@@ -765,17 +852,27 @@ def display_left_roi(figure_class, user_class, types='scan'):
         im = user_class.ordered_bounding_roi
         idx = int(user_class.bounding_slider.val)
 
+    # Display the image
     figure_class.scan_roi_ax.imshow(im[idx], vmin=vmin, vmax=vmax)
 
 
 def display_left_roi_reload(val, figure_class, user_class, types='scan'):
     """Reloads the left roi
 
-    :param val:
-    :param figure_class:
-    :param user_class:
-    :param types:
-    :return:
+    Parameters
+    ==========
+    val: (matplotlib event)
+        the val matplotlib event
+    figure_class: (ROI_FigureClass)
+        the roi_figureclass object
+    user_class: (SXDMFrameset)
+        the sxdmframeset object
+    types: (str)
+        either 'scan' or 'bounding'
+
+    Returns
+    =======
+    Nothing - reloads the left image
     """
     display_left_roi(figure_class=figure_class, user_class=user_class, types=types)
 

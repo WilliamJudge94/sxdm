@@ -26,6 +26,8 @@ def initialize_group(self):
     # When .mda files are missing this function cannot import /scan_theta
     try:
         if h5path_exists(self.file, self.dataset_name) == False:
+
+            # Creating groups and initializing their datasets
             h5create_group(self.file, self.dataset_name)
             scan_numbers = scan_num_convert(self.scan_numbers)
             h5create_dataset(self.file, self.dataset_name+'/scan_numbers', scan_numbers)
@@ -33,6 +35,7 @@ def initialize_group(self):
 
         else:
 
+            # Grabbing old data from stored datasets
             old_scan_nums = h5grab_data(self.file, self.dataset_name+'/scan_numbers')
             new_scan_nums = self.scan_numbers
             new_scan_nums = np.asarray(scan_num_convert(new_scan_nums))
@@ -40,15 +43,20 @@ def initialize_group(self):
             print('Current User Input: '+str(new_scan_nums))
 
             try:
+                # See if an alignment data has already been set
                 checker = self.dxdy_store
             except:
                 try:
+                    # Try to grab old alignment data
                     self.dxdy_store = grab_dxdy(self)
-                except:
-                    pass
+                except Exception as ex:
+                    warnings.warn('{} - Alignment Data Not Found'.format(ex))
 
+            # If the old scans equal the new scans tell the User
             if np.array_equal(old_scan_nums, new_scan_nums) == True:
                 print('Importing Identical Scans. Reloading Saved Data...\n')
+
+            # If they don't give them the option to delete the old group and start again
             else:
                 user_val = input('New Scans Detected. Would You Like To Delete Current Group And Start Again? y/n ')
 

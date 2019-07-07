@@ -50,8 +50,8 @@ def onclick_1(event, self):
                     elif i > self.max_images:
                         self.clicks['ax'] = self.max_images
                         self.clicks['loc'] = old_loc
-        except Exception as ex:
-            print('clicks.py/onclick_1', ex)
+        except:
+            pass
 
 
 def onclick_2(event, self):
