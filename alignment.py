@@ -65,8 +65,10 @@ def alignment_function(self):
             # Grabbing old alignment and setting alignment circles
             retrieve_old_data = array2dic(array=h5grab_data(file=self.file,
                                                             data_loc=self.dataset_name + '/dxdy'))
-
             warnings.warn('Refreshing Old Alignment Data')
+
+            if len(retrieve_old_data.keys()) > len(self.scan_numbers):
+                warnings.warn('Saved Alignment Has More Scans Than Current Import - Please Set reset=True')
 
         # Create variables to store data
         self.clicks = {}

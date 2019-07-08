@@ -9,14 +9,14 @@ from sxdm import *
 
 test_path = os.path.dirname(__file__)
 main_path = '{}/'.format(test_path)
-test_file_path = main_path+'test.h5'
+
 test_data_file_path = main_path + 'test_data.h5'
 pixel_analysis_checker_path = main_path + 'test_data.npy'
 
-
+test_file_path = main_path+'test.h5'
 scan_numbers = [178, 178]
 dataset_name = '178'
-test_fs = SXDMFrameset(test_data_file_path,dataset_name, scan_numbers = scan_numbers)
+test_fs = SXDMFrameset(test_data_file_path, dataset_name, scan_numbers=scan_numbers)
 
 
 class PixelTestCase(unittest.TestCase):
@@ -34,6 +34,27 @@ class PixelTestCase(unittest.TestCase):
 
         self.assertTrue(all(out_checker))
 
+    def test_theta_maths(self):
+        pass
+
+    def test_chi_maths(self):
+        pass
+
+    def test_centroid_finder(self):
+        pass
+
+    def test_grab_pix(self):
+        pass
+
+    def test_sum_pixel(self):
+        pass
+
+    def test_segment_diffraction_roi(self):
+        pass
+
+    def test_roi_pixel_analysis(self):
+        pass
+    
 
 if __name__ == '__main__':
     unittest.main()

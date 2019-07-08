@@ -370,4 +370,3 @@ def h5get_image_destination(self, pixel):
             pixels_minus_nan.append(image_loc + scan + '/' + str(pixel[i]).zfill(6))
 
     return pixels_minus_nan
-

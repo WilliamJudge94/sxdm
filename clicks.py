@@ -109,7 +109,7 @@ def fig1_click(event, self, fig, images):
 
     plt.waitforbuttonpress(0)
 
-    # Grabing dxdy store movements and place their circle locations
+    # Grabbing dxdy store movements and place their circle locations
     self.dxdy_store[self.clicks['ax']] = self.clicks['loc']
 
     circ = Circle((self.clicks['loc'][0], self.clicks['loc'][1]), 0.3, color='r')
