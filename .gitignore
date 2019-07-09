@@ -1,4 +1,6 @@
 #ignore .pyc files
 *.pyc
 .ipynb_checkpoints/
+plans.py
+*.ipynb
 
