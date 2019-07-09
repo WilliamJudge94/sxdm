@@ -205,7 +205,7 @@ def roi_analysis(self, rows, columns, med_blur_distance=4,
                   med_blur_height=10,
                   stdev_min=35, multiplier=1,
                   center_around=False,
-                 diff_segmentation=False):
+                 diff_segmentation=True):
 
     """Calculates region of interest for each scan as well as the region of interest maps for
     user defined sub region of interests

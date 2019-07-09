@@ -5,6 +5,7 @@ from scipy.ndimage import shift
 import scipy.signal as me_blur
 import psutil
 import warnings
+import pickle
 
 import h5py
 
@@ -761,3 +762,21 @@ def total_rows_int_tup(input, difference=False):
         return start, end
     elif difference == True:
         return end - start
+
+
+def save_variable_pickle(array_of_vars, file):  # namespace=globals()):
+    # Obtain all the names of the input variables
+    # names = [namestr(value, namespace) for value in array_of_vars]
+
+    # Make a save array with all the variable names
+    # save_array = [array_of_vars, names]
+
+    # Only saving the array_of_vars - thinking about including variable names somehow
+    with open(file, 'wb') as f:
+        pickle.dump(array_of_vars, f)
+
+
+def load_variable_pickle(file):
+    # Load the variables
+    with open(file, 'rb') as f:
+        return pickle.load(f)
