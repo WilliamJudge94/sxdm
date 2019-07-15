@@ -26,6 +26,23 @@ class SXDMFrameset():
     def __init__(self, file, dataset_name,
                   scan_numbers=False, fill_num=4, restart_zoneplate=False):
 
+        """Creates The SXDMFrameset Object
+
+        Parameters
+        ==========
+
+        file: (str)
+            the path to the hdf5 file you would like to import data from
+        dataset_name: (str)
+            the group name of the scans you are importing
+        scan_numbers: (nd.array or False)
+            an array of ints of the scan numbers you would like to group together.
+            if False - this will import the stored/previously completed scan numbers data
+        fill_num: (int)
+            the amount of digits in the image file number
+        restart_zoneplate: (bool)
+            if you would like to restart the zoneplate data set this to True
+        """
         self.file = file
         self.dataset_name = dataset_name
 
