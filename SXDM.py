@@ -54,8 +54,15 @@ class SXDMFrameset():
         initialize_saving(self)
         initialize_logging(self)
 
-        shape_check(self)
-        resolution_check(self)
+        try:
+            shape_check(self)
+        except Exception as ex:
+            print('SXDM.py/__init__1', ex)
+        try:
+            resolution_check(self)
+        except Exception as ex:
+            print('SXDM.py/__init__2', ex)
+
 
     def alignment(self, reset=False):
         """Allows the user to align all scans based on Fluorescence Maps or ROI Maps
