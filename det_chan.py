@@ -289,11 +289,22 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
                 else:
                     det = user_val
                 det = 'D' + det.zfill(2)
+
+                shapes = []
+
                 for i, scan in enumerate(scan_numbers):
                     fluors = h5grab_data(file=file,
                                          data_loc='mda/' + scan + '/' + det)
+                    shapes.append(np.shape(fluors))
+
                     fluor_array.append(fluors)
                 end = True
+
+
+                # Correcting for terrible matlab code filenumber logging
+                if group == 'filenumber':
+                    fluor_array = []
+                    fluor_array = true_filenumbers(file=file, scan_numbers=scan_numbers, shapes=shapes)
 
                 # Correct the dimensions of each scan to make sure they are all the same
                 if dim_correction == True:
@@ -308,6 +319,44 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
                 warnings.warn('Please Type In An Acceptable Value')
     else:
         warnings.warn('Please Type In An Acceptable Value')
+
+
+def true_filenumbers(file, scan_numbers,  shapes):
+    final_locations = []
+
+    # for each scan number
+    for i, scan in enumerate(scan_numbers):
+
+        shape = shapes[i]
+
+        # get the im numbers
+        im_list = h5group_list(file, '/images/{}'.format(scan))
+
+        # get the np array
+        im_list_np = np.array(im_list)
+
+        # get the im numbers
+        im_nums_pre = im_list_np[:, 0]
+
+        im_nums = [float(i) for i in im_nums_pre]
+
+        # length check
+        if len(im_nums) != shape[0] * shape[1]:
+            warnings.warn('Image Numbers Wrong - Fix Code')
+
+        # flip
+        ims_flip1 = np.flip(im_nums)
+
+        # reshape
+        ims_reshape = ims_flip1.reshape((shape[0], shape[1]))
+
+        # flip again
+        locations = np.flip(ims_reshape, axis=1)
+
+        final_locations.append(locations)
+
+    return final_locations
+
 
 def max_dims(array):
     """Get the max dimensions for an array of 2D images

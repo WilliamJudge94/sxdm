@@ -105,6 +105,7 @@ def h5grab_data(file, data_loc):
     with h5py.File(file, 'r') as hdf:
         data = hdf.get(data_loc)
         data = np.array(data)
+
     return data
 
 
@@ -370,3 +371,35 @@ def h5get_image_destination(self, pixel):
             pixels_minus_nan.append(image_loc + scan + '/' + str(pixel[i]).zfill(6))
 
     return pixels_minus_nan
+
+def h5get_image_destination_v2(self, pixel):
+    """Determine where all the .tif images are for all the scan numbers disregarding the nan values
+
+    Parameters
+    ==========
+    self (SXDMFramset)
+        the sxdmframset
+
+    pixel (str array)
+        the image number from each scan that corresponds to a certain pixel
+
+    Returns
+    =======
+    All of the diffraction FULL image locations for each scan in a 3D array - excluding the np.nan's
+    """
+    scan_numbers = self.scan_numbers
+    image_loc = 'images/'
+    pixels_minus_nan = []
+    for i, scan in enumerate(scan_numbers):
+        if np.isnan(pixel[i]) == False:
+            #pixels_minus_nan.append(image_loc + scan + '/' + str(pixel[i]).zfill(6))
+            pixels_minus_nan.append((scan, str(pixel[i]).zfill(6)))
+
+    return pixels_minus_nan
+
+def open_h5(file):
+    hdf = h5py.File(file, 'r')
+    return hdf
+
+def close_h5(hdf):
+    hdf.close()

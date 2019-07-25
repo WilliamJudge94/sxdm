@@ -9,6 +9,7 @@ from background import scan_background_finder, scan_background
 from mis import median_blur, get_idx4roi, ram_check
 from pixel import theta_maths, chi_maths, centroid_finder, grab_pix
 from multi import initialize_vectorize
+from h5 import open_h5, close_h5
 
 
 def centroid_pixel_analysis_multi(row, column, median_blur_distance, median_blur_height,
@@ -44,7 +45,10 @@ def centroid_pixel_analysis_multi(row, column, median_blur_distance, median_blur
 
     pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
     destination = h5get_image_destination_multi(scan_numbers=scan_numbers, pixel=pix)
+
+
     each_scan_diffraction = sum_pixel_multi(file=file, images_loc=destination)
+
 
     # Background Correction
     backgrounds = scan_background_finder(destination=destination, background_dic=background_dic)
@@ -106,8 +110,13 @@ def sum_pixel_multi(file, images_loc):
     =======
     all images set in the image_loc variable
     """
-    with h5py.File(file, 'r') as hdf:
-        pixel_store = [hdf.get(image).value for image in images_loc]
+
+    pixel_store = []
+    for image in images_loc:
+        pixel_store.append(file.get(image).value)
+
+    #pixel_store = [file.get(image).value for image in images_loc]
+
     return pixel_store
 
 
@@ -339,9 +348,11 @@ def centroid_pre_analysis(inputs, meds_d, meds_h, st, image_array, scan_numbers,
      the results from the centroid_pixel_analysis_multi() function
      """
 
-    row, column = inputs
-    results = centroid_pixel_analysis_multi(row, column, meds_d, meds_h, st,
-                                            image_array, scan_numbers, background_dic, file)
+    with h5py.File(file, 'r', swmr=True) as hdf:
+        row, column = inputs
+        results = centroid_pixel_analysis_multi(row, column, meds_d, meds_h, st,
+                                            image_array, scan_numbers, background_dic, hdf)
+
     return results
 
 
@@ -382,16 +393,21 @@ def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
     # Creating the background images
     background_dic = scan_background(self, multiplier=bkg_multiplier)
 
+
     # Creating a partial function
     p_centroid_pre_analysis = partial(centroid_pre_analysis, meds_d=med_blur_distance,
                                       meds_h=med_blur_height, image_array=self.image_array,
                                  background_dic=background_dic, file=self.file,
                                       st=stdev, scan_numbers=self.scan_numbers)
 
+    if isinstance(columns, tuple):
+        chunky = columns[1] - columns[0]
+    else:
+        chunky = columns
     # Start multiprocessing
     with multiprocessing.Pool() as pool:
         # add chunksize
-        results = pool.map(p_centroid_pre_analysis, inputs)
+        results = pool.map(p_centroid_pre_analysis, inputs, chunksize=chunky)
 
     return results
 

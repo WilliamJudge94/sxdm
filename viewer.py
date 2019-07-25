@@ -20,7 +20,7 @@ from pixel import theta_maths, chi_maths, grab_pix, sum_pixel
 from clicks import check_mouse_ax, fig_leave
 from h5 import h5get_image_destination
 from background import scan_background_finder
-from summed2d import summed2d_all_data
+from summed2d import summed2d_all_data, summed2d_all_data_v2
 
 
 def figure_setup():
@@ -447,7 +447,7 @@ def run_viewer(user_class, fluor_image):
     try:
         dummy = user_class.centroid_viewer_summed_dif
     except:
-        user_class.centroid_viewer_summed_dif = summed2d_all_data(self=user_class, bkg_multiplier=1)
+        user_class.centroid_viewer_summed_dif = summed2d_all_data_v2(self=user_class, bkg_multiplier=1)
     # Determine that the starting row and column values should be
     ro = user_class.analysis_total_rows
     co = user_class.analysis_total_columns

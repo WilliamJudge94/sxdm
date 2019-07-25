@@ -145,7 +145,7 @@ class SXDMFrameset():
 
         try:
             if restart==True:
-                dif_im = summed2d_all_data(self=self, bkg_multiplier=bkg_multiplier)
+                dif_im = summed2d_all_data_v2(self=self, bkg_multiplier=bkg_multiplier)
                 self.dif_im = dif_im
 
             else:

@@ -13,8 +13,10 @@ end
 
 addpath (loadmda_path);
 % Create a loading bar for the user
-bar = waitbar(1,'Program is Running, Please Wait');
-counter = 1;
+bar1 = waitbar(0,'Program is Running, Please Wait');
+
+
+counter1 = 1;
 
 % Collect all the mda files in the path
 mda_files = dir(mda_path);
@@ -43,17 +45,26 @@ for filename = filenames
         user_input_corr2 = user_input_corr;
     end
     
+    
+    
     if mda_file == user_input_corr2
-        
+        counter2 = 1;
+        bar2 = waitbar(0,'Program is Running, Please Wait');
         loading_str = ['Loading Scan - ' mda_file ' -  Please Wait' ];
-        waitbar((counter-1)/total_amount,bar,loading_str);
-        counter = counter + 1;
+        
+        waitbar((counter1 - 1)/total_amount, bar1, loading_str);
+        
+        counter1 = counter1 + 1;
         % For each detector channel
         for detector_channel = (1:detector_channel_limit)
+            loading_str = ['Loading Detector - ' int2str(counter2) ' -  Please Wait' ];
+
+            waitbar((counter2 - 1)/detector_channel_limit, bar2, loading_str);
+            counter2 = counter2 + 1;
+            
             % Create a string of the detector challen for the h5 file
             detector_string = strcat('D',sprintf('%02d',detector_channel));
             % Try to loadmda for that detector
-            disp(detector_channel)
             try
                 data=loadmda(filename{1},detector_channel,'n','n'); 
                 clc
@@ -76,9 +87,10 @@ for filename = filenames
                 end
             end
         end
+        close(bar2)
     end
 end
-close(bar)
+close(bar1)
 clc
 disp('Done')
         
