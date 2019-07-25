@@ -142,6 +142,12 @@ class SXDMFrameset():
         Nothing
         """
         self.log.info('Starting self.roi_segmentation')
+        try:
+            dummy = self.image_array
+
+        except Exception as ex:
+            print(ex, 'Initializing Image Array')
+            create_imagearray(self)
 
         try:
             if restart==True:
@@ -154,7 +160,7 @@ class SXDMFrameset():
             try:
                 dif_im = self.centroid_viewer_summed_dif
             except:
-                dif_im = summed2d_all_data(self=self, bkg_multiplier=bkg_multiplier)
+                dif_im = summed2d_all_data_v2(self=self, bkg_multiplier=bkg_multiplier)
             self.dif_im = dif_im
         roi, rs = start_bounding_box(dif_im, self)
         self.rando1 = roi
