@@ -325,7 +325,7 @@ def true_filenumbers(file, scan_numbers,  shapes):
     final_locations = []
 
     # for each scan number
-    for i, scan in tqdm(enumerate(scan_numbers), desc='File # Shifting'):
+    for i, scan in tqdm(enumerate(scan_numbers), desc='File # Shifting', unit='scans', total=len(scan_numbers)):
 
         shape = shapes[i]
 

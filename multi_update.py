@@ -4,6 +4,8 @@ import psutil
 from functools import partial
 import multiprocessing
 from tqdm import tqdm
+import time
+
 
 from background import scan_background_finder, scan_background
 from mis import median_blur, get_idx4roi, ram_check
@@ -263,9 +265,11 @@ def roi_pre_analysis(inputs, meds_d, meds_h, image_array, scan_numbers, backgrou
     =======
     the results from the roi_pixel_analysis_multi() function
     """
-    row, column = inputs
-    results = roi_pixel_analysis_multi(row, column, meds_d, meds_h,
-                                       image_array, scan_numbers, background_dic, file, diff_segments)
+
+    with h5py.File(file, 'r', swmr=True) as hdf:
+        row, column = inputs
+        results = roi_pixel_analysis_multi(row, column, meds_d, meds_h,
+                                           image_array, scan_numbers, background_dic, hdf, diff_segments)
     return results
 
 
@@ -382,6 +386,10 @@ def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
     a pooled results from the centroid_pixel_analysis_multi() function
     """
 
+    # Creating the background images
+    background_dic = scan_background(self, multiplier=bkg_multiplier)
+    time.sleep(2)
+
     # Creating the iterable to pool.map
     master_rows, master_columns = initialize_vectorize(num_rows=rows, num_columns=columns)
 
@@ -389,10 +397,6 @@ def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
 
     inputs = tqdm(inputs, total=len(master_rows),
               desc="Progress", unit='pixles')
-
-    # Creating the background images
-    background_dic = scan_background(self, multiplier=bkg_multiplier)
-
 
     # Creating a partial function
     p_centroid_pre_analysis = partial(centroid_pre_analysis, meds_d=med_blur_distance,

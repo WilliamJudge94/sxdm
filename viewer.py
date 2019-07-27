@@ -739,16 +739,30 @@ def viewer_mouse_click(event, self):
     ==========
     event (matplotlib event)
         matplotlib event
-    self (SXDMFrameset)
-        the sxdmframeset
+    self (FigureClass)
+        the figureclass object
     Returns
     =======
     Nothing - loads figure formatting
     """
     if self.viewer_currentax in [self.fluor_ax, self.roi_ax] and self.viewer_currentax != None:
         # Grabbing the x and y event data for the row and column values
-        self.row = int(np.floor(event.ydata))
-        self.column = int(np.floor(event.xdata))
+
+        t_rows = self.user_class.analysis_total_rows
+        t_columns = self.user_class.analysis_total_columns
+
+        if isinstance(t_rows, tuple):
+            correction_y = min(t_rows)
+        else:
+            correction_y = 0
+
+        if isinstance(t_columns, tuple):
+            correction_x = min(t_columns)
+        else:
+            correction_x = 0
+
+        self.row = int(np.floor(event.ydata)) + correction_y
+        self.column = int(np.floor(event.xdata)) + correction_x
         self.user_class.row = self.row
         self.user_class.column = self.column
 
@@ -768,14 +782,14 @@ def viewer_mouse_click(event, self):
         self.fluor_ax.axvline(x=self.column, color='w', linewidth=1)
         self.fluor_ax.axhline(y=self.row, color='w', linewidth=1)
 
-        self.roi_ax.axvline(x=self.column, color='w', linewidth=1)
-        self.roi_ax.axhline(y=self.row, color='w', linewidth=1)
+        self.roi_ax.axvline(x=self.column - correction_x, color='w', linewidth=1)
+        self.roi_ax.axhline(y=self.row - correction_y, color='w', linewidth=1)
 
-        self.ttheta_map_ax.axvline(x=self.column, color='r', linewidth=0.5)
-        self.ttheta_map_ax.axhline(y=self.row, color='r', linewidth=0.5)
+        self.ttheta_map_ax.axvline(x=self.column - correction_x, color='r', linewidth=0.5)
+        self.ttheta_map_ax.axhline(y=self.row - correction_y, color='r', linewidth=0.5)
 
-        self.chi_map_ax.axvline(x=self.column, color='r', linewidth=0.5)
-        self.chi_map_ax.axhline(y=self.row, color='r', linewidth=0.5)
+        self.chi_map_ax.axvline(x=self.column - correction_x, color='r', linewidth=0.5)
+        self.chi_map_ax.axhline(y=self.row - correction_y, color='r', linewidth=0.5)
 
         load_dynamic_data(self.results, self.vmin_spot_val, self.vmax_spot_val, self.spot_diff_ax,
                               self.ttheta_centroid_ax, self.chi_centroid_ax, self.med_blur_dis_val,
