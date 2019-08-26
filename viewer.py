@@ -36,9 +36,13 @@ def figure_setup():
 
     # Initiate the basic axes
     fluor_ax = plt.subplot2grid((4, 5), (1, 0), colspan=1, rowspan=2)
+    fluor_ax.set_title('Fluorescence')
     roi_ax = plt.subplot2grid((4, 5), (1, 4), colspan=1, rowspan=2)
+    roi_ax.set_title('ROI')
     spot_diff_ax = plt.subplot2grid((4, 5), (0, 1), colspan=1, rowspan=1)
+    spot_diff_ax.set_title('User Spot Diff.')
     summed_dif_ax = plt.subplot2grid((4, 5), (0, 3), colspan=1, rowspan=1)
+    summed_dif_ax.set_title('Summed Diff.')
 
     # Initiate the ttheta axes
     ttheta_map_ax = plt.subplot2grid((4, 5), (2, 1), colspan=1, rowspan=1)
@@ -214,7 +218,7 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
     =======
     Nothing - displays figure images
     """
-
+    
     # Grab image data
     roi_im = centroid_roi_map(results, 'full_roi')
     chi_centroid = centroid_roi_map(results, 'chi_centroid')
@@ -254,6 +258,7 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
     chi_map_ax.imshow(chi_centroid, cmap='magma')
     roi_ax.imshow(roi_im, cmap='inferno')
     fluor_ax.imshow(fluor_image, cmap='inferno')
+    
 
 
 def reload_some_static_data(results, roi_ax,
@@ -355,6 +360,7 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
 
     # Clear axes
     spot_dif_ax.cla()
+    spot_dif_ax.set_title('User Spot Diff.')
     ttheta_centroid_ax.cla()
     chi_centroid_ax.cla()
 
@@ -597,6 +603,9 @@ def spot_change(text, self):
     # Clearing axes
     self.spot_diff_ax.cla()
     self.summed_dif_ax.cla()
+    
+    self.summed_dif_ax.set_title('Summed Diff.')
+    self.spot_diff_ax.set_title('User Spot Diff.')
 
     # Reloading summed diffraction image
     im = self.user_class.centroid_viewer_summed_dif
@@ -779,6 +788,9 @@ def viewer_mouse_click(event, self):
         except:
             pass
         # Replotting plots
+        print(self.column, self.row, correction_x, correction_y)
+        
+        
         self.fluor_ax.axvline(x=self.column, color='w', linewidth=1)
         self.fluor_ax.axhline(y=self.row, color='w', linewidth=1)
 

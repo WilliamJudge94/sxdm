@@ -265,10 +265,8 @@ class SXDMFrameset():
         the analysis results in the form of self.results
         """
 
-        try:
-            dummy = self.image_array
-        except:
-            create_imagearray(self)
+
+        create_imagearray(self)
 
         self.log.info('Starting self.centroid_analysis')
 
@@ -376,3 +374,15 @@ class SXDMFrameset():
         self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')
 
         self.log.info('Ending self.reload_save')
+        
+    def frame_shape(self):
+        """Returns the total imported scans shape (scan_number, rows, columns)
+        
+        :return:
+        """
+        return grab_fov_dimensions(self)
+
+    def ims_array(self, amount2ave=3, multiplier=1):
+        scan_background(self, amount2ave=amount2ave,
+                        multiplier=multiplier)
+        create_imagearray(self)

@@ -327,6 +327,7 @@ def true_filenumbers(file, scan_numbers,  shapes):
     # for each scan number
     for i, scan in tqdm(enumerate(scan_numbers), desc='File # Shifting', unit='scans', total=len(scan_numbers)):
 
+        # Determine the shape of the main files
         shape = shapes[i]
 
         # get the im numbers
@@ -342,7 +343,7 @@ def true_filenumbers(file, scan_numbers,  shapes):
 
         # length check
         if len(im_nums) != shape[0] * shape[1]:
-            warnings.warn('Image Numbers Wrong - Fix Code')
+            warnings.warn('Image Numbers Wrong - Fix Code/Imports - Scan {}'.format(scan))
 
         # flip
         ims_flip1 = np.flip(im_nums)

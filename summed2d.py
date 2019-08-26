@@ -79,11 +79,38 @@ def summed2d_all_data_v2(self, bkg_multiplier=0):
     the 2D summed diffraction pattern
     """
     # Grab the fov dimensions
-    dims = grab_fov_dimensions(self)
+    #dims = grab_fov_dimensions(self)
+    #user_input = input('What Scan Are You Doing? centroid/roi/all ?')
+
+    user_input = 'all'
+
+    if user_input == 'roi':
+        rows_pre = self.roi_analysis_total_rows
+        columns_pre = self.roi_analysis_total_columns
+    elif user_input == 'centroid':
+        rows_pre = self.centroid_analysis_total_rows
+        columns_pre = self.centroid_analysis_total_columns
+    elif user_input == 'all':
+        dims = grab_fov_dimensions(self)
+        rows_pre = dims[1] - 1
+        columns_pre = dims[2] - 1
 
     # Determining the rows and columns
-    rows = dims[1] - 1
-    columns = dims[2] - 1
+    if isinstance(rows_pre, int):
+        start_row = 0
+        end_row = rows_pre
+    elif isinstance(rows_pre, tuple):
+        start_row = rows_pre[0]
+        end_row = rows_pre[1]
+
+    if isinstance(columns_pre, int):
+        start_column = 0
+        end_column = columns_pre
+    elif isinstance(columns_pre, tuple):
+        start_column = columns_pre[0]
+        end_column = columns_pre[1]
+
+
     image_array = self.image_array
 
     bkg = scan_background(self=self, multiplier=bkg_multiplier)
@@ -91,8 +118,8 @@ def summed2d_all_data_v2(self, bkg_multiplier=0):
     # open the hdf file
     with h5py.File(self.file, 'r') as hdf:
 
-        for row in tqdm(range(0, rows), desc='Loading 2D'):
-            for column in range(0, columns):
+        for row in tqdm(range(start_row, end_row), desc='Loading 2D'):
+            for column in range(start_column, end_column):
 
                 # Getting scan locations
                 pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
