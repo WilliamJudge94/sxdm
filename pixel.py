@@ -218,8 +218,6 @@ def centroid_pixel_analysis(self, row, column, median_blur_distance, median_blur
     summed region of interest value (float)
     
     ]
-    [(row, column), summed_dif, ttheta, chi, ttheta_centroid_finder,
-               ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi]
     """
 
     image_array = self.image_array

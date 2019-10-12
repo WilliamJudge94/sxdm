@@ -319,7 +319,7 @@ class SXDMFrameset():
 
         self.log.info('Ending self.save')
 
-    def centroid_viewer(self):
+    def centroid_viewer(self, default_extents=False):
         """Allow the user to view the data in a convenient format
 
         Parameters
@@ -349,7 +349,12 @@ class SXDMFrameset():
             chi_bound_down = -master_chi
             self.extents = (two_theta_bound_left, two_theta_bound_right, chi_bound_down, chi_bound_top)
         except:
-            self.extents = None
+            two_theta_bound_right, chi_bound_top = self.image_data_dimensions()
+            self.extents = (0, two_theta_bound_right, 0, chi_bound_top)
+            
+        if default_extents:
+            two_theta_bound_right, chi_bound_top = self.image_data_dimensions()
+            self.extents = (0, two_theta_bound_right, 0, chi_bound_top)
 
         self.log.info('Starting self.centroid_viewer')
 
@@ -390,7 +395,13 @@ class SXDMFrameset():
     def frame_shape(self):
         """Returns the total imported scans shape (scan_number, rows, columns)
         
-        :return:
+        Parameters
+        ==========
+        self (SXDMFrameset)
+
+        Returns
+        =======
+        the frame set scan dimensions
         """
         return grab_fov_dimensions(self)
 
@@ -418,4 +429,10 @@ class SXDMFrameset():
         except:
             self.extents = None
             
-        
+    def image_data_dimensions(self):
+        folder = h5group_list(self.file, 'images')[0][0]
+        first_im = h5group_list(self.file, 'images/{}'.format(folder))[0][0]
+        dif_im_dims = h5grab_data(self.file, '/images/{}/{}'.format(folder, first_im))
+
+        return np.shape(dif_im_dims)
+    
