@@ -339,6 +339,18 @@ class SXDMFrameset():
         # diffraction_load variable will be phased out in future versions
         diffraction_load = True
 
+        # initiate bound
+        try:
+            master_chi = self.chi / 2
+            master_two_theta = float(self.detector_theta_center)
+            two_theta_bound_right = master_two_theta + master_chi
+            two_theta_bound_left = master_two_theta - master_chi
+            chi_bound_top = master_chi
+            chi_bound_down = -master_chi
+            self.extents = (two_theta_bound_left, two_theta_bound_right, chi_bound_down, chi_bound_top)
+        except:
+            self.extents = None
+
         self.log.info('Starting self.centroid_viewer')
 
         warnings.warn('The Starting Parameters In The Viewer May Not Be\nIdentical To The Parameters Used For The Analysis')
@@ -383,6 +395,27 @@ class SXDMFrameset():
         return grab_fov_dimensions(self)
 
     def ims_array(self, amount2ave=3, multiplier=1):
+        """Creates the Scan Background and the Image Array
+        
+        :param amount2ave: 
+        :param multiplier: 
+        :return: 
+        """
         scan_background(self, amount2ave=amount2ave,
                         multiplier=multiplier)
         create_imagearray(self)
+        
+    def make_diffraction_video(self, rows, columns, bkg_multiplier=1, vmin=0, vmax=1200):
+        
+        try:
+            master_chi = self.chi / 2
+            master_two_theta = float(self.detector_theta_center)
+            two_theta_bound_right = master_two_theta + master_chi
+            two_theta_bound_left = master_two_theta - master_chi
+            chi_bound_top = master_chi
+            chi_bound_down = -master_chi
+            self.extents = (two_theta_bound_left, two_theta_bound_right, chi_bound_down, chi_bound_top)
+        except:
+            self.extents = None
+            
+        

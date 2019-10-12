@@ -204,6 +204,22 @@ def centroid_pixel_analysis(self, row, column, median_blur_distance, median_blur
     Returns
     =======
     the analysis results as an nd.array
+    
+    # For a given row and column
+    [
+    (row_index, column_index),
+    summed diffraction pattern (set to zero to save RAM. User can change in source code in /pixel.py),
+    two theta centroid value (float)
+    chi centroid value (float)
+    two theta cropped signal (nd.array)
+    full two theta signal (nd.array)
+    chi cropped signal (nd.array)
+    full chi signal (nd.array)
+    summed region of interest value (float)
+    
+    ]
+    [(row, column), summed_dif, ttheta, chi, ttheta_centroid_finder,
+               ttheta_centroid, chi_centroid_finder, chi_centroid, full_roi]
     """
 
     image_array = self.image_array
@@ -396,3 +412,17 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
                summed_data, corr_summed_data, summed_data_roi_vals]
 
     return results
+
+def pixel_diffraction_grab(self, image_array, row, column):
+    
+    pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
+    destination = h5get_image_destination(self=self, pixel=pix)
+    each_scan_diffraction = sum_pixel(self=self, images_loc=destination)
+
+    # Background Correction
+    backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
+    each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
+
+    summed_dif = np.sum(each_scan_diffraction_post, axis=0)
+    
+    return summed_dif

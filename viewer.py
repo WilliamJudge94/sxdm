@@ -234,11 +234,13 @@ def load_static_data(results, vmin_sum, vmax_sum, fluor_ax, roi_ax,
     try:
         try:
             # If the diffraction pattern has already been loaded, reload the image
-            summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif, vmin=vmin_sum, vmax=vmax_sum)
+            summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif,
+                                 vmin=vmin_sum, vmax=vmax_sum, extent=user_class.extents)
         except:
             # If it hasn't the create the image and store it to difference sxdmframeset.variables
             user_class.centroid_viewer_summed_dif = summed2d_all_data(self=user_class, bkg_multiplier=1)
-            summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif, vmin=vmin_sum, vmax=vmax_sum)
+            summed_dif_ax.imshow(user_class.centroid_viewer_summed_dif,
+                                 vmin=vmin_sum, vmax=vmax_sum, extent=user_class.extents)
             user_class.dif_im = user_class.centroid_viewer_summed_dif
 
     except:
@@ -393,7 +395,7 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
 
     # Grab spot diffraction
     try:
-        spot_dif_ax.imshow(spot_dif, vmin=vmin_spot, vmax=vmax_spot)
+        spot_dif_ax.imshow(spot_dif, vmin=vmin_spot, vmax=vmax_spot, extent=self.extents)
     except Exception as ex:
         print('viewer.py/load_dynamic_data - 2', ex)
         spot_dif_ax.imshow(sum_error())
@@ -427,13 +429,15 @@ def load_dynamic_data(results, vmin_spot, vmax_spot, spot_dif_ax,
         chi_centroid = return_dic['chi_cent']
 
     # Plot the analysis
-    ttheta_centroid_ax.plot(ttheta, color='blue')
-    ttheta_centroid_ax.plot(ttheta_centroid_finder, color='red')
-    ttheta_centroid_ax.axvline(x=ttheta_centroid, color='black')
+    ttheta_x_bounds = convert_x_axis(ttheta, self.extents, type='ttheta', centroid_value=ttheta_centroid)
+    ttheta_centroid_ax.plot(ttheta_x_bounds[0], ttheta, color='blue')
+    ttheta_centroid_ax.plot(ttheta_x_bounds[0], ttheta_centroid_finder, color='red')
+    ttheta_centroid_ax.axvline(x=ttheta_x_bounds[1], color='black')
 
-    chi_centroid_ax.plot(chi, color='blue')
-    chi_centroid_ax.plot(chi_centroid_finder, color='red')
-    chi_centroid_ax.axvline(x=chi_centroid, color='black')
+    chi_x_bounds = convert_x_axis(chi, self.extents, type='chi', centroid_value=chi_centroid)
+    chi_centroid_ax.plot(chi_x_bounds[0], chi, color='blue')
+    chi_centroid_ax.plot(chi_x_bounds[0], chi_centroid_finder, color='red')
+    chi_centroid_ax.axvline(x=chi_x_bounds[1], color='black')
 
 
 def run_viewer(user_class, fluor_image):
@@ -627,7 +631,8 @@ def spot_change(text, self):
     # Replotting diffraction images with new vmin and vmax
     try:
         summed_dif = im
-        self.summed_dif_ax.imshow(summed_dif, vmin=self.vmin_sum_val, vmax=self.vmax_sum_val)
+        self.summed_dif_ax.imshow(summed_dif, vmin=self.vmin_sum_val, vmax=self.vmax_sum_val, 
+                                  extent=self.user_class.extents)
 
     except:
         self.summed_dif_ax.imshow(sum_error())
@@ -788,9 +793,6 @@ def viewer_mouse_click(event, self):
         except:
             pass
         # Replotting plots
-        print(self.column, self.row, correction_x, correction_y)
-        
-        
         self.fluor_ax.axvline(x=self.column, color='w', linewidth=1)
         self.fluor_ax.axhline(y=self.row, color='w', linewidth=1)
 
@@ -879,3 +881,23 @@ def image_array_bkg_check(self):
     except:
         warnings.warn('Please Run The scan_background(self) Function')
 
+
+def convert_x_axis(intensity_values, extents, centroid_value, type='ttheta'):
+    len_ints = len(intensity_values)
+    ttheta_low, ttheta_high, chi_low, chi_high = extents
+    if extents:
+        if type == 'ttheta':
+            x_vals = np.linspace(ttheta_low, ttheta_high, len_ints)
+        elif type == 'chi':
+            x_vals = np.linspace(chi_high, chi_low, len_ints)
+
+        if np.isnan(centroid_value):
+            new_centroid_value = np.nan
+        else:
+            rounded = int(centroid_value)
+            new_centroid_value = x_vals[rounded]
+    else:
+        x_vals = np.arange(0, len_ints)
+        new_centroid_value = centroid_value
+
+    return x_vals, new_centroid_value

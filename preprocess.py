@@ -152,7 +152,8 @@ def initialize_experimental_attrs(self):
     try:
         Kev = h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='Kev')
         detector_theta_center = h5read_attr(file=self.file, loc=self.dataset_name, attribute_name='detector_theta')
-        print('The Detector Theta Values Is {} Degrees and the Kev is {} Kev\n'.format(detector_theta_center, Kev))
+        self.detector_theta_center = detector_theta_center
+        print('The Detector Theta Value Is {} Degrees and the Kev is {} Kev\n'.format(detector_theta_center, Kev))
     except:
         detector_theta_center = input('What Is The Angle In Degrees Of The Detector For This Experiment? (Typically 16.7)\n')
         Kev = input('What Was The Kev For This Experiment? (Typically 9)\n')

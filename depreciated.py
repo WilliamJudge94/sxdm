@@ -1,4 +1,4 @@
-
+import os
 
 # multi.py
 def better_multi(self, rows, columns, med_blur_distance=4,
