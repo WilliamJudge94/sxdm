@@ -77,14 +77,14 @@ class SXDMFrameset():
         Nothing - sets alignment data
 
         """
-        self.log.info('Starting self.alignment')
+        #self.log.info('Starting self.alignment')
 
         if reset == True:
             reset_dxdy(self)
 
         alignment_function(self)
 
-        self.log.info('Ending self.alignment')
+        #self.log.info('Ending self.alignment')
 
     def gaus_checker(self, center_around=False, default=False):
         """Plots total diffraction intensity vs scan angle for a set ROI
@@ -101,7 +101,7 @@ class SXDMFrameset():
         Nothing - displays the total intensity vs scan theta rocking curve
         """
 
-        self.log.info('Starting self.gaus_checker')
+        #self.log.info('Starting self.gaus_checker')
 
         x, y = gaus_check(self, center_around=center_around, default=default)
         self.mda_roi_gaus_check = (x, y)
@@ -109,14 +109,14 @@ class SXDMFrameset():
         plt.xlabel('Sample Angle (Degrees)')
         plt.ylabel('Relative Intensity')
 
-        self.log.info('Ending self.gaus_checker')
+        #self.log.info('Ending self.gaus_checker')
 
     def chi_determination(self):
         """Determine the axis bounds for the diffraction images
 
         """
 
-        self.log.info('Starting self.chi_determination')
+        #self.log.info('Starting self.chi_determination')
 
         self.user_rocking_check = False
         while self.user_rocking_check == False:
@@ -125,7 +125,7 @@ class SXDMFrameset():
             self.user_rocking_check = self.user_rocking in ['det', 'spl']
         chi_function(self)
 
-        self.log.info('Ending self.chi_determination')
+        #self.log.info('Ending self.chi_determination')
 
     def roi_segmentation(self, bkg_multiplier=1, restart=False):
         """Allows the User to create a summed diffraction pattern bounding box for region_of_interest analysis
@@ -141,7 +141,7 @@ class SXDMFrameset():
         =======
         Nothing
         """
-        self.log.info('Starting self.roi_segmentation')
+       # self.log.info('Starting self.roi_segmentation')
         try:
             dummy = self.image_array
 
@@ -166,7 +166,7 @@ class SXDMFrameset():
         self.rando1 = roi
         self.rando2 = rs
 
-        self.log.info('Ending self.roi_segmentation')
+        #self.log.info('Ending self.roi_segmentation')
 
     def region_of_interest(self, rows, columns, med_blur_distance=9,
                            med_blur_height=100, bkg_multiplier=1, diff_segmentation=True, slow=False):
@@ -199,7 +199,7 @@ class SXDMFrameset():
                summed_data, corr_summed_data, summed_data_roi_vals]
         """
 
-        self.log.info('Starting self.region_of_interest')
+        #self.log.info('Starting self.region_of_interest')
 
         # Setting total rows and columns for the roi_viewer
         self.roi_analysis_total_rows = rows
@@ -220,7 +220,7 @@ class SXDMFrameset():
 
         print('Results Stored As self.roi_results')
 
-        self.log.info('Ending self.region_of_interest')
+        #self.log.info('Ending self.region_of_interest')
 
     def roi_viewer(self):
         """Takes the self.roi_results variable and displays it in a GUI format
@@ -234,11 +234,11 @@ class SXDMFrameset():
         =======
         Nothing
         """
-        self.log.info('Starting self.roi_viewer')
+        #self.log.info('Starting self.roi_viewer')
 
         initiate_roi_viewer(self)
 
-        self.log.info('Ending self.roi_viewer')
+        #self.log.info('Ending self.roi_viewer')
 
     def centroid_analysis(self, rows, columns, med_blur_distance=9,
                  med_blur_height=10, stdev_min=25, bkg_multiplier=1, slow=False):
@@ -268,7 +268,7 @@ class SXDMFrameset():
 
         create_imagearray(self)
 
-        self.log.info('Starting self.centroid_analysis')
+        #self.log.info('Starting self.centroid_analysis')
 
         self.analysis_total_rows = rows
         self.analysis_total_columns = columns
@@ -288,7 +288,7 @@ class SXDMFrameset():
 
         print('Results Stored As self.results')
 
-        self.log.info('Ending self.centroid_analysis')
+        #self.log.info('Ending self.centroid_analysis')
 
     def save(self):
         """Save self.results (Centroid Data) to _savedata.h5
@@ -296,7 +296,7 @@ class SXDMFrameset():
         Unable to efficiently save ROI data
         """
 
-        self.log.info('Starting self.save')
+        #self.log.info('Starting self.save')
 
         save_filename = self.file[0:-3] + '_savedata.h5'
         self.save_file = save_filename
@@ -317,7 +317,7 @@ class SXDMFrameset():
             except:
                 h5replace_data(save_filename, self.dataset_name + '/{}'.format(value), np.asarray(readable_results2))
 
-        self.log.info('Ending self.save')
+        #self.log.info('Ending self.save')
 
     def centroid_viewer(self, default_extents=False):
         """Allow the user to view the data in a convenient format
@@ -356,7 +356,7 @@ class SXDMFrameset():
             two_theta_bound_right, chi_bound_top = self.image_data_dimensions()
             self.extents = (0, two_theta_bound_right, 0, chi_bound_top)
 
-        self.log.info('Starting self.centroid_viewer')
+        #self.log.info('Starting self.centroid_viewer')
 
         warnings.warn('The Starting Parameters In The Viewer May Not Be\nIdentical To The Parameters Used For The Analysis')
         try:
@@ -367,7 +367,7 @@ class SXDMFrameset():
         self.diffraction_load = diffraction_load
         run_viewer(self, fluor_image)
 
-        self.log.info('Ending self.centroid_viewer')
+        #self.log.info('Ending self.centroid_viewer')
 
     def reload_save(self, summed_dif_return=True):
         """Allow the user to reload Centroid saved data
@@ -384,13 +384,13 @@ class SXDMFrameset():
         Nothing
         """
 
-        self.log.info('Starting self.reload_save')
+        #self.log.info('Starting self.reload_save')
 
         self.save_filename = self.file[0:-3] + '_savedata.h5'
         self.results = saved_return(self.save_filename, self.dataset_name, summed_dif_return=summed_dif_return)
         self.analysis_params = h5read_attr(self.save_filename, self.dataset_name, 'Analysis Parameters')
 
-        self.log.info('Ending self.reload_save')
+        #self.log.info('Ending self.reload_save')
         
     def frame_shape(self):
         """Returns the total imported scans shape (scan_number, rows, columns)
@@ -408,16 +408,31 @@ class SXDMFrameset():
     def ims_array(self, amount2ave=3, multiplier=1):
         """Creates the Scan Background and the Image Array
         
-        :param amount2ave: 
-        :param multiplier: 
-        :return: 
+        Parameters
+        ==========
+        amount2ave - int
+            Take the first (amount2ave) to the last (amount2ave) pixels and use them as a background
+        multiplier - float
+            A number to be applied to the background image
+        
+        Returns
+        =======
+        Creates the background image and the image array used for many proceses
         """
         scan_background(self, amount2ave=amount2ave,
                         multiplier=multiplier)
         create_imagearray(self)
         
     def make_diffraction_video(self, rows, columns, bkg_multiplier=1, vmin=0, vmax=1200):
+        """WIP
         
+        :param rows: 
+        :param columns: 
+        :param bkg_multiplier: 
+        :param vmin: 
+        :param vmax: 
+        :return: 
+        """
         try:
             master_chi = self.chi / 2
             master_two_theta = float(self.detector_theta_center)
@@ -430,6 +445,18 @@ class SXDMFrameset():
             self.extents = None
             
     def image_data_dimensions(self):
+        """Determine the CCD image dimensions
+        
+        Parameters
+        ==========
+        self - SXDMFrameset
+            the sxdmframeset
+        
+        Returns
+        ========
+        the image dimensions of the CCD camera
+        """
+        
         folder = h5group_list(self.file, 'images')[0][0]
         first_im = h5group_list(self.file, 'images/{}'.format(folder))[0][0]
         dif_im_dims = h5grab_data(self.file, '/images/{}/{}'.format(folder, first_im))
