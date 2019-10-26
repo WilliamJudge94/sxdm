@@ -1,4 +1,4 @@
-opencv_python==3.4.0.12
+opencv_python
 miniutils==1.0.1
 scipy==1.1.0
 psutil==5.4.0
