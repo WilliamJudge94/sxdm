@@ -1,8 +1,5 @@
 function mda_import(loadmda_path,mda_path,detector_channel_limit,output_path)
 
-%addpath '/home/will/Research/UIC/SXDM/Analysis';
-%addpath '/home/will/Desktop/Processed_Data/SXDM_First_Cylce_NMC/Beam_Line_Data^/SXDM/APS_Filename^/2-Sample/MDA';
-
 % Create output_file if it doesnt exist
 if exist(output_path) == 2; 
 else
