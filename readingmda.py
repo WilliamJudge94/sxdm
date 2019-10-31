@@ -435,8 +435,8 @@ def readMDA(fname=None, maxdim=2, verbose=1, help=0, new=0):
         print("   usage: dim[0]['sampleEntry'] ->", dim[0]['sampleEntry'])
         for i in range(1, len(dim)):
             print("dim[%d] = %s" % (i, str(dim[i])))
-        print("   usage: dim[1].p[2].data -> 1D array of positioner 2 data")
-        print("   usage: dim[2].d[7].data -> 2D array of detector 7 data")
+        print("   usage: dim[1].p[2].data -> 1D array of positioner 3 data")
+        print("   usage: dim[2].d[7].data -> 2D array of detector 8 data")
 
     if help:
         print(" ")
