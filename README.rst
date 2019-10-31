@@ -18,23 +18,22 @@ Motivation & Features
 Installation
 ------------
 
-# Clone the GitHub Repository
-Make a clone of the SXDM project onto your machine
-Possibly create a virtaul environment
-Run the requirements.txt file
+- Make a clone of the SXDM project onto your machine
+- Possibly create a virtaul environment
+- Run the requirements.txt file
 
-# Making a Virtual Environment
-cd to directory you would like to keep the virtual environment
-run python3 -m venv projectname in the terminal projectname can be anything the User would like it to be
-run source projectname/bin/activate
-pip3 install ipykernel
-ipython kernel install --user --name=projectname
-pip3 install -r requirements.txt
-run import sys and sys.path.append("/path/to/module/") in jupyter notebook shell
 
-if you are running on a Mac then import sys
+- cd to directory you would like to keep the virtual environment
+- run python3 -m venv projectname in the terminal projectname can be anything the User would like it to be
+- run source projectname/bin/activate
+- pip3 install ipykernel
+- ipython kernel install --user --name=projectname
+- pip3 install -r requirements.txt
+- run import sys and sys.path.append("/path/to/module/") in jupyter notebook shell
 
-sys.path.append('/Users/will/tf/lib/python3.7/site-packages/')
+- if you are running on a Mac then import sys
+
+- sys.path.append('/Users/will/tf/lib/python3.7/site-packages/')
 
 
 Usage
