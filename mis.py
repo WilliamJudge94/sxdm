@@ -81,7 +81,7 @@ def zfill_scan(scan_list, fill_num):
 
 def delimiter_func(string):
     """The delimiter function used in the image importer
-    Used to just get the number of the image from the name of the image file
+    Used to just get the number of the image from the name of the image/mda file
 
     Parameters
     ==========

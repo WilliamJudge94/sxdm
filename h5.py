@@ -16,7 +16,7 @@ def h5create_file(loc, name):
     loc: (str)
         the location of the hdf5 file
     name: (str)
-        the name of the hdf5 file
+        the name of the hdf5 file WITHOUT .h5 at the end
 
     Returns
     =======
