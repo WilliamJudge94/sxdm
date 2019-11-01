@@ -23,7 +23,7 @@ Installation
 - Run the requirements.txt file
 
 
-Virtual Environment % Jupyter Setup
+Virtual Environment & Jupyter Setup
 ------------
 
 - cd to directory you would like to keep the virtual environment
