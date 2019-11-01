@@ -37,7 +37,6 @@ Virtual Environment & Jupyter Setup
 - if you are running on a Mac then:
 - run in jupyter notebook/lab `import sys`
 - run in jupyter notebook/lab `sys.path.append('/Users/usr/virtual_environment/lib/python3.7/site-packages/')`
-- Testing
 
 Usage
 -----
