@@ -556,7 +556,27 @@ def median_blur(input_array, median_blur_distance,
 
 def median_blur2(input_array, median_blur_distance,
                 cut_off_value_above_mean, with_low=False):
+    """Allows for the user to have a selective median blur for individual spots. Meaning it will not assign a median
+    blur to the entire spectra.
 
+    Parameters:
+    ==========
+    input_array (nd.array)
+        the 1D spectral array
+
+    median_blur_distance (int)
+        a value that assigns how large of a median blur the User wants to walk through.
+
+    cut_off_value_above_mean (int)
+        a value above the mean value for the med_blur_distance in which the value gets attributed as the median of
+        that data chunk
+    with_low (bool)
+        True median blurs on values way above or way below the mean. Rather than just way above.
+
+    Returns:
+    =======
+    An 1D spectral array with appropriate values median blurred
+    """
     iteration_number = np.shape(input_array)[0]
     # Finds out the length of the array you want to median blur. This equals the number of iterations you will perform
 
@@ -752,6 +772,23 @@ def results_2dsum(self):
 
 
 def total_rows_int_tup(input, difference=False):
+    """Allows the user to return the true starting and ending values for a scan. Useful for when scans do not start
+    at zero.
+
+    Parameters:
+    ==========
+
+    input (int or tuple)
+        the int or tuple input of the analysis functions
+
+    difference (bool)
+        if the User would like to take the difference between the starting and ending points
+
+    Returns:
+    =======
+
+    Either the starting and ending values for a scan or the difference between them
+    """
     if isinstance(input, tuple):
         start = input[0]
         end = input[1]

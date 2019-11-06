@@ -398,8 +398,30 @@ def h5get_image_destination_v2(self, pixel):
     return pixels_minus_nan
 
 def open_h5(file):
+    """Opening an hdf5 file
+
+    Parameters:
+    ==========
+    file (str)
+        the path to the hdf5 file
+
+    Returns:
+    =======
+    The opened hdf5 file
+    """
     hdf = h5py.File(file, 'r')
     return hdf
 
 def close_h5(hdf):
+    """Closing and opened hdf5 file
+
+    Parameters:
+    ==========
+    file (str)
+        the path to the hdf5 file
+
+    Returns:
+    =======
+    Closes an opened hdf5 file
+    """
     hdf.close()

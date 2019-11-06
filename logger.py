@@ -2,7 +2,7 @@ import logging
 import os
 
 def initialize_logging(self):
-    """Inidiate logging
+    """Initiate logging
 
     Not set up
     """

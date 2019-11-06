@@ -322,6 +322,23 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
 
 
 def true_filenumbers(file, scan_numbers,  shapes):
+    """Since the .mda files do not store the correct file_names/image_names inside of it. This creates an appropriate file number
+    for each pixel in a scan
+
+    Parameters
+    ==========
+
+    file (str)
+        the location of the .h5 file
+    scan_numbers (nd.array)
+        array of all the scan numbers the User wishes to create image numbers for
+    shapes (nd.array)
+        the shapes of all the scans
+
+    Returns:
+    =======
+    an nd.array with the .tif image numbers/locations for each voxel of the scan
+    """
     final_locations = []
 
     # for each scan number
