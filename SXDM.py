@@ -45,6 +45,11 @@ class SXDMFrameset():
             the amount of digits in the image file number
         restart_zoneplate: (bool)
             if you would like to restart the zoneplate data set this to True
+        median_blur_algorithm: (str)
+            this initializes which type of median blur will be performed on the datasets during analysis.
+            acceptable values consist of 'numpy' and 'selective'. ''numpy performs a median blur on the entire
+            dataset while 'selective' only applies a median blur if the binned 1D data is within a certain User
+            threshold.
         """
         
         if median_blur_algorithm == 'numpy':
