@@ -20,11 +20,14 @@ from summed2d import *
 
 from tqdm import tqdm
 
+import config
+
 
 class SXDMFrameset():
+    
 
     def __init__(self, file, dataset_name,
-                  scan_numbers=False, fill_num=4, restart_zoneplate=False):
+                  scan_numbers=False, fill_num=4, restart_zoneplate=False, median_blur_algorithm='numpy'):
 
         """Creates The SXDMFrameset Object
 
@@ -43,6 +46,18 @@ class SXDMFrameset():
         restart_zoneplate: (bool)
             if you would like to restart the zoneplate data set this to True
         """
+        
+        if median_blur_algorithm == 'numpy':
+            config.median_blur = median_blur_numpy
+            print("Using --numpy-- median_blur\n")
+            
+        elif median_blur_algorithm == 'selective':
+            config.median_blur = median_blur_selective
+            print("Using --selective-- median_blur\n")
+        else:
+            warnings.warn("Incorrect median_blur_algorithm. use 'selective' or 'numpy'")
+        config.algorithm = median_blur_algorithm
+        
         self.file = file
         self.dataset_name = dataset_name
 
@@ -62,6 +77,9 @@ class SXDMFrameset():
             resolution_check(self)
         except Exception as ex:
             print('SXDM.py/__init__2', ex)
+            
+    def select_median_blur_algorithm(self, algorithm='numpy'):
+        pass
 
 
     def alignment(self, reset=False):

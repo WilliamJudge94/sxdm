@@ -14,7 +14,7 @@ import time
 import h5py
 
 from postprocess import pixel_analysis_return, saved_return
-from mis import median_blur, centering_det, results_2dsum
+from mis import centering_det, results_2dsum#, median_blur
 from postprocess import centroid_roi_map, pooled_return
 from pixel import theta_maths, chi_maths, grab_pix, sum_pixel
 from clicks import check_mouse_ax, fig_leave
@@ -22,6 +22,7 @@ from h5 import h5get_image_destination
 from background import scan_background_finder
 from summed2d import summed2d_all_data, summed2d_all_data_v2
 
+import config
 
 def figure_setup():
     """Set up the viewer figure
@@ -181,6 +182,14 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
     vmax_sum_tb = TextBox(vmax_sum_ax, 'vmax', initial='1200')
     med_blur_dis_tb = TextBox(med_blur_dis_ax, 'med_dis', initial=med_blur_dis)
     med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei)
+    
+    if config.algorithm == 'numpy':
+        med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei, color='red')
+        warnings.warn('User In --numpy-- Mode. Use --selective-- Mode For Median_Blur_Height Access.')
+
+    else:
+        med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei)
+    
     stdev_tb = TextBox(stdev_ax, 'stdev_min', initial=stdev)
     multiplier_tb = TextBox(multiplier_ax, 'bkgx', initial=bkg_x)
     plt.draw()

@@ -8,10 +8,12 @@ import time
 
 
 from background import scan_background_finder, scan_background
-from mis import median_blur, get_idx4roi, ram_check
+from mis import get_idx4roi, ram_check#, median_blur
 from pixel import theta_maths, chi_maths, centroid_finder, grab_pix
 from multi import initialize_vectorize
 from h5 import open_h5, close_h5
+
+import config
 
 
 def centroid_pixel_analysis_multi(row, column, median_blur_distance, median_blur_height,
@@ -153,6 +155,9 @@ def roi_pixel_analysis_multi(row, column, median_blur_distance,
                raw_scan_data, corr_scan_data, scan_data_roi_vals,
                summed_data, corr_summed_data, summed_data_roi_vals]
     """
+
+    median_blur = config.median_blur
+    
     if column == 0:
         if ram_check() > 90:
             return False

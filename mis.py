@@ -533,7 +533,7 @@ def ram_check():
     return round(mems[2], 1)
 
 
-def median_blur(input_array, median_blur_distance,
+def median_blur_numpy(input_array, median_blur_distance,
                 cut_off_value_above_mean, with_low=False):
     """Median Blur a 1D array. Used for eliminating hot or dead pixels
 
@@ -554,7 +554,7 @@ def median_blur(input_array, median_blur_distance,
     return input_array
 
 
-def median_blur2(input_array, median_blur_distance,
+def median_blur_selective(input_array, median_blur_distance,
                 cut_off_value_above_mean, with_low=False):
     """Allows for the user to have a selective median blur for individual spots. Meaning it will not assign a median
     blur to the entire spectra.

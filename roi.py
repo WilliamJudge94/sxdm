@@ -3,11 +3,13 @@ import matplotlib as mpl
 from matplotlib.widgets import Button, TextBox, Slider
 
 from roi_bounding import ROI_FiguresClass
-from mis import create_rois, results_2dsum, median_blur
+from mis import create_rois, results_2dsum#, median_blur
 from roi_bounding import *
 from postprocess import twodsummed
 
 from functools import partial
+
+import config
 
 
 def start_scan_roi(user_class):
@@ -79,6 +81,9 @@ def on_scan_click(event, figure_class, user_class, types='scan'):
     =======
     Nothing - obtains all data and diplays data to appropriate location
     """
+
+    median_blur = config.median_blur
+    
     if not event.dblclick:
         ax = event.inaxes
         cont = True

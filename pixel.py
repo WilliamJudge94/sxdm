@@ -5,10 +5,13 @@ import logging
 import h5py
 from tqdm import tqdm
 
-from mis import ram_check, median_blur, get_idx4roi
+from mis import ram_check, get_idx4roi#, median_blur
 from h5 import h5get_image_destination, h5grab_data, open_h5, close_h5
 from background import scan_background, scan_background_finder
 from datetime import datetime
+
+import config
+
 
 
 def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q=False):
@@ -32,7 +35,8 @@ def theta_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min,
     the cropped data to find the centroid
     the edited (median blured) sum down the y axis as a numpy array
     """
-
+    median_blur = config.median_blur
+    
     ttheta = np.sum(summed_dif, axis=0)
     ttheta = median_blur(ttheta, median_blur_distance, median_blur_height, with_low=True)
     ttheta2 = np.asarray(ttheta)
@@ -64,6 +68,8 @@ def chi_maths(summed_dif, median_blur_distance, median_blur_height, stdev_min, q
     the cropped data to find the centroid
     the edited (median blured) sum down the x axis as a numpy array
     """
+    median_blur = config.median_blur
+    
     chi = np.sum(summed_dif, axis=1)
     chi = median_blur(chi, median_blur_distance, median_blur_height, with_low=True)
     chi2 = np.asarray(chi)
@@ -270,7 +276,8 @@ def segment_diffraction_roi(diffraction):
     =======
     ttheta, ttheta_copy, np.sum(ttheta_copy), scan_roi_val
     """
-
+    median_blur = config.median_blur
+    
     ttheta = np.sum(diffraction, axis=0)
     ttheta_copy = ttheta.copy()
 
@@ -318,7 +325,8 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
                raw_scan_data, corr_scan_data, scan_data_roi_vals,
                summed_data, corr_summed_data, summed_data_roi_vals]
     """
-
+    median_blur = config.median_blur
+    
     image_array = self.image_array
     try:
         self.pbar_val = self.pbar_val + 1
