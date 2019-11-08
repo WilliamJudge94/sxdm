@@ -2,5 +2,8 @@
 *.pyc
 .ipynb_checkpoints/
 plans.py
+depreciated.py
+mda_import.m
+SXDM-Manual.ipynb
 *.ipynb
 
