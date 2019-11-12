@@ -41,7 +41,7 @@ Virtual Environment & Jupyter Setup
 Usage
 -----
 
-Please see the SXDM Wiki for more details
+Please see the https://sxdm.readthedocs.io/en/latest/ for more details
 
 
 License
