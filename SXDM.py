@@ -270,10 +270,10 @@ class SXDMFrameset():
         Parameters
         ==========
 
-        rows: (int)
-            the total number of rows you want to iterate through
-        columns: (int)
-            the total number of columns you want to iterate through
+        rows: (int, tup)
+            the total number of rows you want to iterate through or a tuple of the rows to iterate through
+        columns: (int, tup)
+            the total number of columns you want to iterate through or a tuple of the columns to iterate through
         med_blur_distance: (int)
             the amount of values to scan for median blur
         med_blur_height:  (int)
