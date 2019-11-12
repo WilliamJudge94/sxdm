@@ -57,22 +57,30 @@ dataset. To begin, run the following
 If detector channels have not been previously set default values will present themselves. Change all values according
 to your experimental setup. 
 
-``Main_Scan``   is the scan number used to determine binstrumental broadening. 
+``fluor`` (dic) The User can place as many Fluorescence dictionary entries as they would like. Except there must be at
+least 1. Entries can be named however the User would like.
 
-``filenumber``  is the detector channel accosiated with the .tif file numbers. 
+``roi`` (dic) The User can place as many Region of Interest dictionary entries as they would like.
+Except there must be at least 1. Entries can be named however the User would like.
 
-``fluor``       is a dictionary of User defined fluoresence detector channels.
+``detector_scan`` (dic) Main_Scan must be the first and only dictionary entry. This corresponds to the scan where the
+User rocked the detector. This will be used to determine the x and y angle values.
 
-``hybrid_x``    is the detector channel accociated with the x-axis motor movements for the scan.
+``filenumber`` (int) This must be a single integer value corresponding to the detector channel associated with the
+filenumbers of the images.
 
-``hybrid_y``    is the detector channel associated with the y-axis motor movements for the scan.
+``sample_theta`` (int) This must be a single integer value corresponding to the detector channel associated with the
+sample theta angle.
 
-``mis``         is a dictionary for the User to input any other useful detector channels for their own experiments.
-                This dictionary must have at least one entry in it.
+``hybrid_x`` (int) This must be a single integer value corresponding to the detector channel associated with the
+hybrid_x location/motor position. this should correspond to the detector number of the motor you are scanning in the x direction
 
-``roi``         is a dictionary for the 26-ID-C pre caluclated region of diffraction interest maps.
+``hybrid_y`` (int) This must be a single integer value corresponding to the detector channel associated with the
+hybrid_y location/motor position. this should correspond to the detector number of the motor you are scanning in the y direction
 
-``sample_theta`` is the detector channel associated with the angle of the sample during the scan.
+``mis`` (dic) The User can place as many miscellaneous (mis) dictionary entries as they would like. Except there must
+be at least 1. Entries can be named however the User would like. None of these are in use in SXDM-1.0. They are there
+for User additions.
 
 Once these values are set the User can run
 

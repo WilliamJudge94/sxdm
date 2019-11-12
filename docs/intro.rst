@@ -50,7 +50,7 @@ steps. Any version of python >=3.5 should be ok.
    $ conda create -n sxdm python=3.6
    $ source activate sxdm
    $ git clone clone git@github.com:WilliamJudge94/sxdm.git
-   $ pip install -r sxdm/requirements.txt
+   $ pip3 install -r sxdm/requirements.txt
    $ pip3 install ipykernel
    $ ipython kernel install --user --name=sxdm
 
@@ -73,7 +73,7 @@ Once in Jupyter the User may have to initiate the import through
 Tests
 -----
 
-The easiest way to run unit-tests is with pytest:
+The easiest way to run unit-tests is with python tester from the command line:
 
 .. code:: bash
 
