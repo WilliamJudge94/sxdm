@@ -79,7 +79,7 @@ steps. Any version of python &gt;=3.5 should be ok.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda create -n sxdm <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.6
 $ <span class="nb">source</span> activate sxdm
 $ git clone clone git@github.com:WilliamJudge94/sxdm.git
-$ pip install -r sxdm/requirements.txt
+$ pip3 install -r sxdm/requirements.txt
 $ pip3 install ipykernel
 $ ipython kernel install --user --name<span class="o">=</span>sxdm
 </pre></div>
@@ -100,7 +100,7 @@ $ ipython kernel install --user --name<span class="o">=</span>sxdm
 </div>
 <div class="section" id="tests">
 <h3>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h3>
-<p>The easiest way to run unit-tests is with pytest:</p>
+<p>The easiest way to run unit-tests is with python tester from the command line:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">cd</span> sxdm/tests
 $ python3.6 test_all.py
 </pre></div>

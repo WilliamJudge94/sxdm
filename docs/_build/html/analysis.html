@@ -92,17 +92,23 @@ dataset. To begin, run the following</p>
 </div>
 <p>If detector channels have not been previously set default values will present themselves. Change all values according
 to your experimental setup.</p>
-<p><code class="docutils literal notranslate"><span class="pre">Main_Scan</span></code>   is the scan number used to determine binstrumental broadening.</p>
-<p><code class="docutils literal notranslate"><span class="pre">filenumber</span></code>  is the detector channel accosiated with the .tif file numbers.</p>
-<p><code class="docutils literal notranslate"><span class="pre">fluor</span></code>       is a dictionary of User defined fluoresence detector channels.</p>
-<p><code class="docutils literal notranslate"><span class="pre">hybrid_x</span></code>    is the detector channel accociated with the x-axis motor movements for the scan.</p>
-<p><code class="docutils literal notranslate"><span class="pre">hybrid_y</span></code>    is the detector channel associated with the y-axis motor movements for the scan.</p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">mis</span></code>         is a dictionary for the User to input any other useful detector channels for their own experiments.</dt><dd><p>This dictionary must have at least one entry in it.</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">roi</span></code>         is a dictionary for the 26-ID-C pre caluclated region of diffraction interest maps.</p>
-<p><code class="docutils literal notranslate"><span class="pre">sample_theta</span></code> is the detector channel associated with the angle of the sample during the scan.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fluor</span></code> (dic) The User can place as many Fluorescence dictionary entries as they would like. Except there must be at
+least 1. Entries can be named however the User would like.</p>
+<p><code class="docutils literal notranslate"><span class="pre">roi</span></code> (dic) The User can place as many Region of Interest dictionary entries as they would like.
+Except there must be at least 1. Entries can be named however the User would like.</p>
+<p><code class="docutils literal notranslate"><span class="pre">detector_scan</span></code> (dic) Main_Scan must be the first and only dictionary entry. This corresponds to the scan where the
+User rocked the detector. This will be used to determine the x and y angle values.</p>
+<p><code class="docutils literal notranslate"><span class="pre">filenumber</span></code> (int) This must be a single integer value corresponding to the detector channel associated with the
+filenumbers of the images.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sample_theta</span></code> (int) This must be a single integer value corresponding to the detector channel associated with the
+sample theta angle.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hybrid_x</span></code> (int) This must be a single integer value corresponding to the detector channel associated with the
+hybrid_x location/motor position. this should correspond to the detector number of the motor you are scanning in the x direction</p>
+<p><code class="docutils literal notranslate"><span class="pre">hybrid_y</span></code> (int) This must be a single integer value corresponding to the detector channel associated with the
+hybrid_y location/motor position. this should correspond to the detector number of the motor you are scanning in the y direction</p>
+<p><code class="docutils literal notranslate"><span class="pre">mis</span></code> (dic) The User can place as many miscellaneous (mis) dictionary entries as they would like. Except there must
+be at least 1. Entries can be named however the User would like. None of these are in use in SXDM-1.0. They are there
+for User additions.</p>
 <p>Once these values are set the User can run</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change Values, Run Cell, And Input Values Into Function Below</span>
 <span class="n">setup_det_chan</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">fluor</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">detector_scan</span><span class="p">,</span> <span class="n">filenumber</span><span class="p">,</span> <span class="n">sample_theta</span><span class="p">,</span> <span class="n">hybrid_x</span><span class="p">,</span> <span class="n">hybrid_y</span><span class="p">,</span> <span class="n">mis</span><span class="p">)</span>
@@ -128,19 +134,15 @@ class</strong>, so the first step is to create a frameset object.</p>
             <span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">file</span></code>   A string to the file.h5 file</p>
-<p><code class="docutils literal notranslate"><span class="pre">dataset_name</span></code>  A user defined string associated with a specific dataset. Examples - ‘Pristine’, ‘Charged’</p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">scan_numbers</span></code>       A list of scan numbers the User would like to associated with the set <code class="docutils literal notranslate"><span class="pre">dataset_name</span></code></dt><dd><p>This one has to be set once. Every other time it will, pull from these stored values,
-unless a User decides to change the <code class="docutils literal notranslate"><span class="pre">scan_numbers</span></code>.</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">fill_num</span></code>    This is an integer set by the User which defines how many number values are in each .tif file name.</p>
-<p><code class="docutils literal notranslate"><span class="pre">restart_zoneplate</span></code>    Allows the User to redefine the ZonePlate data</p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">median_blur_algorithm</span></code>         Allows the User to choose which type of median blur algorithm is to be used for</dt><dd><p>Data Analysis.</p>
-</dd>
-</dl>
+<p><code class="docutils literal notranslate"><span class="pre">file</span></code> (str) the path to the hdf5 file you would like to import data from</p>
+<p><code class="docutils literal notranslate"><span class="pre">dataset_name</span></code> (str) the group name of the scans you are importing</p>
+<p><code class="docutils literal notranslate"><span class="pre">scan_numbers</span></code> (nd.array or False) an array of ints of the scan numbers you would like to group together. If False -
+this will import the stored/previously completed scan numbers data</p>
+<p><code class="docutils literal notranslate"><span class="pre">fill_num</span></code> (int) the amount of digits in the image file number</p>
+<p><code class="docutils literal notranslate"><span class="pre">restart_zoneplate</span></code> (bool) if you would like to restart the zoneplate data set this to True</p>
+<p><code class="docutils literal notranslate"><span class="pre">median_blur_algorithm</span></code> (str) this initializes which type of median blur will be performed on the datasets during
+analysis. acceptable values consist of ‘scipy’ and ‘selective’. ‘’numpy performs a median blur on the entire dataset
+while ‘selective’ only applies a median blur if the binned 1D data is within a certain User threshold.</p>
 <div class="section" id="median-blur-type-selection">
 <h3>Median Blur Type Selection<a class="headerlink" href="#median-blur-type-selection" title="Permalink to this headline">¶</a></h3>
 <p>In the creation of the SXDMFrameset there is an option to set a <code class="docutils literal notranslate"><span class="pre">median_blur_algorithm</span></code>.
@@ -154,21 +156,28 @@ it will be replaced with the mean value for the chunk. This preserves most of th
 speed.</p>
 </div>
 </div>
+<div class="section" id="initial-values">
+<h2>Initial Values<a class="headerlink" href="#initial-values" title="Permalink to this headline">¶</a></h2>
+<p>The program will ask for the following values upon the first run:</p>
+<p>Diameter Of The Zone Plate Is _____ microns Outermost Zone Plate d Spacing Is _____ nanometers The Size Of Your
+Detector Pixels Is _____ microns The Detector Theta Value Is _____ Degrees and the Kev is _____ Kev</p>
+<p>These values will be stored into the file as attributes for the dataset_name.</p>
+</div>
 <div class="section" id="scan-dimensions-check">
 <h2>Scan Dimensions Check<a class="headerlink" href="#scan-dimensions-check" title="Permalink to this headline">¶</a></h2>
 <p>Starting the SXDMFrameset will automatically determine the pixel X resolution for all the imported scans as well as all
 the Y resolutions for all the scans and checks to make sure every scan has identical X resolutions and every scan has
 identical Y resolutions. Then it checks to see if the median(x) and median(y) resoltuions are equivalent.</p>
-<p>If the program throws an error during the resolution check</p>
-<ol class="arabic simple">
+<p>If the program throws an error during the resolution check:</p>
+<ul class="simple">
 <li><p>Make sure you have set the <code class="docutils literal notranslate"><span class="pre">hybrid_x</span></code> and <code class="docutils literal notranslate"><span class="pre">hybrid_y</span></code> values correctly in the <code class="docutils literal notranslate"><span class="pre">setup_det_chan()</span></code> function.</p></li>
-</ol>
-<p>2) Pull up all the scan resolutions with <code class="docutils literal notranslate"><span class="pre">test_fs.all_res_x</span></code>, and <code class="docutils literal notranslate"><span class="pre">test_fs.all_res_y</span></code>. These will be in the
-same order as test_fs.scan_numbers. Remove the scan that is throwing the error when setting up
-<code class="docutils literal notranslate"><span class="pre">test_fs</span> <span class="pre">=</span> <span class="pre">SXDMFrameset()</span></code>. Future versions will resample the scans to create identical resolutions in all
-X, all Y, and in X v. Y.</p>
-<p>3) If there is still an error the scan dimensions are not the same across all scans. Run
-<code class="docutils literal notranslate"><span class="pre">show_hybrid_dimensions(test_fs)</span></code> to see all the scan dimensions</p>
+<li><p>Pull up all the scan resolutions with <code class="docutils literal notranslate"><span class="pre">test_fs.all_res_x</span></code>, and <code class="docutils literal notranslate"><span class="pre">test_fs.all_res_y</span></code>. These will be in the same order as test_fs.scan_numbers. Remove the scan that is throwing the error when setting up <code class="docutils literal notranslate"><span class="pre">test_fs</span> <span class="pre">=</span> <span class="pre">SXDMFrameset()</span></code>. Future versions will resample the scans to create identical resolutions in all X, all Y, and in X v. Y.</p></li>
+<li><dl class="simple">
+<dt>If there is still an error the scan dimensions are not the same across all scans. Run</dt><dd><p><code class="docutils literal notranslate"><span class="pre">show_hybrid_dimensions(test_fs)</span></code> to see all the scan dimensions</p>
+</dd>
+</dl>
+</li>
+</ul>
 </div>
 <div class="section" id="alignment">
 <h2>Alignment<a class="headerlink" href="#alignment" title="Permalink to this headline">¶</a></h2>
@@ -189,10 +198,9 @@ method:</p>
 
 <span class="c1"># Run through five passes of the default phase correlation</span>
 <span class="n">test_fs</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-
-<span class="c1">#reset (bool) - if you would like to completely reset the alignment make this equal True</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">reset</span></code> (bool) - if you would like to completely reset the alignment make this equal True</p>
 <p><strong>if you import new scan numbers you must make sure reset=True for the first alignment</strong></p>
 </div>
 <div class="section" id="diffraction-axis-values">
@@ -364,6 +372,32 @@ file.</p>
 </div>
 <p>This will return the diffraction image dimensions</p>
 </div>
+<div class="section" id="pixel-analysis">
+<h3>Pixel Analysis<a class="headerlink" href="#pixel-analysis" title="Permalink to this headline">¶</a></h3>
+<p>If the user would like to return a certain pixel analysis value they can use the <code class="docutils literal notranslate"><span class="pre">pixel_analysis_return()</span></code>
+function to achieve this. Returns a dictionary of entries</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>`&#39;row_column&#39;,
+&#39;summed_dif&#39;, - auto set to 0 for saving RAM usage
+&#39;ttheta&#39;,
+&#39;chi&#39;,
+&#39;ttheta_corr&#39;,
+&#39;chi_corr&#39;,
+&#39;ttheta_cent&#39;,
+&#39;chi_cent&#39;,
+&#39;roi&#39;`
+</pre></div>
+</div>
+</div>
+<div class="section" id="saving-and-reloading-data">
+<h3>Saving and Reloading Data<a class="headerlink" href="#saving-and-reloading-data" title="Permalink to this headline">¶</a></h3>
+<p>Saves <code class="docutils literal notranslate"><span class="pre">self.results</span></code> to the <code class="docutils literal notranslate"><span class="pre">test_fs.saved_file</span></code> - this value/file is automatically created in the initial
+SXDMFrameset setup</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To reload saved data in the test_fs.saved_file run</p>
+<p>This will load the results to test_fs.results</p>
+</div>
 </div>
 </div>
 
@@ -381,6 +415,7 @@ file.</p>
 <li><a class="reference internal" href="#median-blur-type-selection">Median Blur Type Selection</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#initial-values">Initial Values</a></li>
 <li><a class="reference internal" href="#scan-dimensions-check">Scan Dimensions Check</a></li>
 <li><a class="reference internal" href="#alignment">Alignment</a></li>
 <li><a class="reference internal" href="#diffraction-axis-values">Diffraction Axis Values</a></li>
@@ -400,6 +435,8 @@ file.</p>
 <li><a class="reference internal" href="#find-frameset-dimensions">Find Frameset Dimensions</a></li>
 <li><a class="reference internal" href="#calculate-background-and-filenumber-locations">Calculate Background and FileNumber Locations</a></li>
 <li><a class="reference internal" href="#show-raw-tif-image-dimensions">Show Raw .tif Image Dimensions</a></li>
+<li><a class="reference internal" href="#pixel-analysis">Pixel Analysis</a></li>
+<li><a class="reference internal" href="#saving-and-reloading-data">Saving and Reloading Data</a></li>
 </ul>
 </li>
 </ul>

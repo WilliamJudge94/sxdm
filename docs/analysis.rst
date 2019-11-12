@@ -112,20 +112,22 @@ class**, so the first step is to create a frameset object.
                 median_blur_algorithm='scipy',
                 )
 
-``file``   A string to the file.h5 file
 
-``dataset_name``  A user defined string associated with a specific dataset. Examples - 'Pristine', 'Charged' 
+``file`` (str) the path to the hdf5 file you would like to import data from
 
-``scan_numbers``       A list of scan numbers the User would like to associated with the set ``dataset_name``
-                        This one has to be set once. Every other time it will, pull from these stored values,
-                        unless a User decides to change the ``scan_numbers``.
+``dataset_name`` (str) the group name of the scans you are importing
 
-``fill_num``    This is an integer set by the User which defines how many number values are in each .tif file name.
+``scan_numbers`` (nd.array or False) an array of ints of the scan numbers you would like to group together. If False - 
+this will import the stored/previously completed scan numbers data
 
-``restart_zoneplate``    Allows the User to redefine the ZonePlate data
+``fill_num`` (int) the amount of digits in the image file number
 
-``median_blur_algorithm``         Allows the User to choose which type of median blur algorithm is to be used for
-                                Data Analysis.
+``restart_zoneplate`` (bool) if you would like to restart the zoneplate data set this to True
+
+``median_blur_algorithm`` (str) this initializes which type of median blur will be performed on the datasets during
+analysis. acceptable values consist of 'scipy' and 'selective'. ''numpy performs a median blur on the entire dataset
+while 'selective' only applies a median blur if the binned 1D data is within a certain User threshold.
+
 
 
 
@@ -148,6 +150,16 @@ it will be replaced with the mean value for the chunk. This preserves most of th
 speed.
 
 
+Initial Values
+==============
+
+The program will ask for the following values upon the first run:
+
+Diameter Of The Zone Plate Is _____ microns Outermost Zone Plate d Spacing Is _____ nanometers The Size Of Your
+Detector Pixels Is _____ microns The Detector Theta Value Is _____ Degrees and the Kev is _____ Kev
+
+These values will be stored into the file as attributes for the dataset_name.
+
 Scan Dimensions Check
 =====================
 
@@ -155,18 +167,16 @@ Starting the SXDMFrameset will automatically determine the pixel X resolution fo
 the Y resolutions for all the scans and checks to make sure every scan has identical X resolutions and every scan has
 identical Y resolutions. Then it checks to see if the median(x) and median(y) resoltuions are equivalent.
 
-If the program throws an error during the resolution check
+If the program throws an error during the resolution check:
 
 
-1) Make sure you have set the ``hybrid_x`` and ``hybrid_y`` values correctly in the ``setup_det_chan()`` function.
 
-2) Pull up all the scan resolutions with ``test_fs.all_res_x``, and ``test_fs.all_res_y``. These will be in the
-same order as test_fs.scan_numbers. Remove the scan that is throwing the error when setting up 
-``test_fs = SXDMFrameset()``. Future versions will resample the scans to create identical resolutions in all
-X, all Y, and in X v. Y.
-
-3) If there is still an error the scan dimensions are not the same across all scans. Run 
-``show_hybrid_dimensions(test_fs)`` to see all the scan dimensions
+- Make sure you have set the ``hybrid_x`` and ``hybrid_y`` values correctly in the ``setup_det_chan()`` function.
+    
+- Pull up all the scan resolutions with ``test_fs.all_res_x``, and ``test_fs.all_res_y``. These will be in the same order as test_fs.scan_numbers. Remove the scan that is throwing the error when setting up ``test_fs = SXDMFrameset()``. Future versions will resample the scans to create identical resolutions in all X, all Y, and in X v. Y.
+    
+- If there is still an error the scan dimensions are not the same across all scans. Run 
+    ``show_hybrid_dimensions(test_fs)`` to see all the scan dimensions
 
 Alignment
 =========
@@ -194,7 +204,7 @@ method:
   # Run through five passes of the default phase correlation
   test_fs.alignment(reset=False)
 
-  #reset (bool) - if you would like to completely reset the alignment make this equal True
+``reset`` (bool) - if you would like to completely reset the alignment make this equal True
 
 **if you import new scan numbers you must make sure reset=True for the first alignment**
 
@@ -456,3 +466,41 @@ Show Raw .tif Image Dimensions
     SXDMFrameset_object.image_data_dimensions()
 
 This will return the diffraction image dimensions
+
+
+Pixel Analysis
+--------------
+
+If the user would like to return a certain pixel analysis value they can use the ``pixel_analysis_return()``
+function to achieve this. Returns a dictionary of entries
+
+.. code:: python
+
+    `'row_column',
+    'summed_dif', - auto set to 0 for saving RAM usage
+    'ttheta',
+    'chi',
+    'ttheta_corr',
+    'chi_corr',
+    'ttheta_cent',
+    'chi_cent',
+    'roi'`
+
+
+Saving and Reloading Data
+-------------------------
+
+Saves ``self.results`` to the ``test_fs.saved_file`` - this value/file is automatically created in the initial
+SXDMFrameset setup
+
+
+.. code:: python
+
+    test_fs.save()
+
+To reload saved data in the test_fs.saved_file run
+
+.. code:: python
+    test_fs.reload_save()
+
+This will load the results to test_fs.results
