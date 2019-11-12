@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Introduction &#8212; sxdm v0.5 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Importing Data into SXDM" href="importing.html" />
+    <link rel="prev" title="SXDM documentation" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="importing.html" title="Importing Data into SXDM"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="SXDM documentation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">sxdm v0.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>SXSM is a toolkit for interacting with Scanning X-ray microscopy data,
+most likley collected at the Advanced Photon Source - Beamline 26-ID-C.
+By collecting a set of frames at multiple incident angles, spectral/diffraction
+maps  are reconstructed to provide chemical/strain insight.</p>
+<p>This project has the following design goals:</p>
+<ul class="simple">
+<li><p>Provide a python toolkit for analysis of X-ray diffraction frames.</p></li>
+<li><p>Store data in an open format for easy distribution.</p></li>
+</ul>
+<p>GUI tools (eg. DUDE) exist for performing this type of
+analysis. While convenient, final setup and testing has not
+been carried out. This module hopes to aleviate importing and
+data analysis issues for the 26-ID-C beamline. SXDM does provide
+an interactive GUI for visualizing the data, but this GUI
+does not alter the data or export results. This way, the analysis
+steps are caputed either in an IPython notebook or conventional python
+script. These steps, together with the original data, should then be
+sufficient to reproduce the results exactly.</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>SXDM can be installed from the <strong>python package index (PyPI) using pip - coming soon</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ follow Developement Installation
+</pre></div>
+</div>
+</div>
+<div class="section" id="development">
+<h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>
+<p>If you plan to contribute changes to sxdm, installing in developer
+mode may be more your style. This will also allow you to run tests and
+build documentation.</p>
+<div class="section" id="id1">
+<h3>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Assuming you are using conda, here are the
+steps. Any version of python &gt;=3.5 should be ok.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda create -n sxdm <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.6
+$ <span class="nb">source</span> activate sxdm
+$ git clone clone git@github.com:WilliamJudge94/sxdm.git
+$ pip install -r sxdm/requirements.txt
+$ pip3 install ipykernel
+$ ipython kernel install --user --name<span class="o">=</span>sxdm
+</pre></div>
+</div>
+</div>
+<div class="section" id="jupyter">
+<h3>Jupyter<a class="headerlink" href="#jupyter" title="Permalink to this headline">¶</a></h3>
+<p>Once in Jupyter the User may have to initiate the import through</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;/Users/usr/virtual_environment/lib/python3.6/site-packages/&#39;</span><span class="p">)</span>
+
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">qt</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;/path/to/sxdm/folder&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tests">
+<h3>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h3>
+<p>The easiest way to run unit-tests is with pytest:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">cd</span> sxdm/tests
+$ python3.6 test_all.py
+</pre></div>
+</div>
+</div>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<p>The documentation is built using sphinx. To make HTML documents, use the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -r sxdm/requirements-docs.txt
+$ <span class="nb">cd</span> sxdm/docs
+$ make html
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="scanning-x-ray-diffraction-microscopy">
+<h2>Scanning X-Ray Diffraction Microscopy<a class="headerlink" href="#scanning-x-ray-diffraction-microscopy" title="Permalink to this headline">¶</a></h2>
+<p>Coming soon…</p>
+</div>
+<div class="section" id="example-workflow">
+<h2>Example Workflow<a class="headerlink" href="#example-workflow" title="Permalink to this headline">¶</a></h2>
+<p>A typical prcocedure for interacting with microscope frame-sets involves the following parts:</p>
+<ul class="simple">
+<li><p>Import the raw data</p></li>
+<li><p>Apply corrections and align the images</p></li>
+<li><p>Calculate some metric and create maps of it</p></li>
+<li><p>Visualize the maps, staticly or interactively.</p></li>
+</ul>
+<p>Example for a single frameset across an X-ray absorbance edge:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">load_ext</span> <span class="n">autoreload</span>
+<span class="o">%</span><span class="n">autoreload</span> <span class="mi">2</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">qt</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;/path/to/sxdm&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sxdm</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="c1"># Set file name</span>
+<span class="n">hdf5_save_directory</span> <span class="o">=</span> <span class="s1">&#39;/dir/&#39;</span>
+<span class="n">hdf5_save_filename</span> <span class="o">=</span> <span class="s1">&#39;test&#39;</span>
+
+<span class="c1"># Importing .mda data</span>
+<span class="n">import_mda</span><span class="p">(</span><span class="n">mda_path</span><span class="p">,</span> <span class="n">hdf5_save_directory</span><span class="p">,</span> <span class="n">hdf5_save_filename</span><span class="p">)</span>
+
+<span class="c1"># Importing .tif images</span>
+<span class="n">import_images</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">images_loc</span><span class="p">)</span>
+
+<span class="c1"># Setting Detector Channels</span>
+<span class="n">disp_det_chan</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="n">setup_det_chan</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">fluor</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">detector_scan</span><span class="p">,</span> <span class="n">filenumber</span><span class="p">,</span> <span class="n">sample_theta</span><span class="p">,</span> <span class="n">hybrid_x</span><span class="p">,</span> <span class="n">hybrid_y</span><span class="p">,</span> <span class="n">mis</span><span class="p">)</span>
+
+<span class="c1"># Set up SXDMFrameset</span>
+<span class="n">scan_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">dataset_name</span> <span class="o">=</span> <span class="s1">&#39;Test Name&#39;</span>
+<span class="n">test_fs</span> <span class="o">=</span> <span class="n">SXDMFrameset</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">scan_numbers</span> <span class="o">=</span> <span class="n">scan_numbers</span><span class="p">,</span> <span class="n">median_blur_algorithm</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">)</span>
+
+<span class="c1"># Alignment</span>
+<span class="n">test_fs</span><span class="o">.</span><span class="n">alignment</span><span class="p">()</span>
+
+<span class="c1"># Analysis</span>
+<span class="n">test_fs</span><span class="o">.</span><span class="n">centroid_analysis</span><span class="p">()</span>
+
+<span class="c1"># Viewer</span>
+<span class="n">test_fs</span><span class="o">.</span><span class="n">centroid_viewer</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#development">Development</a><ul>
+<li><a class="reference internal" href="#id1">Installation</a></li>
+<li><a class="reference internal" href="#jupyter">Jupyter</a></li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#scanning-x-ray-diffraction-microscopy">Scanning X-Ray Diffraction Microscopy</a></li>
+<li><a class="reference internal" href="#example-workflow">Example Workflow</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">SXDM documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="importing.html"
+                        title="next chapter">Importing Data into SXDM</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/intro.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="importing.html" title="Importing Data into SXDM"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="SXDM documentation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">sxdm v0.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, William Judge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

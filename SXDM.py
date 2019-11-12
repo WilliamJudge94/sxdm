@@ -27,7 +27,7 @@ class SXDMFrameset():
     
 
     def __init__(self, file, dataset_name,
-                  scan_numbers=False, fill_num=4, restart_zoneplate=False, median_blur_algorithm='numpy'):
+                  scan_numbers=False, fill_num=4, restart_zoneplate=False, median_blur_algorithm='scipy'):
 
         """Creates The SXDMFrameset Object
 
@@ -52,9 +52,9 @@ class SXDMFrameset():
             threshold.
         """
         
-        if median_blur_algorithm == 'numpy':
+        if median_blur_algorithm == 'scipy':
             config.median_blur = median_blur_numpy
-            print("Using --numpy-- median_blur\n")
+            print("Using --scipy-- median_blur\n")
             
         elif median_blur_algorithm == 'selective':
             config.median_blur = median_blur_selective

@@ -1,0 +1,456 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Analyzing the Data &#8212; sxdm v0.5 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Visualization of Results" href="visualization.html" />
+    <link rel="prev" title="Importing Data into SXDM" href="importing.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="visualization.html" title="Visualization of Results"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="importing.html" title="Importing Data into SXDM"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">sxdm v0.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="analyzing-the-data">
+<h1>Analyzing the Data<a class="headerlink" href="#analyzing-the-data" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="setting-up-detector-channels">
+<h2>Setting Up Detector Channels<a class="headerlink" href="#setting-up-detector-channels" title="Permalink to this headline">¶</a></h2>
+<p>After importing the data, the User will likley want to store detector
+channel values for the Experimental Run. This avoids having to remember
+them every time the User would like to go back and analyze a specific
+dataset. To begin, run the following</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="nb">file</span><span class="o">=</span><span class="s1">&#39;/path/to/file.h5&#39;</span>
+
+<span class="c1"># Display a preset detector channel input that the User can copy</span>
+<span class="n">disp_det_chan</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+
+
+<span class="c1"># Example Output</span>
+
+<span class="n">detector_scan</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Main_Scan&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">filenumber</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">fluor</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Cu&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;Fe&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;Zn&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;O&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">hybrid_x</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">hybrid_y</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">mis</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;2Theta&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;Relative_r_To_Detector&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;Storage_Ring_Current&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">roi</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;ROI_1&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;ROI_2&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;ROI_3&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">sample_theta</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>If detector channels have not been previously set default values will present themselves. Change all values according
+to your experimental setup.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Main_Scan</span></code>   is the scan number used to determine binstrumental broadening.</p>
+<p><code class="docutils literal notranslate"><span class="pre">filenumber</span></code>  is the detector channel accosiated with the .tif file numbers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fluor</span></code>       is a dictionary of User defined fluoresence detector channels.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hybrid_x</span></code>    is the detector channel accociated with the x-axis motor movements for the scan.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hybrid_y</span></code>    is the detector channel associated with the y-axis motor movements for the scan.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">mis</span></code>         is a dictionary for the User to input any other useful detector channels for their own experiments.</dt><dd><p>This dictionary must have at least one entry in it.</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">roi</span></code>         is a dictionary for the 26-ID-C pre caluclated region of diffraction interest maps.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sample_theta</span></code> is the detector channel associated with the angle of the sample during the scan.</p>
+<p>Once these values are set the User can run</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change Values, Run Cell, And Input Values Into Function Below</span>
+<span class="n">setup_det_chan</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">fluor</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">detector_scan</span><span class="p">,</span> <span class="n">filenumber</span><span class="p">,</span> <span class="n">sample_theta</span><span class="p">,</span> <span class="n">hybrid_x</span><span class="p">,</span> <span class="n">hybrid_y</span><span class="p">,</span> <span class="n">mis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setting-up-frameset">
+<h2>Setting Up Frameset<a class="headerlink" href="#setting-up-frameset" title="Permalink to this headline">¶</a></h2>
+<p>After importing the data, and setting the detector channels you will likely need to process and analyze
+the frame set. This is done through the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sxdm.SXDMFrameset</span></code> class. Most
+<strong>processing and analysis steps are provided as methods on this
+class</strong>, so the first step is to create a frameset object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># Use the same HDF file and group name as when importing</span>
+<span class="n">test_fs</span> <span class="o">=</span> <span class="n">SXDMFrameset</span><span class="p">(</span><span class="nb">file</span><span class="s1">&#39;/path/to/file.h5&#39;</span><span class="p">,</span>
+            <span class="n">dataset_name</span><span class="o">=</span><span class="s1">&#39;user_dataset_name&#39;</span><span class="p">,</span>
+            <span class="n">scan_numbers</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+            <span class="n">fill_num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">restart_zoneplate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">median_blur_algorithm</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">file</span></code>   A string to the file.h5 file</p>
+<p><code class="docutils literal notranslate"><span class="pre">dataset_name</span></code>  A user defined string associated with a specific dataset. Examples - ‘Pristine’, ‘Charged’</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">scan_numbers</span></code>       A list of scan numbers the User would like to associated with the set <code class="docutils literal notranslate"><span class="pre">dataset_name</span></code></dt><dd><p>This one has to be set once. Every other time it will, pull from these stored values,
+unless a User decides to change the <code class="docutils literal notranslate"><span class="pre">scan_numbers</span></code>.</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">fill_num</span></code>    This is an integer set by the User which defines how many number values are in each .tif file name.</p>
+<p><code class="docutils literal notranslate"><span class="pre">restart_zoneplate</span></code>    Allows the User to redefine the ZonePlate data</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">median_blur_algorithm</span></code>         Allows the User to choose which type of median blur algorithm is to be used for</dt><dd><p>Data Analysis.</p>
+</dd>
+</dl>
+<div class="section" id="median-blur-type-selection">
+<h3>Median Blur Type Selection<a class="headerlink" href="#median-blur-type-selection" title="Permalink to this headline">¶</a></h3>
+<p>In the creation of the SXDMFrameset there is an option to set a <code class="docutils literal notranslate"><span class="pre">median_blur_algorithm</span></code>.
+There are two option in the current version of SXDM. <code class="docutils literal notranslate"><span class="pre">scipy</span></code> and <code class="docutils literal notranslate"><span class="pre">selective</span></code>.</p>
+<p><strong>mis.median_blur_scipy()</strong></p>
+<p>This median blur algorithm calls the <code class="docutils literal notranslate"><span class="pre">scipy.signal.me_blur</span></code>. This will apply a median blur to the entire 1 dimensional
+datasets produced by the 2 dimensional images.</p>
+<p><strong>mis.median_blur_selective()</strong></p>
+<p>This median blur alogrithm bins off line scan data, determines the mean, if there is a value above a User value + mean
+it will be replaced with the mean value for the chunk. This preserves most of the raw intensity data at the cost of
+speed.</p>
+</div>
+</div>
+<div class="section" id="scan-dimensions-check">
+<h2>Scan Dimensions Check<a class="headerlink" href="#scan-dimensions-check" title="Permalink to this headline">¶</a></h2>
+<p>Starting the SXDMFrameset will automatically determine the pixel X resolution for all the imported scans as well as all
+the Y resolutions for all the scans and checks to make sure every scan has identical X resolutions and every scan has
+identical Y resolutions. Then it checks to see if the median(x) and median(y) resoltuions are equivalent.</p>
+<p>If the program throws an error during the resolution check</p>
+<ol class="arabic simple">
+<li><p>Make sure you have set the <code class="docutils literal notranslate"><span class="pre">hybrid_x</span></code> and <code class="docutils literal notranslate"><span class="pre">hybrid_y</span></code> values correctly in the <code class="docutils literal notranslate"><span class="pre">setup_det_chan()</span></code> function.</p></li>
+</ol>
+<p>2) Pull up all the scan resolutions with <code class="docutils literal notranslate"><span class="pre">test_fs.all_res_x</span></code>, and <code class="docutils literal notranslate"><span class="pre">test_fs.all_res_y</span></code>. These will be in the
+same order as test_fs.scan_numbers. Remove the scan that is throwing the error when setting up
+<code class="docutils literal notranslate"><span class="pre">test_fs</span> <span class="pre">=</span> <span class="pre">SXDMFrameset()</span></code>. Future versions will resample the scans to create identical resolutions in all
+X, all Y, and in X v. Y.</p>
+<p>3) If there is still an error the scan dimensions are not the same across all scans. Run
+<code class="docutils literal notranslate"><span class="pre">show_hybrid_dimensions(test_fs)</span></code> to see all the scan dimensions</p>
+</div>
+<div class="section" id="alignment">
+<h2>Alignment<a class="headerlink" href="#alignment" title="Permalink to this headline">¶</a></h2>
+<p>In order to acquire reliable spectra, <strong>it is important that the
+frames be aligned properly</strong>. Thermal expansion, motor slop, sample
+damage and imperfect microscope alignment can all cause frames to be
+misaligned. <strong>It is almost always necessary to align the frames before
+performing any of the subsequent steps.</strong></p>
+<p>Aligning the scan can be carried out through the following code and following the GUI. Alignment can only be done of
+the Fluorescence images or the Region of Interest images set in the setup_det_chan() function. User will define which
+one to use in the GUI. Once all alignment centers have been set, it is ok to just quit out of the windows.</p>
+<p>This is done with the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">test_fs.alignment()</span></code>
+method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># Select an imported hdf file to use</span>
+<span class="n">test_fs</span> <span class="o">=</span> <span class="n">SXDMFrameset</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+
+<span class="c1"># Run through five passes of the default phase correlation</span>
+<span class="n">test_fs</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c1">#reset (bool) - if you would like to completely reset the alignment make this equal True</span>
+</pre></div>
+</div>
+<p><strong>if you import new scan numbers you must make sure reset=True for the first alignment</strong></p>
+</div>
+<div class="section" id="diffraction-axis-values">
+<h2>Diffraction Axis Values<a class="headerlink" href="#diffraction-axis-values" title="Permalink to this headline">¶</a></h2>
+<p>To determine the chi bounds (angle bounds) for the detector diffraction images as well as determining the numerical
+aperture, focal length, and instrumental broadening in pixels.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">chi_determination</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>angle difference (in degrees) from the left/bottom hand side of the detector to the right/top <code class="docutils literal notranslate"><span class="pre">test_fs.chi</span></code>
+focal length in millimeters can be called with <code class="docutils literal notranslate"><span class="pre">test_fs.focal_length_mm</span></code> numberical aperature in millirads can be
+called with <code class="docutils literal notranslate"><span class="pre">test_fs.NA_mrads</span></code> instrumental broadening radius in pixels of the diffraction image can be called with
+<code class="docutils literal notranslate"><span class="pre">test_fs.broadening_in_pix</span></code></p>
+</div>
+<div class="section" id="region-of-interest-analysis">
+<h2>Region Of Interest Analysis<a class="headerlink" href="#region-of-interest-analysis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="segment">
+<h3>Segment<a class="headerlink" href="#segment" title="Permalink to this headline">¶</a></h3>
+<p>In order for the program to determine a region of interest the User must define areas of interest. This GUI allows
+the User to define as many Region Of Interests as they please in the diffraction image. Then upon running the Analysis
+portion, the program will determine the summed value of these regions, plot them, as well as normalize.</p>
+<p>Through a GUI the User can select multiple region of interests from the summed diffraction pattern. Set the
+<code class="docutils literal notranslate"><span class="pre">diff_segmentation=True</span></code> in the <code class="docutils literal notranslate"><span class="pre">test_fs.region_of_interest()</span></code> function to True for this analysis to be carried out.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">roi_segmentation</span><span class="p">(</span><span class="n">bkg_multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">bkg_multiplier</span></code> (int) - an integer value applied to the backgound scans</p>
+<p><code class="docutils literal notranslate"><span class="pre">restart</span></code> (bool) - if set to True this will reset all the segmentation data</p>
+<p>If the program throws image_array doesnt exsist run create_imagearray(self)</p>
+<p>If the program throws scan_background doesnt exsist run scan_background(self)</p>
+</div>
+<div class="section" id="analysis">
+<h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
+<p>Allows the User to create new ROI maps for all the imported scans in the frameset. This will handle hot and
+dead pixels as well as show the user the true gaussian distribution of the fields of view.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">region_of_interest</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span>
+                            <span class="n">med_blur_distance</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
+                            <span class="n">med_blur_height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                            <span class="n">bkg_multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                            <span class="n">diff_segmentation</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                            <span class="n">slow</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">rows</span></code> (int or tuple) - the total amount of rows the User would like to analyze 25 or (10,17)</p>
+<p><code class="docutils literal notranslate"><span class="pre">columns</span></code> (int or tuple) - the total amount of columns the User would like to analyze 25 or (10,17)</p>
+<p><code class="docutils literal notranslate"><span class="pre">med_blur_distance</span></code> (odd int) - the chunksize for the median_blur() function</p>
+<p><code class="docutils literal notranslate"><span class="pre">med_blur_height</span></code> (int) - the amount above the mean to carry out a median blur - selective median_blur option only</p>
+<p><code class="docutils literal notranslate"><span class="pre">bkg_multiplier</span></code> (int) - the multipler given to the backgound scans</p>
+<p><code class="docutils literal notranslate"><span class="pre">diff_segmentation</span></code> (bool) - if False the program will skip the segmentation analysis</p>
+<p><code class="docutils literal notranslate"><span class="pre">slow</span></code> (bool) - defaults to multiprocess data. If the program uses too much RAM the User can set this value to True
+to slow down the analysis and save on RAM</p>
+</div>
+</div>
+<div class="section" id="centroid-analysis">
+<h2>Centroid Analysis<a class="headerlink" href="#centroid-analysis" title="Permalink to this headline">¶</a></h2>
+<p>The centroid analysis function can be called through</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">centroid_analysis</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span>
+                            <span class="n">columns</span><span class="p">,</span>
+                            <span class="n">med_blur_distance</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
+                            <span class="n">med_blur_height</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                            <span class="n">stdev_min</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+                            <span class="n">bkg_multiplier</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">rows</span></code> - total amount of rows in the scans - can also be a tuple of ints</p>
+<p><code class="docutils literal notranslate"><span class="pre">columns</span></code> - total amount of columns in the scans - can also be a tuple of ints</p>
+<p><code class="docutils literal notranslate"><span class="pre">med_blur_distance</span></code> (odd int) - the chunksize for the median_blur() function</p>
+<p><code class="docutils literal notranslate"><span class="pre">med_blur_height</span></code> (int) - the amount above the mean to carry out a median blur - selective median_blur option only</p>
+<p><code class="docutils literal notranslate"><span class="pre">bkg_multiplier</span></code> (int) - the multipler given to the backgound scans</p>
+<p><code class="docutils literal notranslate"><span class="pre">stdev_min</span></code> (int) - the minimum standard deviation of a spectrum which is used to crop signals for centroid determination</p>
+<p><code class="docutils literal notranslate"><span class="pre">slow</span></code> (bool) - defaults to multiprocess data. If the program uses too much RAM the User can set this value to True
+to slow down the analysis and save on RAM</p>
+<p><strong>Unsure About Dimension Size</strong></p>
+<p>If you are unsure of the dimension sizes call <code class="docutils literal notranslate"><span class="pre">self.frame_shape()</span></code>. The first number is the number of scans,
+the second number is the about of rows + 1, and the third number is the number of columns + 1</p>
+<p><strong>Difference Between slow=False and slow=True</strong></p>
+<p>The above function calls one of two functions. Either the <code class="docutils literal notranslate"><span class="pre">centroid_pixel_analysis()</span></code> function and vectorizes it for
+moderate run times with excellent RAM management (1-2GB). Or this will call the <code class="docutils literal notranslate"><span class="pre">centroid_pixel_analysis_multi()</span></code>
+function which will multiprocess the dataset, but uses considerably more RAM (6-8GB). Analysis route determine by slow
+bool value.</p>
+<p><strong>What Is The test_fs.results Variable</strong></p>
+<p>Sets the <code class="docutils literal notranslate"><span class="pre">test_fs.results</span></code> value where the user can return the results of their analysis.
+Outputs - [pixel position, spot diffraction pattern, median blurred x axis, median blurred y axis, truncated x axis
+for centroid finding, x axis centroid value, truncated y axis for centroid finding, y axis centroid value,
+summed diffraction intensity]</p>
+</div>
+<div class="section" id="retrieving-imported-data">
+<h2>Retrieving Imported Data<a class="headerlink" href="#retrieving-imported-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="return-detector-data">
+<h3>Return Detector Data<a class="headerlink" href="#return-detector-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">return_det</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">scan_numbers</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;fluor&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Returns all information for a given detector channel for the array of scan numbers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">file</span></code> - test_fs.file</p>
+<p><code class="docutils literal notranslate"><span class="pre">scan_numbers</span></code> - test_fs.scan_numbers</p>
+<p><code class="docutils literal notranslate"><span class="pre">group</span></code> - Examples: filenumber, sample_theta, hybrid_x, hybrid_y, fluor, roi, mis</p>
+<p><code class="docutils literal notranslate"><span class="pre">default</span></code> - if True this will default to the first fluorescence image</p>
+</div>
+<div class="section" id="centering-detector-data">
+<h3>Centering Detector Data<a class="headerlink" href="#centering-detector-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">centering_det</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;fluor&#39;</span><span class="p">,</span> <span class="n">center_around</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">summed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This returns the User defined detector for all scans set in the self.scan_numbers and centers them around a User defined
+centering scan index</p>
+<p><code class="docutils literal notranslate"><span class="pre">self</span></code> - the SXDMFrameset</p>
+<p><code class="docutils literal notranslate"><span class="pre">group</span></code> - a string defining the group value to be returned filenumber, sample_theta, hybrid_x, hybrid_y, fluor, roi</p>
+<p><code class="docutils literal notranslate"><span class="pre">center_around</span></code> - if this is set to -1, arrays will not be shifted</p>
+<p><code class="docutils literal notranslate"><span class="pre">summed</span></code> - if True this will return the summed returned detector value (summed accross all scans)</p>
+<p><code class="docutils literal notranslate"><span class="pre">default</span></code> - if True this will choose the first fluor or first ROI</p>
+</div>
+<div class="section" id="show-hdf5-file-groups">
+<h3>Show HDF5 File Groups<a class="headerlink" href="#show-hdf5-file-groups" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">h5group_list</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">group_name</span><span class="o">=</span><span class="s1">&#39;base&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This allows the User to view the group names inside the hdf5 file. ‘base’ shows the topmost group. If it errors this
+means you have hit a dataset and need to call the h5grab_data() function.</p>
+<p><code class="docutils literal notranslate"><span class="pre">file</span></code> - test_fs.file</p>
+<p><code class="docutils literal notranslate"><span class="pre">group_name</span></code> - /path/to/group/</p>
+</div>
+<div class="section" id="return-hdf5-file-data">
+<h3>Return HDF5 File Data<a class="headerlink" href="#return-hdf5-file-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">h5grab_data</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">data_loc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will grab the data stored in a group. If it errors this means you are not in a dataset directory inside the hdf5
+file.</p>
+<p><code class="docutils literal notranslate"><span class="pre">file</span></code> - test_fs.file</p>
+<p><code class="docutils literal notranslate"><span class="pre">data_loc</span></code> - /path/to/data</p>
+</div>
+<div class="section" id="show-alignment-data">
+<h3>Show Alignment Data<a class="headerlink" href="#show-alignment-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grab_dxdy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This returns the dx and dy centering values that are stored from the alignment function</p>
+<p><code class="docutils literal notranslate"><span class="pre">self</span></code> - the SXDMFrameset</p>
+</div>
+<div class="section" id="read-hdf5-group-attributes">
+<h3>Read HDF5 Group Attributes<a class="headerlink" href="#read-hdf5-group-attributes" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">h5read_attr</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This returns the attribute value stored</p>
+<p><code class="docutils literal notranslate"><span class="pre">file</span></code> - test_fs.file</p>
+<p><code class="docutils literal notranslate"><span class="pre">loc</span></code> - ‘/path/to/group/with/attribute’</p>
+<p><code class="docutils literal notranslate"><span class="pre">attribute_name</span></code> - ‘the_attribute_name’</p>
+</div>
+<div class="section" id="find-frameset-dimensions">
+<h3>Find Frameset Dimensions<a class="headerlink" href="#find-frameset-dimensions" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SXDMFrameset_object</span><span class="o">.</span><span class="n">frame_shape</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This returns the image dimensions for the SXDMFrameset class object</p>
+</div>
+<div class="section" id="calculate-background-and-filenumber-locations">
+<h3>Calculate Background and FileNumber Locations<a class="headerlink" href="#calculate-background-and-filenumber-locations" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SXDMFrameset_object</span><span class="o">.</span><span class="n">ims_array</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will auto load/calculate the background images and the image location array</p>
+</div>
+<div class="section" id="show-raw-tif-image-dimensions">
+<h3>Show Raw .tif Image Dimensions<a class="headerlink" href="#show-raw-tif-image-dimensions" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SXDMFrameset_object</span><span class="o">.</span><span class="n">image_data_dimensions</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will return the diffraction image dimensions</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Analyzing the Data</a><ul>
+<li><a class="reference internal" href="#setting-up-detector-channels">Setting Up Detector Channels</a></li>
+<li><a class="reference internal" href="#setting-up-frameset">Setting Up Frameset</a><ul>
+<li><a class="reference internal" href="#median-blur-type-selection">Median Blur Type Selection</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#scan-dimensions-check">Scan Dimensions Check</a></li>
+<li><a class="reference internal" href="#alignment">Alignment</a></li>
+<li><a class="reference internal" href="#diffraction-axis-values">Diffraction Axis Values</a></li>
+<li><a class="reference internal" href="#region-of-interest-analysis">Region Of Interest Analysis</a><ul>
+<li><a class="reference internal" href="#segment">Segment</a></li>
+<li><a class="reference internal" href="#analysis">Analysis</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#centroid-analysis">Centroid Analysis</a></li>
+<li><a class="reference internal" href="#retrieving-imported-data">Retrieving Imported Data</a><ul>
+<li><a class="reference internal" href="#return-detector-data">Return Detector Data</a></li>
+<li><a class="reference internal" href="#centering-detector-data">Centering Detector Data</a></li>
+<li><a class="reference internal" href="#show-hdf5-file-groups">Show HDF5 File Groups</a></li>
+<li><a class="reference internal" href="#return-hdf5-file-data">Return HDF5 File Data</a></li>
+<li><a class="reference internal" href="#show-alignment-data">Show Alignment Data</a></li>
+<li><a class="reference internal" href="#read-hdf5-group-attributes">Read HDF5 Group Attributes</a></li>
+<li><a class="reference internal" href="#find-frameset-dimensions">Find Frameset Dimensions</a></li>
+<li><a class="reference internal" href="#calculate-background-and-filenumber-locations">Calculate Background and FileNumber Locations</a></li>
+<li><a class="reference internal" href="#show-raw-tif-image-dimensions">Show Raw .tif Image Dimensions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="importing.html"
+                        title="previous chapter">Importing Data into SXDM</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="visualization.html"
+                        title="next chapter">Visualization of Results</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/analysis.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="visualization.html" title="Visualization of Results"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="importing.html" title="Importing Data into SXDM"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">sxdm v0.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, William Judge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+    </div>
+  </body>
+</html>

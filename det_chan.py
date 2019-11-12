@@ -272,7 +272,7 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
 
         # Keep asking the User for an acceptable value if it doesnt exsist
         while end == False:
-            if group not in ['filenumber', 'sample_theta', 'hybrid_x', 'hybrid_y', 'mis']:
+            if group not in ['filenumber', 'sample_theta', 'hybrid_x', 'hybrid_y']:
                 if default == False:
                     user_val = str(input('Which - ' + group + ' - Would You Like To Center To/Return: ' + str(acceptable_values)))
                 elif default == True:
@@ -283,7 +283,7 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
 
             # Grab the right data
             if user_val in acceptable_values:
-                if group not in ['filenumber', 'sample_theta', 'hybrid_x', 'hybrid_y', 'mis']:
+                if group not in ['filenumber', 'sample_theta', 'hybrid_x', 'hybrid_y']:
                     det = str(h5grab_data(file=file,
                                           data_loc=path + '/' + user_val))
                 else:
