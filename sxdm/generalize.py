@@ -152,7 +152,6 @@ def general_analysis_multi(self, rows, columns, analysis_function, analysis_inpu
     inputs = tqdm(inputs, total=len(master_rows),
               desc="Progress", unit='pixles')
 
-    general_pre_multi(inputs, image_array, scan_numbers, background_dic, file, analysis_function, analysis_input)
 
     # Creating a partial function
     p_general_pre_analysis = partial(general_pre_multi, image_array=self.image_array,
