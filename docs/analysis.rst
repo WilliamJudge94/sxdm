@@ -347,6 +347,70 @@ Outputs - [pixel position, spot diffraction pattern, median blurred x axis, medi
 for centroid finding, x axis centroid value, truncated y axis for centroid finding, y axis centroid value,
 summed diffraction intensity]
 
+General User Analysis
+======================
+
+Sometime the build in functions do not align with what Users of the module would like to do. For this there is a general
+multiprocessing tool for pixel by pixel diffraction pattern analysis.
+
+Standard Set Up
+---------------
+
+.. code:: python
+
+    from sxdm import *
+
+    test_fs = SXDMFrameset(file'/path/to/file.h5',
+                dataset_name='user_dataset_name',
+                scan_numbers=[1, 2, 3, 4, ...],
+                fill_num=4,
+                restart_zoneplate=False,
+                median_blur_algorithm='scipy',
+                )
+
+Defining a Function
+--------------------
+
+.. code:: python
+
+    def do_something(summed_dif, inputs):
+    """
+    summed_diff - This is an automatic input that has to come first. We are passing in the corrected summed
+    diffraction pattern
+
+    inputs - the user defined inputs used to split up into function definitions - must be static values
+
+    """
+
+    adding, subtracting, dividing, multiplying = inputs
+
+    first = np.add(summed_diff, adding)
+    second = np.subtract(first, subtracting)
+    third = np.divide(second, dividing)
+    fourth = np.multiply(third, multiplying)
+
+    return [fourth, third, second, first]
+
+Creating A .tif Image Array
+---------------------------
+
+.. code:: python
+
+    create_imagearray(test_fs)
+
+Implementing General Multiprocessing
+------------------------------------
+
+.. code:: python
+
+    rows = 10       # or (0, 5)
+    columns = 10    # or (5, 10)
+
+    inputs = [1, 3, 5, 7]
+
+
+    output = general_analysis_multi(test_fs, rows, columns, do_something, inputs)
+
 Retrieving Imported Data
 ========================
 

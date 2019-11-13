@@ -11,7 +11,7 @@ from background import scan_background_finder, scan_background
 from mis import get_idx4roi, ram_check#, median_blur
 from pixel import theta_maths, chi_maths, centroid_finder, grab_pix
 from multi import initialize_vectorize
-from multi_update import h5get_image_destination_multi
+from multi_update import h5get_image_destination_multi, sum_pixel_multi
 from h5 import open_h5, close_h5
 
 import config
@@ -105,7 +105,7 @@ def general_pre_multi(inputs, image_array, scan_numbers, background_dic, file, a
     with h5py.File(file, 'r', swmr=True) as hdf:
         row, column = inputs
         results = general_pixel_analysis_multi(row, column, image_array, scan_numbers,
-                                               background_dic, file,
+                                               background_dic, hdf,
                                                analysis_function, analysis_input)
     return results
 
