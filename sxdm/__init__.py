@@ -37,6 +37,7 @@ from SXDM import *
 from summed2d import *
 from viewer import *
 from readingmda import *
+from generalize import *
 
 
 def warning_on_one_line(message, category, filename, lineno, file=None, line=None):
