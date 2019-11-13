@@ -227,8 +227,8 @@ called with ``test_fs.NA_mrads`` instrumental broadening radius in pixels of the
 Region Of Interest Analysis
 ===========================
 
-Segment
--------
+Segmentation
+------------
 
 In order for the program to determine a region of interest the User must define areas of interest. This GUI allows
 the User to define as many Region Of Interests as they please in the diffraction image. Then upon running the Analysis
@@ -281,6 +281,18 @@ dead pixels as well as show the user the true gaussian distribution of the field
 
 ``slow`` (bool) - defaults to multiprocess data. If the program uses too much RAM the User can set this value to True
 to slow down the analysis and save on RAM
+
+
+.. code:: python
+
+    output = create_rois(test_fs.roi_results)
+
+To obtain the results from the ROI Analysis use the `create_roi()` function.
+
+.. note::
+
+   If the np.nansum(roi, axis=(0,1)) values are too high this is due to poor hot pixel
+removal. Please see the **Viewer** section for more details.
 
 
 Centroid Analysis
@@ -376,6 +388,10 @@ centering scan index
 ``default`` - if True this will choose the first fluor or first ROI
 
 
+.. note::
+
+    The centered file numbers are usually stored as test_fs.im_array
+
 Show HDF5 File Groups
 ----------------------
 
@@ -447,7 +463,7 @@ This returns the image dimensions for the SXDMFrameset class object
 
 
 Calculate Background and FileNumber Locations
-----------------
+---------------------------------------------
 
 .. code:: python
 

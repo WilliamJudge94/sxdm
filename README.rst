@@ -15,19 +15,25 @@ Motivation & Features
 - Analysis of scanning x-ray diffraction microscopy (centroids & region of interest)
 
 
-Installation
-------------
+Installation (pip)
+------------------
+
+- `pip install sxdm`
+
+
+Installation (git)
+------------------
 
 - Make a clone of the SXDM project onto your machine
 - Possibly create a virtual environment
-- Run the requirements.txt file
+- Run/install requirements.txt file
 
 
-Virtual Environment & Jupyter Setup
------------------------------------
+Virtual Environment & Jupyter Setup (git)
+-----------------------------------------
 
 - cd to directory you would like to keep the virtual environment
-- run `python3 -m venv projectname` in the terminal projectname can be anything the User would like it to be
+- run `python3 -m venv projectname` in the terminal. projectname can be anything the User would like it to be
 - run `source projectname/bin/activate`
 - run `pip3 install ipykernel`
 - run `ipython kernel install --user --name=projectname`

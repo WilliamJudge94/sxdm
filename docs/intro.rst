@@ -26,11 +26,11 @@ sufficient to reproduce the results exactly.
 Installation
 ============
 
-SXDM can be installed from the **python package index (PyPI) using pip - coming soon** 
+SXDM can be installed from the python package index (PyPI) using pip
 
 .. code:: bash
 
-   $ follow Developement Installation
+   $ pip install sxdm
 
 Development
 ===========
@@ -107,14 +107,20 @@ A typical prcocedure for interacting with microscope frame-sets involves the fol
 - Calculate some metric and create maps of it
 - Visualize the maps, staticly or interactively.
 
-Example for a single frameset across an X-ray absorbance edge::
+Example for a single frameset across an X-ray absorbance edge:
+
+.. code:: python
 
     %load_ext autoreload
     %autoreload 2
-    %matplotlib qt 
+    %matplotlib qt
+
+    # Developer Version
     import sys
-    sys.path
     sys.path.append('/path/to/sxdm')
+    # Developer Version
+
+
     from sxdm import *
 
     # Set file name
