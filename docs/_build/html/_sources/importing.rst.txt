@@ -55,3 +55,82 @@ The source ``image_#####.tif`` file can be easily imported:
 This function will iterate through all folders in the ``images_loc`` folders and import all
 ``images_####.tif`` image data into the User defined hdf5 destination/file. This will **Not**
 reimport the .tif images. If the User would like to do this they can set ``force_reimport=True``
+
+
+Data Structure
+==============
+
+The main structure is similar to what is shown below:
+
+.. code:: python
+
+    #Main_HDF5_File#
+
+        #images/
+            #0001
+                #000001
+                .
+                .
+                .
+                #number.tif
+
+            #0002
+                #000001
+                .
+                .
+                .
+                #number.tif
+
+            #0003
+                #000001
+                .
+                .
+                .
+                #number.tif
+
+        #mda/
+            #0001
+                #D01
+                .
+                .
+                .
+                #D70
+
+            #0002
+                #D01
+                .
+                .
+                .
+                #D70
+
+            #0003
+                #D01
+                .
+                .
+                .
+                #D70
+
+        #detector_channels
+            #detector_scan
+            #filenumber
+            #fluor
+            #hybrid_x
+            #hybrid_y
+            #mis
+            #roi
+            #sample_theta
+
+        #zone_plate
+            #D_um
+            #d_rN_nm
+            #detector_pixel_size
+
+        #dataset_name1
+            #dxdy
+            #scan_numbers
+            #scan_theta
+
+        #dataset_name2
+            #dxdy
+            #scan_numbers
+            #scan_theta

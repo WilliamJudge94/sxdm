@@ -227,8 +227,8 @@ called with ``test_fs.NA_mrads`` instrumental broadening radius in pixels of the
 Region Of Interest Analysis
 ===========================
 
-Segment
--------
+Segmentation
+------------
 
 In order for the program to determine a region of interest the User must define areas of interest. This GUI allows
 the User to define as many Region Of Interests as they please in the diffraction image. Then upon running the Analysis
@@ -283,6 +283,18 @@ dead pixels as well as show the user the true gaussian distribution of the field
 to slow down the analysis and save on RAM
 
 
+.. code:: python
+
+    output = create_rois(test_fs.roi_results)
+
+To obtain the results from the ROI Analysis use the `create_roi()` function.
+
+.. note::
+
+   If the np.nansum(roi, axis=(0,1)) values are too high this is due to poor hot pixel
+    removal. Please see the **Viewer** section for more details.
+
+
 Centroid Analysis
 =================
 
@@ -335,6 +347,73 @@ Outputs - [pixel position, spot diffraction pattern, median blurred x axis, medi
 for centroid finding, x axis centroid value, truncated y axis for centroid finding, y axis centroid value,
 summed diffraction intensity]
 
+General User Analysis
+======================
+
+Sometime the built in functions do not align with what Users of the module would like to do. For this there is a general
+multiprocessing tool for pixel by pixel diffraction pattern analysis.
+
+Standard Set Up
+---------------
+
+.. code:: python
+
+    from sxdm import *
+
+    test_fs = SXDMFrameset(file'/path/to/file.h5',
+                dataset_name='user_dataset_name',
+                scan_numbers=[1, 2, 3, 4, ...],
+                fill_num=4,
+                restart_zoneplate=False,
+                median_blur_algorithm='scipy',
+                )
+
+Defining a Function
+--------------------
+
+.. code:: python
+
+    def do_something(summed_dif, inputs):
+        """
+        summed_diff - This is an automatic input that has to come first. We are passing in the corrected summed
+        diffraction pattern
+
+        inputs - the user defined inputs used to split up into function definitions - must be static values
+
+        """
+
+        adding, subtracting, dividing, multiplying = inputs
+
+        first = np.add(summed_diff, adding)
+        second = np.subtract(first, subtracting)
+        third = np.divide(second, dividing)
+        fourth = np.multiply(third, multiplying)
+
+        return [fourth, third, second, first]
+
+Creating A .tif Image Array
+---------------------------
+
+.. code:: python
+
+    create_imagearray(test_fs)
+
+Implementing General Multiprocessing
+------------------------------------
+
+.. code:: python
+
+    rows = 10       # or (0, 5)
+    columns = 10    # or (5, 10)
+
+    inputs = [1, 3, 5, 7]
+
+
+    output = general_analysis_multi(test_fs, rows, columns, do_something, inputs)
+
+
+    # The output has a general formula [(row, column), analysis_output]
+
 Retrieving Imported Data
 ========================
 
@@ -376,6 +455,10 @@ centering scan index
 ``default`` - if True this will choose the first fluor or first ROI
 
 
+.. note::
+
+    The centered file numbers are usually stored as test_fs.im_array
+
 Show HDF5 File Groups
 ----------------------
 
@@ -407,7 +490,7 @@ file.
 
 
 Show Alignment Data
---------------
+-------------------
 
 .. code:: python
 
@@ -419,7 +502,7 @@ This returns the dx and dy centering values that are stored from the alignment f
 
 
 Read HDF5 Group Attributes 
---------------------------------------
+--------------------------
 
 .. code:: python
 
@@ -436,7 +519,7 @@ This returns the attribute value stored
 
 
 Find Frameset Dimensions
-------------------
+------------------------
 
 .. code:: python
 
@@ -447,7 +530,7 @@ This returns the image dimensions for the SXDMFrameset class object
 
 
 Calculate Background and FileNumber Locations
-----------------
+---------------------------------------------
 
 .. code:: python
 
@@ -458,7 +541,7 @@ This will auto load/calculate the background images and the image location array
 
 
 Show Raw .tif Image Dimensions
-----------------------------
+------------------------------
 
 
 .. code:: python
@@ -476,15 +559,15 @@ function to achieve this. Returns a dictionary of entries
 
 .. code:: python
 
-    `'row_column',
-    'summed_dif', - auto set to 0 for saving RAM usage
-    'ttheta',
-    'chi',
-    'ttheta_corr',
-    'chi_corr',
-    'ttheta_cent',
-    'chi_cent',
-    'roi'`
+    #'row_column',
+    #'summed_dif', - auto set to 0 for saving RAM usage
+    #'ttheta',
+    #'chi',
+    #'ttheta_corr',
+    #'chi_corr',
+    #'ttheta_cent',
+    #'chi_cent',
+    #'roi'
 
 
 Saving and Reloading Data
@@ -501,6 +584,7 @@ SXDMFrameset setup
 To reload saved data in the test_fs.saved_file run
 
 .. code:: python
+
     test_fs.reload_save()
 
 This will load the results to test_fs.results

@@ -11,8 +11,9 @@ This will bring up the default Region Of Interest viewer, once the ``test_fs.roi
 
     test_fs.roi_viewer()
 
+.. note::
 
-
+    Median Blur Height will be only be enabled for a `median_blur_algorithm='selective'`
 
 Centroid Analysis Viewer
 ------------------------
@@ -23,6 +24,10 @@ This will bring up the default Region Of Interest viewer, once the ``test_fs.cen
 .. code:: python
 
     test_fs.centroid_viewer()
+
+.. note::
+
+    Median Blur Height will be only be enabled for a `median_blur_algorithm='selective'`
 
 
 Return Raw Centroid Map Values

@@ -490,7 +490,7 @@ file.
 
 
 Show Alignment Data
---------------
+-------------------
 
 .. code:: python
 
@@ -502,7 +502,7 @@ This returns the dx and dy centering values that are stored from the alignment f
 
 
 Read HDF5 Group Attributes 
---------------------------------------
+--------------------------
 
 .. code:: python
 
@@ -519,7 +519,7 @@ This returns the attribute value stored
 
 
 Find Frameset Dimensions
-------------------
+------------------------
 
 .. code:: python
 
@@ -541,7 +541,7 @@ This will auto load/calculate the background images and the image location array
 
 
 Show Raw .tif Image Dimensions
-----------------------------
+------------------------------
 
 
 .. code:: python
@@ -559,15 +559,15 @@ function to achieve this. Returns a dictionary of entries
 
 .. code:: python
 
-    `'row_column',
-    'summed_dif', - auto set to 0 for saving RAM usage
-    'ttheta',
-    'chi',
-    'ttheta_corr',
-    'chi_corr',
-    'ttheta_cent',
-    'chi_cent',
-    'roi'`
+    #'row_column',
+    #'summed_dif', - auto set to 0 for saving RAM usage
+    #'ttheta',
+    #'chi',
+    #'ttheta_corr',
+    #'chi_corr',
+    #'ttheta_cent',
+    #'chi_cent',
+    #'roi'
 
 
 Saving and Reloading Data
@@ -584,6 +584,7 @@ SXDMFrameset setup
 To reload saved data in the test_fs.saved_file run
 
 .. code:: python
+
     test_fs.reload_save()
 
 This will load the results to test_fs.results

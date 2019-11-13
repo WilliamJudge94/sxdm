@@ -1,44 +1,192 @@
 
-<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="utf-8" />
-    <title>Analyzing the Data &#8212; sxdm v0.5 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analyzing the Data &mdash; sxdm v0.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Visualization of Results" href="visualization.html" />
     <link rel="prev" title="Importing Data into SXDM" href="importing.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="visualization.html" title="Visualization of Results"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="importing.html" title="Importing Data into SXDM"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">sxdm v0.5 documentation</a> &#187;</li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sxdm
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importing.html">Importing Data into SXDM</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analyzing the Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-detector-channels">Setting Up Detector Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-frameset">Setting Up Frameset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#median-blur-type-selection">Median Blur Type Selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#initial-values">Initial Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scan-dimensions-check">Scan Dimensions Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alignment">Alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#diffraction-axis-values">Diffraction Axis Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#region-of-interest-analysis">Region Of Interest Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#segmentation">Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis">Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#centroid-analysis">Centroid Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-user-analysis">General User Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#standard-set-up">Standard Set Up</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-a-function">Defining a Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-tif-image-array">Creating A .tif Image Array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementing-general-multiprocessing">Implementing General Multiprocessing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#retrieving-imported-data">Retrieving Imported Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#return-detector-data">Return Detector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#centering-detector-data">Centering Detector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#show-hdf5-file-groups">Show HDF5 File Groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#return-hdf5-file-data">Return HDF5 File Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#show-alignment-data">Show Alignment Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#read-hdf5-group-attributes">Read HDF5 Group Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#find-frameset-dimensions">Find Frameset Dimensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calculate-background-and-filenumber-locations">Calculate Background and FileNumber Locations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#show-raw-tif-image-dimensions">Show Raw .tif Image Dimensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pixel-analysis">Pixel Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#saving-and-reloading-data">Saving and Reloading Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization of Results</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sxdm</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Analyzing the Data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/analysis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="analyzing-the-data">
 <h1>Analyzing the Data<a class="headerlink" href="#analyzing-the-data" title="Permalink to this headline">¶</a></h1>
@@ -217,8 +365,8 @@ called with <code class="docutils literal notranslate"><span class="pre">test_fs
 </div>
 <div class="section" id="region-of-interest-analysis">
 <h2>Region Of Interest Analysis<a class="headerlink" href="#region-of-interest-analysis" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="segment">
-<h3>Segment<a class="headerlink" href="#segment" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="segmentation">
+<h3>Segmentation<a class="headerlink" href="#segmentation" title="Permalink to this headline">¶</a></h3>
 <p>In order for the program to determine a region of interest the User must define areas of interest. This GUI allows
 the User to define as many Region Of Interests as they please in the diffraction image. Then upon running the Analysis
 portion, the program will determine the summed value of these regions, plot them, as well as normalize.</p>
@@ -252,6 +400,17 @@ dead pixels as well as show the user the true gaussian distribution of the field
 <p><code class="docutils literal notranslate"><span class="pre">diff_segmentation</span></code> (bool) - if False the program will skip the segmentation analysis</p>
 <p><code class="docutils literal notranslate"><span class="pre">slow</span></code> (bool) - defaults to multiprocess data. If the program uses too much RAM the User can set this value to True
 to slow down the analysis and save on RAM</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">output</span> <span class="o">=</span> <span class="n">create_rois</span><span class="p">(</span><span class="n">test_fs</span><span class="o">.</span><span class="n">roi_results</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To obtain the results from the ROI Analysis use the <cite>create_roi()</cite> function.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>If the np.nansum(roi, axis=(0,1)) values are too high this is due to poor hot pixel</dt><dd><p>removal. Please see the <strong>Viewer</strong> section for more details.</p>
+</dd>
+</dl>
+</div>
 </div>
 </div>
 <div class="section" id="centroid-analysis">
@@ -287,6 +446,68 @@ Outputs - [pixel position, spot diffraction pattern, median blurred x axis, medi
 for centroid finding, x axis centroid value, truncated y axis for centroid finding, y axis centroid value,
 summed diffraction intensity]</p>
 </div>
+<div class="section" id="general-user-analysis">
+<h2>General User Analysis<a class="headerlink" href="#general-user-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Sometime the built in functions do not align with what Users of the module would like to do. For this there is a general
+multiprocessing tool for pixel by pixel diffraction pattern analysis.</p>
+<div class="section" id="standard-set-up">
+<h3>Standard Set Up<a class="headerlink" href="#standard-set-up" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">test_fs</span> <span class="o">=</span> <span class="n">SXDMFrameset</span><span class="p">(</span><span class="nb">file</span><span class="s1">&#39;/path/to/file.h5&#39;</span><span class="p">,</span>
+            <span class="n">dataset_name</span><span class="o">=</span><span class="s1">&#39;user_dataset_name&#39;</span><span class="p">,</span>
+            <span class="n">scan_numbers</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+            <span class="n">fill_num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">restart_zoneplate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">median_blur_algorithm</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="defining-a-function">
+<h3>Defining a Function<a class="headerlink" href="#defining-a-function" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="n">summed_dif</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    summed_diff - This is an automatic input that has to come first. We are passing in the corrected summed</span>
+<span class="sd">    diffraction pattern</span>
+
+<span class="sd">    inputs - the user defined inputs used to split up into function definitions - must be static values</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">adding</span><span class="p">,</span> <span class="n">subtracting</span><span class="p">,</span> <span class="n">dividing</span><span class="p">,</span> <span class="n">multiplying</span> <span class="o">=</span> <span class="n">inputs</span>
+
+    <span class="n">first</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">summed_diff</span><span class="p">,</span> <span class="n">adding</span><span class="p">)</span>
+    <span class="n">second</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">subtracting</span><span class="p">)</span>
+    <span class="n">third</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">dividing</span><span class="p">)</span>
+    <span class="n">fourth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">third</span><span class="p">,</span> <span class="n">multiplying</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">fourth</span><span class="p">,</span> <span class="n">third</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">first</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-a-tif-image-array">
+<h3>Creating A .tif Image Array<a class="headerlink" href="#creating-a-tif-image-array" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">create_imagearray</span><span class="p">(</span><span class="n">test_fs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="implementing-general-multiprocessing">
+<h3>Implementing General Multiprocessing<a class="headerlink" href="#implementing-general-multiprocessing" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="mi">10</span>       <span class="c1"># or (0, 5)</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="mi">10</span>    <span class="c1"># or (5, 10)</span>
+
+<span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+
+
+<span class="n">output</span> <span class="o">=</span> <span class="n">general_analysis_multi</span><span class="p">(</span><span class="n">test_fs</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">do_something</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+
+
+<span class="c1"># The output has a general formula [(row, column), analysis_output]</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="retrieving-imported-data">
 <h2>Retrieving Imported Data<a class="headerlink" href="#retrieving-imported-data" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="return-detector-data">
@@ -312,6 +533,10 @@ centering scan index</p>
 <p><code class="docutils literal notranslate"><span class="pre">center_around</span></code> - if this is set to -1, arrays will not be shifted</p>
 <p><code class="docutils literal notranslate"><span class="pre">summed</span></code> - if True this will return the summed returned detector value (summed accross all scans)</p>
 <p><code class="docutils literal notranslate"><span class="pre">default</span></code> - if True this will choose the first fluor or first ROI</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The centered file numbers are usually stored as test_fs.im_array</p>
+</div>
 </div>
 <div class="section" id="show-hdf5-file-groups">
 <h3>Show HDF5 File Groups<a class="headerlink" href="#show-hdf5-file-groups" title="Permalink to this headline">¶</a></h3>
@@ -376,15 +601,15 @@ file.</p>
 <h3>Pixel Analysis<a class="headerlink" href="#pixel-analysis" title="Permalink to this headline">¶</a></h3>
 <p>If the user would like to return a certain pixel analysis value they can use the <code class="docutils literal notranslate"><span class="pre">pixel_analysis_return()</span></code>
 function to achieve this. Returns a dictionary of entries</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>`&#39;row_column&#39;,
-&#39;summed_dif&#39;, - auto set to 0 for saving RAM usage
-&#39;ttheta&#39;,
-&#39;chi&#39;,
-&#39;ttheta_corr&#39;,
-&#39;chi_corr&#39;,
-&#39;ttheta_cent&#39;,
-&#39;chi_cent&#39;,
-&#39;roi&#39;`
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#&#39;row_column&#39;,</span>
+<span class="c1">#&#39;summed_dif&#39;, - auto set to 0 for saving RAM usage</span>
+<span class="c1">#&#39;ttheta&#39;,</span>
+<span class="c1">#&#39;chi&#39;,</span>
+<span class="c1">#&#39;ttheta_corr&#39;,</span>
+<span class="c1">#&#39;chi_corr&#39;,</span>
+<span class="c1">#&#39;ttheta_cent&#39;,</span>
+<span class="c1">#&#39;chi_cent&#39;,</span>
+<span class="c1">#&#39;roi&#39;</span>
 </pre></div>
 </div>
 </div>
@@ -396,98 +621,61 @@ SXDMFrameset setup</p>
 </pre></div>
 </div>
 <p>To reload saved data in the test_fs.saved_file run</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">reload_save</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>This will load the results to test_fs.results</p>
 </div>
 </div>
 </div>
 
 
+           </div>
+           
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Analyzing the Data</a><ul>
-<li><a class="reference internal" href="#setting-up-detector-channels">Setting Up Detector Channels</a></li>
-<li><a class="reference internal" href="#setting-up-frameset">Setting Up Frameset</a><ul>
-<li><a class="reference internal" href="#median-blur-type-selection">Median Blur Type Selection</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#initial-values">Initial Values</a></li>
-<li><a class="reference internal" href="#scan-dimensions-check">Scan Dimensions Check</a></li>
-<li><a class="reference internal" href="#alignment">Alignment</a></li>
-<li><a class="reference internal" href="#diffraction-axis-values">Diffraction Axis Values</a></li>
-<li><a class="reference internal" href="#region-of-interest-analysis">Region Of Interest Analysis</a><ul>
-<li><a class="reference internal" href="#segment">Segment</a></li>
-<li><a class="reference internal" href="#analysis">Analysis</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#centroid-analysis">Centroid Analysis</a></li>
-<li><a class="reference internal" href="#retrieving-imported-data">Retrieving Imported Data</a><ul>
-<li><a class="reference internal" href="#return-detector-data">Return Detector Data</a></li>
-<li><a class="reference internal" href="#centering-detector-data">Centering Detector Data</a></li>
-<li><a class="reference internal" href="#show-hdf5-file-groups">Show HDF5 File Groups</a></li>
-<li><a class="reference internal" href="#return-hdf5-file-data">Return HDF5 File Data</a></li>
-<li><a class="reference internal" href="#show-alignment-data">Show Alignment Data</a></li>
-<li><a class="reference internal" href="#read-hdf5-group-attributes">Read HDF5 Group Attributes</a></li>
-<li><a class="reference internal" href="#find-frameset-dimensions">Find Frameset Dimensions</a></li>
-<li><a class="reference internal" href="#calculate-background-and-filenumber-locations">Calculate Background and FileNumber Locations</a></li>
-<li><a class="reference internal" href="#show-raw-tif-image-dimensions">Show Raw .tif Image Dimensions</a></li>
-<li><a class="reference internal" href="#pixel-analysis">Pixel Analysis</a></li>
-<li><a class="reference internal" href="#saving-and-reloading-data">Saving and Reloading Data</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="visualization.html" class="btn btn-neutral float-right" title="Visualization of Results" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="importing.html" class="btn btn-neutral float-left" title="Importing Data into SXDM" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="importing.html"
-                        title="previous chapter">Importing Data into SXDM</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="visualization.html"
-                        title="next chapter">Visualization of Results</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/analysis.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, William Judge
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="visualization.html" title="Visualization of Results"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="importing.html" title="Importing Data into SXDM"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">sxdm v0.5 documentation</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, William Judge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
-    </div>
-  </body>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
 </html>

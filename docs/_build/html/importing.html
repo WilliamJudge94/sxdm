@@ -1,44 +1,158 @@
 
-<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="utf-8" />
-    <title>Importing Data into SXDM &#8212; sxdm v0.5 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Importing Data into SXDM &mdash; sxdm v0.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Analyzing the Data" href="analysis.html" />
     <link rel="prev" title="Introduction" href="intro.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="analysis.html" title="Analyzing the Data"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="intro.html" title="Introduction"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">sxdm v0.5 documentation</a> &#187;</li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sxdm
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Importing Data into SXDM</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#aps-beamline-26-id-c">APS Beamline 26-ID-C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-structure">Data Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analyzing the Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization of Results</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sxdm</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Importing Data into SXDM</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/importing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="importing-data-into-sxdm">
 <h1>Importing Data into SXDM<a class="headerlink" href="#importing-data-into-sxdm" title="Permalink to this headline">¶</a></h1>
@@ -84,67 +198,131 @@ The source <code class="docutils literal notranslate"><span class="pre">image_##
 <code class="docutils literal notranslate"><span class="pre">images_####.tif</span></code> image data into the User defined hdf5 destination/file. This will <strong>Not</strong>
 reimport the .tif images. If the User would like to do this they can set <code class="docutils literal notranslate"><span class="pre">force_reimport=True</span></code></p>
 </div>
+<div class="section" id="data-structure">
+<h2>Data Structure<a class="headerlink" href="#data-structure" title="Permalink to this headline">¶</a></h2>
+<p>The main structure is similar to what is shown below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Main_HDF5_File#</span>
+
+    <span class="c1">#images/</span>
+        <span class="c1">#0001</span>
+            <span class="c1">#000001</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="c1">#number.tif</span>
+
+        <span class="c1">#0002</span>
+            <span class="c1">#000001</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="c1">#number.tif</span>
+
+        <span class="c1">#0003</span>
+            <span class="c1">#000001</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="c1">#number.tif</span>
+
+    <span class="c1">#mda/</span>
+        <span class="c1">#0001</span>
+            <span class="c1">#D01</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="c1">#D70</span>
+
+        <span class="c1">#0002</span>
+            <span class="c1">#D01</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="c1">#D70</span>
+
+        <span class="c1">#0003</span>
+            <span class="c1">#D01</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="o">.</span>
+            <span class="c1">#D70</span>
+
+    <span class="c1">#detector_channels</span>
+        <span class="c1">#detector_scan</span>
+        <span class="c1">#filenumber</span>
+        <span class="c1">#fluor</span>
+        <span class="c1">#hybrid_x</span>
+        <span class="c1">#hybrid_y</span>
+        <span class="c1">#mis</span>
+        <span class="c1">#roi</span>
+        <span class="c1">#sample_theta</span>
+
+    <span class="c1">#zone_plate</span>
+        <span class="c1">#D_um</span>
+        <span class="c1">#d_rN_nm</span>
+        <span class="c1">#detector_pixel_size</span>
+
+    <span class="c1">#dataset_name1</span>
+        <span class="c1">#dxdy</span>
+        <span class="c1">#scan_numbers</span>
+        <span class="c1">#scan_theta</span>
+
+    <span class="c1">#dataset_name2</span>
+        <span class="c1">#dxdy</span>
+        <span class="c1">#scan_numbers</span>
+        <span class="c1">#scan_theta</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
+           </div>
+           
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Importing Data into SXDM</a><ul>
-<li><a class="reference internal" href="#aps-beamline-26-id-c">APS Beamline 26-ID-C</a></li>
-</ul>
-</li>
-</ul>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="analysis.html" class="btn btn-neutral float-right" title="Analyzing the Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="intro.html"
-                        title="previous chapter">Introduction</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="analysis.html"
-                        title="next chapter">Analyzing the Data</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/importing.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, William Judge
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="analysis.html" title="Analyzing the Data"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="intro.html" title="Introduction"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">sxdm v0.5 documentation</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, William Judge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
-    </div>
-  </body>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
 </html>
