@@ -292,7 +292,7 @@ To obtain the results from the ROI Analysis use the `create_roi()` function.
 .. note::
 
    If the np.nansum(roi, axis=(0,1)) values are too high this is due to poor hot pixel
-removal. Please see the **Viewer** section for more details.
+    removal. Please see the **Viewer** section for more details.
 
 
 Centroid Analysis

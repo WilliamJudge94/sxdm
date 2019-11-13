@@ -183,9 +183,9 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
     med_blur_dis_tb = TextBox(med_blur_dis_ax, 'med_dis', initial=med_blur_dis)
     med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei)
     
-    if config.algorithm == 'numpy':
+    if config.algorithm != 'selective':
         med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei, color='red')
-        warnings.warn('User In --numpy-- Mode. Use --selective-- Mode For Median_Blur_Height Access.')
+        warnings.warn('User In --{}-- Mode. Use --selective-- Mode For Median_Blur_Height Access.'.format(config.algorithm))
 
     else:
         med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei)

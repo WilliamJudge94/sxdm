@@ -392,7 +392,17 @@ def textbox_setup(figure_class):
     figure_class.vmax_sum_tb = TextBox(figure_class.vmax_sum_ax, '', initial='1000')
 
     figure_class.med_blur_dis_tb = TextBox(figure_class.med_blur_dis_ax, '', initial='5')
-    figure_class.med_blur_h_tb = TextBox(figure_class.med_blur_h_ax, '', initial='100')
+    #figure_class.med_blur_h_tb = TextBox(figure_class.med_blur_h_ax, '', initial='100')
+
+    if config.algorithm != 'selective':
+
+        figure_class.med_blur_h_tb = TextBox(figure_class.med_blur_h_ax, '', initial='100', color='red')
+        #med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei, color='red')
+        warnings.warn('User In --{}-- Mode. Use --selective-- Mode For Median_Blur_Height Access.'.format(config.algorithm))
+
+    else:
+        figure_class.med_blur_h_tb = TextBox(figure_class.med_blur_h_ax, '', initial='100')
+        #med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei)
 
 def scan_slider_setup(figure_class, user_class):
     """Sets up the scan figure slider inside the roi figures
