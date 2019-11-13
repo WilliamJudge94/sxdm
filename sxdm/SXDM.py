@@ -51,7 +51,8 @@ class SXDMFrameset():
             dataset while 'selective' only applies a median blur if the binned 1D data is within a certain User
             threshold.
         """
-        
+
+        # Allowing the User to select what kind of median blur they would like to use
         if median_blur_algorithm == 'scipy':
             config.median_blur = median_blur_numpy
             print("Using --scipy-- median_blur\n")
@@ -60,9 +61,10 @@ class SXDMFrameset():
             config.median_blur = median_blur_selective
             print("Using --selective-- median_blur\n")
         else:
-            warnings.warn("Incorrect median_blur_algorithm. use 'selective' or 'numpy'")
+            warnings.warn("Incorrect median_blur_algorithm. use 'selective' or 'scipy'")
         config.algorithm = median_blur_algorithm
-        
+
+
         self.file = file
         self.dataset_name = dataset_name
 
