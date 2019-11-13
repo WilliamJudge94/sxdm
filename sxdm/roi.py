@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.widgets import Button, TextBox, Slider
+import warnings
 
 from roi_bounding import ROI_FiguresClass
 from mis import create_rois, results_2dsum#, median_blur
