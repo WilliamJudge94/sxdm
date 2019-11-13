@@ -1,5 +1,5 @@
 SXDM v0.5
-=======
+==========
 
 
 SXDM is a library for analyzing Scanning X-Ray Diffraction Micriscopy data
@@ -24,7 +24,7 @@ Installation
 
 
 Virtual Environment & Jupyter Setup
-------------
+-----------------------------------
 
 - cd to directory you would like to keep the virtual environment
 - run `python3 -m venv projectname` in the terminal projectname can be anything the User would like it to be
