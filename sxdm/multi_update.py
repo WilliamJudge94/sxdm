@@ -117,7 +117,7 @@ def sum_pixel_multi(file, images_loc):
 
     pixel_store = []
     for image in images_loc:
-        pixel_store.append(file.get(image).value)
+        pixel_store.append(file.get(image)[()])
 
     #pixel_store = [file.get(image).value for image in images_loc]
 

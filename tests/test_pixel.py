@@ -5,7 +5,7 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 sys.path.append('../..')
 
-from sxdm import *
+from sxdm.sxdm import *
 
 test_path = os.path.dirname(__file__)
 main_path = '{}/'.format(test_path)
