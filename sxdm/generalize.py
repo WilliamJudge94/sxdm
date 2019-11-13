@@ -109,7 +109,7 @@ def general_pre_multi(inputs, image_array, scan_numbers, background_dic, file, a
     return results
 
 
-def general_analysis_multi(self, rows, columns, analysis_function, analysis_input):
+def general_analysis_multi(self, rows, columns, analysis_function, analysis_input, bkg_multiplier=0):
     """Runs the centroid analysis in a pool.map function
 
     Parameters
@@ -155,7 +155,7 @@ def general_analysis_multi(self, rows, columns, analysis_function, analysis_inpu
     general_pre_multi(inputs, image_array, scan_numbers, background_dic, file, analysis_function, analysis_input)
 
     # Creating a partial function
-    p_centroid_pre_analysis = partial(general_pre_multi, image_array=self.image_array,
+    p_general_pre_analysis = partial(general_pre_multi, image_array=self.image_array,
                                       background_dic=background_dic,
                                       file=self.file,
                                       scan_numbers=self.scan_numbers,
@@ -169,7 +169,7 @@ def general_analysis_multi(self, rows, columns, analysis_function, analysis_inpu
     # Start multiprocessing
     with multiprocessing.Pool() as pool:
         # add chunksize
-        results = pool.map(p_centroid_pre_analysis, inputs, chunksize=chunky)
+        results = pool.map(p_general_pre_analysis, inputs, chunksize=chunky)
 
     return results
 
