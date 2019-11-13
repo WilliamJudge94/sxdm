@@ -71,7 +71,7 @@ def general_pixel_analysis_multi(row, column, image_array, scan_numbers, backgro
     analysis_output = analysis_function(summed_dif, analysis_input)
 
 
-    results = [analysis_output]
+    results = [(row, column), analysis_output]
 
     return results
 

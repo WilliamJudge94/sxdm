@@ -350,7 +350,7 @@ summed diffraction intensity]
 General User Analysis
 ======================
 
-Sometime the build in functions do not align with what Users of the module would like to do. For this there is a general
+Sometime the built in functions do not align with what Users of the module would like to do. For this there is a general
 multiprocessing tool for pixel by pixel diffraction pattern analysis.
 
 Standard Set Up
@@ -374,22 +374,22 @@ Defining a Function
 .. code:: python
 
     def do_something(summed_dif, inputs):
-    """
-    summed_diff - This is an automatic input that has to come first. We are passing in the corrected summed
-    diffraction pattern
+        """
+        summed_diff - This is an automatic input that has to come first. We are passing in the corrected summed
+        diffraction pattern
 
-    inputs - the user defined inputs used to split up into function definitions - must be static values
+        inputs - the user defined inputs used to split up into function definitions - must be static values
 
-    """
+        """
 
-    adding, subtracting, dividing, multiplying = inputs
+        adding, subtracting, dividing, multiplying = inputs
 
-    first = np.add(summed_diff, adding)
-    second = np.subtract(first, subtracting)
-    third = np.divide(second, dividing)
-    fourth = np.multiply(third, multiplying)
+        first = np.add(summed_diff, adding)
+        second = np.subtract(first, subtracting)
+        third = np.divide(second, dividing)
+        fourth = np.multiply(third, multiplying)
 
-    return [fourth, third, second, first]
+        return [fourth, third, second, first]
 
 Creating A .tif Image Array
 ---------------------------
@@ -410,6 +410,9 @@ Implementing General Multiprocessing
 
 
     output = general_analysis_multi(test_fs, rows, columns, do_something, inputs)
+
+
+    # The output has a general formula [(row, column), analysis_output]
 
 Retrieving Imported Data
 ========================
