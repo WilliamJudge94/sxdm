@@ -309,11 +309,14 @@ def roi_analysis_multi(self, rows, columns, med_blur_distance=9,
 
     inputs = zip(master_rows, master_columns)
 
-    inputs = tqdm(inputs, total=len(master_rows),
-              desc="Progress", unit='pixles')
+
 
     # Creating the background file
     background_dic = scan_background(self, multiplier=bkg_multiplier)
+
+    inputs = tqdm(inputs, total=len(master_rows),
+              desc="Progress", unit='pixles')
+
     if diff_segments==True:
         diff_segments = self.diff_segment_squares
 
