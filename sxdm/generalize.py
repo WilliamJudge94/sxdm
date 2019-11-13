@@ -11,6 +11,7 @@ from background import scan_background_finder, scan_background
 from mis import get_idx4roi, ram_check#, median_blur
 from pixel import theta_maths, chi_maths, centroid_finder, grab_pix
 from multi import initialize_vectorize
+from multi_update import h5get_image_destination_multi
 from h5 import open_h5, close_h5
 
 import config
