@@ -6,6 +6,9 @@ depreciated.py
 mda_import.m
 SXDM-Manual.ipynb
 *.ipynb
+.idea/
+.DS_Store
+.pypirc
 
 # Created by https://www.gitignore.io/api/python
 # Edit at https://www.gitignore.io/?templates=python
