@@ -437,6 +437,16 @@ Implementing General Multiprocessing
 
     # The output has a general formula [(row, column), analysis_output]
 
+.. note::
+
+    A built in utility checks the computer RAM usage for the User. If the User's function
+    requires a substantial amount of RAM, the program will default to `analysis_output = False`.
+    This avoids computer crashes. A warning will also be thrown to the User. To change this
+    value one must go to `~/sxdm/sxdm/generalize.py/general_pixel_analysis_multi` and change
+    the `90` in `if ram_check() > 90:` to the **max percent** of the computers RAM the User would
+    like to abort analysis at. 
+
+
 Retrieving Imported Data
 ========================
 

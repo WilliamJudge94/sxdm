@@ -171,6 +171,9 @@ def general_analysis_multi(self, rows, columns, analysis_function, analysis_inpu
         # add chunksize
         results = pool.map(p_general_pre_analysis, inputs, chunksize=chunky)
 
+    if False in self.roi_results:
+        warnings.warn('RAM Usage Too High. ROI Analysis Stopped')
+
     return results
 
 def general_pooled_return(results, user_val):
