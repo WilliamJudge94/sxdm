@@ -1,6 +1,7 @@
 =============================
  Importing Data into SXDM
 =============================
+.. _submit an issue: https://github.com/WilliamJudge94/sxdm/issues
 
 The first step in any SXDM workflow will be to **import the raw
 data into a common format**. These importer functions are written as
@@ -10,7 +11,8 @@ needed: if your preferred beamline is not here, `submit an issue`_.
 APS Beamline 26-ID-C
 ====================
 
-**Experimental Data (.mda) Import:**
+Experimental Data (.mda) Import
+-------------------------------
 
 The raw data file ``file.mda`` given to the User at 26-ID-C saves all source
 data as a matlab binary file. SXDM preserves the original ("source") file
@@ -25,19 +27,22 @@ imported:
                 hdf5_save_filename='file')
 
 This function will iterate through all ``file.mda`` files and import all
-detector channel data into the User defined hdf5 destination/file. Raw
-reader values are flipped and inverted to match 26-ID-C beamline MatLab
-Viewer output. 
+detector channel data into the User defined hdf5 destination/file.
+
+.. note::
+
+    Raw reader values are flipped and inverted to match 26-ID-C beamline MatLab
+    Viewer output.
 
 
 
-**Diffraction Image (.tif) Import:**
+Diffraction Image (.tif) Import
+-------------------------------
 
 The raw diffraction images ``image_#####.tif`` given to the User at 26-ID-C
-will be imported based on this protocal. This saves all source data as a matlab
-binary file. SXDM preserves the original ("source") file and saves imported and
-processed data in a second ("destination") HDF file to be used in later analysis.
-The source ``image_#####.tif`` file can be easily imported:
+will be imported based on the protocol below. SXDM preserves the original ("source")
+file and saves imported and processed data in a second ("destination") HDF file
+to be used in later analysis. All source ``image_#####.tif`` file can be easily imported:
 
 .. code:: python
 
@@ -53,8 +58,11 @@ The source ``image_#####.tif`` file can be easily imported:
         )
 
 This function will iterate through all folders in the ``images_loc`` folders and import all
-``images_####.tif`` image data into the User defined hdf5 destination/file. This will **Not**
-reimport the .tif images. If the User would like to do this they can set ``force_reimport=True``
+``images_####.tif`` image data into the User defined hdf5 destination/file.
+
+.. note::
+    This will **Not** reimport the .tif images. If the User would like to do this they
+    can set ``force_reimport=True``
 
 
 Data Structure
@@ -67,50 +75,50 @@ The main structure is similar to what is shown below:
     #Main_HDF5_File#
 
         #images/
-            #0001
-                #000001
+            #0001_scan/
+                #000001.tif
                 .
                 .
                 .
                 #number.tif
 
-            #0002
-                #000001
+            #0002_scan/
+                #000001.tif
                 .
                 .
                 .
                 #number.tif
 
-            #0003
-                #000001
+            #0003_scan/
+                #000001.tif
                 .
                 .
                 .
                 #number.tif
 
         #mda/
-            #0001
-                #D01
+            #0001_scan/
+                #D01_channel
                 .
                 .
                 .
-                #D70
+                #D70_channel
 
-            #0002
-                #D01
+            #0002_scan/
+                #D01_channel
                 .
                 .
                 .
-                #D70
+                #D70_channel
 
-            #0003
-                #D01
+            #0003_scan/
+                #D01_channel
                 .
                 .
                 .
-                #D70
+                #D70_channel
 
-        #detector_channels
+        #detector_channels/
             #detector_scan
             #filenumber
             #fluor
@@ -120,17 +128,17 @@ The main structure is similar to what is shown below:
             #roi
             #sample_theta
 
-        #zone_plate
+        #zone_plate/
             #D_um
             #d_rN_nm
             #detector_pixel_size
 
-        #dataset_name1
+        #dataset_name1/
             #dxdy
             #scan_numbers
             #scan_theta
 
-        #dataset_name2
+        #dataset_name2/
             #dxdy
             #scan_numbers
             #scan_theta

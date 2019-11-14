@@ -6,7 +6,7 @@ Analyzing the Data
 Setting Up Detector Channels
 ============================
 
-After importing the data, the User will likley want to store detector
+After importing the data, the User will likely want to store detector
 channel values for the Experimental Run. This avoids having to remember
 them every time the User would like to go back and analyze a specific
 dataset. To begin, run the following
@@ -86,7 +86,7 @@ Once these values are set the User can run
 
 .. code:: python
 
-    # Change Values, Run Cell, And Input Values Into Function Below
+    # Change Values From Default Output, Run Cell, And Input Values Into Function Below
     setup_det_chan(file, fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis)
 
 
@@ -129,8 +129,6 @@ analysis. acceptable values consist of 'scipy' and 'selective'. ''numpy performs
 while 'selective' only applies a median blur if the binned 1D data is within a certain User threshold.
 
 
-
-
 Median Blur Type Selection
 --------------------------
 In the creation of the SXDMFrameset there is an option to set a ``median_blur_algorithm``.
@@ -150,8 +148,8 @@ it will be replaced with the mean value for the chunk. This preserves most of th
 speed.
 
 
-Initial Values
-==============
+Zone Plate Values
+=================
 
 The program will ask for the following values upon the first run:
 
@@ -167,16 +165,14 @@ Starting the SXDMFrameset will automatically determine the pixel X resolution fo
 the Y resolutions for all the scans and checks to make sure every scan has identical X resolutions and every scan has
 identical Y resolutions. Then it checks to see if the median(x) and median(y) resoltuions are equivalent.
 
-If the program throws an error during the resolution check:
-
+If the program throws an error during the resolution check walk through the following:
 
 
 - Make sure you have set the ``hybrid_x`` and ``hybrid_y`` values correctly in the ``setup_det_chan()`` function.
     
-- Pull up all the scan resolutions with ``test_fs.all_res_x``, and ``test_fs.all_res_y``. These will be in the same order as test_fs.scan_numbers. Remove the scan that is throwing the error when setting up ``test_fs = SXDMFrameset()``. Future versions will resample the scans to create identical resolutions in all X, all Y, and in X v. Y.
+- Pull up all the scan resolutions with ``test_fs.all_res_x``, and ``test_fs.all_res_y``. These will be in the same order as `test_fs.scan_numbers`. Remove the scan that is throwing the error when setting up ``test_fs = SXDMFrameset()``. Future versions will resample the scans to create identical resolutions in all X, all Y, and in X v. Y.
     
-- If there is still an error the scan dimensions are not the same across all scans. Run 
-    ``show_hybrid_dimensions(test_fs)`` to see all the scan dimensions
+- If there is still an error the scan dimensions are not the same across all scans. Run ``show_hybrid_dimensions(test_fs)`` to see all the scan dimensions
 
 Alignment
 =========
@@ -191,10 +187,6 @@ Aligning the scan can be carried out through the following code and following th
 the Fluorescence images or the Region of Interest images set in the setup_det_chan() function. User will define which
 one to use in the GUI. Once all alignment centers have been set, it is ok to just quit out of the windows.
 
-This is done with the
-:py:meth:`test_fs.alignment()`
-method:
-
 .. code:: python
 
   from sxdm import *
@@ -206,7 +198,9 @@ method:
 
 ``reset`` (bool) - if you would like to completely reset the alignment make this equal True
 
-**if you import new scan numbers you must make sure reset=True for the first alignment**
+.. note::
+
+    **if you import new scan numbers you must make sure reset=True for the first alignment**
 
 Diffraction Axis Values
 =======================
@@ -227,6 +221,12 @@ called with ``test_fs.NA_mrads`` instrumental broadening radius in pixels of the
 Region Of Interest Analysis
 ===========================
 
+Description
+-----------
+
+This allows the User to section off multiple areas of the diffraction pattern and create heat maps
+showing which areas of the Field of View light up these diffraction bounding boxes.
+
 Segmentation
 ------------
 
@@ -240,15 +240,18 @@ Through a GUI the User can select multiple region of interests from the summed d
 
 .. code:: python
 
+    # Click and drag on the GUI interface to make roi bounding boxes
     test_fs.roi_segmentation(bkg_multiplier=1, restart=False)
 
 ``bkg_multiplier`` (int) - an integer value applied to the backgound scans
 
 ``restart`` (bool) - if set to True this will reset all the segmentation data
 
-If the program throws image_array doesnt exsist run create_imagearray(self)
+.. note::
 
-If the program throws scan_background doesnt exsist run scan_background(self)
+    If the program throws image_array doesnt exist run `create_imagearray(test_fs)`
+
+    If the program throws scan_background doesnt exist run `scan_background(test_fs)`
 
 Analysis
 --------
@@ -283,20 +286,32 @@ dead pixels as well as show the user the true gaussian distribution of the field
 to slow down the analysis and save on RAM
 
 
+To obtain the results from the ROI Analysis use the `create_roi()` function.
+
 .. code:: python
 
     output = create_rois(test_fs.roi_results)
 
-To obtain the results from the ROI Analysis use the `create_roi()` function.
 
 .. note::
 
-   If the np.nansum(roi, axis=(0,1)) values are too high this is due to poor hot pixel
-    removal. Please see the **Viewer** section for more details.
+    **Extremely Large Values??**
+
+    If the np.nansum(output, axis=(0,1)) values are too high (1e+285) this is due to poor hot pixel
+    removal. Make sure you are using the `selective` median blur algorithm and lower your median_blur_height
+    value. Also, please see the **Viewer** section for more details.
 
 
 Centroid Analysis
 =================
+
+Description
+-----------
+
+This allows the User to determine the diffraction centroid for each pixle in a particular Field of View
+
+Analysis
+--------
 
 The centroid analysis function can be called through
 
@@ -326,31 +341,35 @@ The centroid analysis function can be called through
 to slow down the analysis and save on RAM
 
 
-**Unsure About Dimension Size**
+.. note::
 
-If you are unsure of the dimension sizes call ``self.frame_shape()``. The first number is the number of scans,
-the second number is the about of rows + 1, and the third number is the number of columns + 1
+    **Unsure About Dimension Size**
 
+    If you are unsure of the dimension sizes call ``test_fs.frame_shape()``. The first number is the number of scans,
+    the second number is the about of rows + 1, and the third number is the number of columns + 1
 
-**Difference Between slow=False and slow=True**
+.. note::
 
-The above function calls one of two functions. Either the ``centroid_pixel_analysis()`` function and vectorizes it for
-moderate run times with excellent RAM management (1-2GB). Or this will call the ``centroid_pixel_analysis_multi()``
-function which will multiprocess the dataset, but uses considerably more RAM (6-8GB). Analysis route determine by slow
-bool value.
+    **Difference Between slow=False and slow=True**
 
+    The above function calls one of two functions. Either the ``centroid_pixel_analysis()`` function and vectorizes it for
+    moderate run times with excellent RAM management (1-2GB). Or this will call the ``centroid_pixel_analysis_multi()``
+    function which will multiprocess the dataset, but uses considerably more RAM (6-8GB). Analysis route determine by slow
+    bool value.
 
-**What Is The test_fs.results Variable**
+.. note::
 
-Sets the ``test_fs.results`` value where the user can return the results of their analysis.
-Outputs - [pixel position, spot diffraction pattern, median blurred x axis, median blurred y axis, truncated x axis
-for centroid finding, x axis centroid value, truncated y axis for centroid finding, y axis centroid value,
-summed diffraction intensity]
+    **What Is The test_fs.results Variable**
+
+    Sets the ``test_fs.results`` value where the user can return the results of their analysis.
+    Outputs - [pixel position, zero, median blurred x axis, median blurred y axis, truncated x axis
+    for centroid finding, x axis centroid value, truncated y axis for centroid finding, y axis centroid value,
+    summed diffraction intensity]
 
 General User Analysis
 ======================
 
-Sometime the built in functions do not align with what Users of the module would like to do. For this there is a general
+Sometimes the built in functions do not align with Users diffraction analysis goals. For this there is a general
 multiprocessing tool for pixel by pixel diffraction pattern analysis.
 
 Standard Set Up
@@ -391,6 +410,8 @@ Defining a Function
 
         return [fourth, third, second, first]
 
+    analysis_output = do_something(summed_dif, inputs)
+
 Creating A .tif Image Array
 ---------------------------
 
@@ -403,6 +424,8 @@ Implementing General Multiprocessing
 
 .. code:: python
 
+    # Iterate through the first 10 rows and columns
+    # OR iterate through rows 0 - 5 and columns 5 - 10
     rows = 10       # or (0, 5)
     columns = 10    # or (5, 10)
 
@@ -439,9 +462,9 @@ Centering Detector Data
 
 .. code:: python
 
-    centering_det(self, group='fluor', center_around=False, summed=False, default=False)
+    centering_det(test_fs, group='fluor', center_around=False, summed=False, default=False)
 
-This returns the User defined detector for all scans set in the self.scan_numbers and centers them around a User defined
+This returns the User defined detector for all scans set in the test_fs.scan_numbers and centers them around a User defined
 centering scan index
 
 ``self`` - the SXDMFrameset

@@ -84,7 +84,11 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Importing Data into SXDM</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#aps-beamline-26-id-c">APS Beamline 26-ID-C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aps-beamline-26-id-c">APS Beamline 26-ID-C</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#experimental-data-mda-import">Experimental Data (.mda) Import</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#diffraction-image-tif-import">Diffraction Image (.tif) Import</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#data-structure">Data Structure</a></li>
 </ul>
 </li>
@@ -158,10 +162,11 @@
 <h1>Importing Data into SXDM<a class="headerlink" href="#importing-data-into-sxdm" title="Permalink to this headline">¶</a></h1>
 <p>The first step in any SXDM workflow will be to <strong>import the raw
 data into a common format</strong>. These importer functions are written as
-needed: if your preferred beamline is not here, <a href="#id1"><span class="problematic" id="id2">`submit an issue`_</span></a>.</p>
+needed: if your preferred beamline is not here, <a class="reference external" href="https://github.com/WilliamJudge94/sxdm/issues">submit an issue</a>.</p>
 <div class="section" id="aps-beamline-26-id-c">
 <h2>APS Beamline 26-ID-C<a class="headerlink" href="#aps-beamline-26-id-c" title="Permalink to this headline">¶</a></h2>
-<p><strong>Experimental Data (.mda) Import:</strong></p>
+<div class="section" id="experimental-data-mda-import">
+<h3>Experimental Data (.mda) Import<a class="headerlink" href="#experimental-data-mda-import" title="Permalink to this headline">¶</a></h3>
 <p>The raw data file <code class="docutils literal notranslate"><span class="pre">file.mda</span></code> given to the User at 26-ID-C saves all source
 data as a matlab binary file. SXDM preserves the original (“source”) file
 and saves imported and processed data in a second (“destination”) HDF file
@@ -173,15 +178,19 @@ imported:</p>
 </pre></div>
 </div>
 <p>This function will iterate through all <code class="docutils literal notranslate"><span class="pre">file.mda</span></code> files and import all
-detector channel data into the User defined hdf5 destination/file. Raw
-reader values are flipped and inverted to match 26-ID-C beamline MatLab
+detector channel data into the User defined hdf5 destination/file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Raw reader values are flipped and inverted to match 26-ID-C beamline MatLab
 Viewer output.</p>
-<p><strong>Diffraction Image (.tif) Import:</strong></p>
+</div>
+</div>
+<div class="section" id="diffraction-image-tif-import">
+<h3>Diffraction Image (.tif) Import<a class="headerlink" href="#diffraction-image-tif-import" title="Permalink to this headline">¶</a></h3>
 <p>The raw diffraction images <code class="docutils literal notranslate"><span class="pre">image_#####.tif</span></code> given to the User at 26-ID-C
-will be imported based on this protocal. This saves all source data as a matlab
-binary file. SXDM preserves the original (“source”) file and saves imported and
-processed data in a second (“destination”) HDF file to be used in later analysis.
-The source <code class="docutils literal notranslate"><span class="pre">image_#####.tif</span></code> file can be easily imported:</p>
+will be imported based on the protocol below. SXDM preserves the original (“source”)
+file and saves imported and processed data in a second (“destination”) HDF file
+to be used in later analysis. All source <code class="docutils literal notranslate"><span class="pre">image_#####.tif</span></code> file can be easily imported:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">import_images</span><span class="p">(</span>
     <span class="nb">file</span><span class="o">=</span><span class="s1">&#39;path/to/save/dir/file.h5&#39;</span><span class="p">,</span>
     <span class="n">images_loc</span><span class="o">=</span><span class="s1">&#39;/path/to/master/images/directory&#39;</span><span class="p">,</span>
@@ -195,8 +204,13 @@ The source <code class="docutils literal notranslate"><span class="pre">image_##
 </pre></div>
 </div>
 <p>This function will iterate through all folders in the <code class="docutils literal notranslate"><span class="pre">images_loc</span></code> folders and import all
-<code class="docutils literal notranslate"><span class="pre">images_####.tif</span></code> image data into the User defined hdf5 destination/file. This will <strong>Not</strong>
-reimport the .tif images. If the User would like to do this they can set <code class="docutils literal notranslate"><span class="pre">force_reimport=True</span></code></p>
+<code class="docutils literal notranslate"><span class="pre">images_####.tif</span></code> image data into the User defined hdf5 destination/file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This will <strong>Not</strong> reimport the .tif images. If the User would like to do this they
+can set <code class="docutils literal notranslate"><span class="pre">force_reimport=True</span></code></p>
+</div>
+</div>
 </div>
 <div class="section" id="data-structure">
 <h2>Data Structure<a class="headerlink" href="#data-structure" title="Permalink to this headline">¶</a></h2>
@@ -204,50 +218,50 @@ reimport the .tif images. If the User would like to do this they can set <code c
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Main_HDF5_File#</span>
 
     <span class="c1">#images/</span>
-        <span class="c1">#0001</span>
-            <span class="c1">#000001</span>
+        <span class="c1">#0001_scan/</span>
+            <span class="c1">#000001.tif</span>
             <span class="o">.</span>
             <span class="o">.</span>
             <span class="o">.</span>
             <span class="c1">#number.tif</span>
 
-        <span class="c1">#0002</span>
-            <span class="c1">#000001</span>
+        <span class="c1">#0002_scan/</span>
+            <span class="c1">#000001.tif</span>
             <span class="o">.</span>
             <span class="o">.</span>
             <span class="o">.</span>
             <span class="c1">#number.tif</span>
 
-        <span class="c1">#0003</span>
-            <span class="c1">#000001</span>
+        <span class="c1">#0003_scan/</span>
+            <span class="c1">#000001.tif</span>
             <span class="o">.</span>
             <span class="o">.</span>
             <span class="o">.</span>
             <span class="c1">#number.tif</span>
 
     <span class="c1">#mda/</span>
-        <span class="c1">#0001</span>
-            <span class="c1">#D01</span>
+        <span class="c1">#0001_scan/</span>
+            <span class="c1">#D01_channel</span>
             <span class="o">.</span>
             <span class="o">.</span>
             <span class="o">.</span>
-            <span class="c1">#D70</span>
+            <span class="c1">#D70_channel</span>
 
-        <span class="c1">#0002</span>
-            <span class="c1">#D01</span>
+        <span class="c1">#0002_scan/</span>
+            <span class="c1">#D01_channel</span>
             <span class="o">.</span>
             <span class="o">.</span>
             <span class="o">.</span>
-            <span class="c1">#D70</span>
+            <span class="c1">#D70_channel</span>
 
-        <span class="c1">#0003</span>
-            <span class="c1">#D01</span>
+        <span class="c1">#0003_scan/</span>
+            <span class="c1">#D01_channel</span>
             <span class="o">.</span>
             <span class="o">.</span>
             <span class="o">.</span>
-            <span class="c1">#D70</span>
+            <span class="c1">#D70_channel</span>
 
-    <span class="c1">#detector_channels</span>
+    <span class="c1">#detector_channels/</span>
         <span class="c1">#detector_scan</span>
         <span class="c1">#filenumber</span>
         <span class="c1">#fluor</span>
@@ -257,17 +271,17 @@ reimport the .tif images. If the User would like to do this they can set <code c
         <span class="c1">#roi</span>
         <span class="c1">#sample_theta</span>
 
-    <span class="c1">#zone_plate</span>
+    <span class="c1">#zone_plate/</span>
         <span class="c1">#D_um</span>
         <span class="c1">#d_rN_nm</span>
         <span class="c1">#detector_pixel_size</span>
 
-    <span class="c1">#dataset_name1</span>
+    <span class="c1">#dataset_name1/</span>
         <span class="c1">#dxdy</span>
         <span class="c1">#scan_numbers</span>
         <span class="c1">#scan_theta</span>
 
-    <span class="c1">#dataset_name2</span>
+    <span class="c1">#dataset_name2/</span>
         <span class="c1">#dxdy</span>
         <span class="c1">#scan_numbers</span>
         <span class="c1">#scan_theta</span>

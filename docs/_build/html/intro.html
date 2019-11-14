@@ -165,21 +165,24 @@
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <p>SXSM is a toolkit for interacting with Scanning X-ray microscopy data,
-most likley collected at the Advanced Photon Source - Beamline 26-ID-C.
+most likely collected at the Advanced Photon Source - Beamline 26-ID-C.
 By collecting a set of frames at multiple incident angles, spectral/diffraction
-maps  are reconstructed to provide chemical/strain insight.</p>
+maps  are reconstructed to provide chemical/strain insight. Although SXDM was not
+designed for Fluorescence Mapping or XANES Mapping, built in functions allow
+Users to easily handle datasets to fit their needs.</p>
 <p>This project has the following design goals:</p>
 <ul class="simple">
 <li><p>Provide a python toolkit for analysis of X-ray diffraction frames.</p></li>
 <li><p>Store data in an open format for easy distribution.</p></li>
+<li><p>Provide framework 26-ID-C data handling.</p></li>
 </ul>
 <p>GUI tools (eg. DUDE) exist for performing this type of
-analysis. While convenient, final setup and testing has not
-been carried out. This module hopes to aleviate importing and
+analysis. While convenient and more versatile, final setup and testing has not
+been carried out. This module hopes to alleviate importing and
 data analysis issues for the 26-ID-C beamline. SXDM does provide
 an interactive GUI for visualizing the data, but this GUI
 does not alter the data or export results. This way, the analysis
-steps are caputed either in an IPython notebook or conventional python
+steps are captured either in an IPython notebook or conventional python
 script. These steps, together with the original data, should then be
 sufficient to reproduce the results exactly.</p>
 <div class="section" id="installation">
@@ -191,7 +194,7 @@ sufficient to reproduce the results exactly.</p>
 </div>
 <div class="section" id="development">
 <h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>
-<p>If you plan to contribute changes to sxdm, installing in developer
+<p>If you plan to contribute changes to <cite>sxdm</cite>, installing in developer
 mode may be more your style. This will also allow you to run tests and
 build documentation.</p>
 <div class="section" id="id1">
@@ -244,14 +247,14 @@ $ make html
 </div>
 <div class="section" id="example-workflow">
 <h2>Example Workflow<a class="headerlink" href="#example-workflow" title="Permalink to this headline">¶</a></h2>
-<p>A typical prcocedure for interacting with microscope frame-sets involves the following parts:</p>
+<p>A typical procedure for interacting with microscope frame-sets involves the following parts:</p>
 <ul class="simple">
 <li><p>Import the raw data</p></li>
 <li><p>Apply corrections and align the images</p></li>
 <li><p>Calculate some metric and create maps of it</p></li>
-<li><p>Visualize the maps, staticly or interactively.</p></li>
+<li><p>Visualize the maps, statically or interactively.</p></li>
 </ul>
-<p>Example for a single frameset across an X-ray absorbance edge:</p>
+<p>Example for a single frameset across difference X-ray incident angles:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">load_ext</span> <span class="n">autoreload</span>
 <span class="o">%</span><span class="n">autoreload</span> <span class="mi">2</span>
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">qt</span>
@@ -271,17 +274,19 @@ $ make html
 <span class="c1"># Importing .mda data</span>
 <span class="n">import_mda</span><span class="p">(</span><span class="n">mda_path</span><span class="p">,</span> <span class="n">hdf5_save_directory</span><span class="p">,</span> <span class="n">hdf5_save_filename</span><span class="p">)</span>
 
-<span class="c1"># Importing .tif images</span>
+<span class="c1"># Importing .tif images - file=&#39;/dir/test.h5&#39; - was created by the import_mda() function</span>
 <span class="n">import_images</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">images_loc</span><span class="p">)</span>
 
 <span class="c1"># Setting Detector Channels</span>
 <span class="n">disp_det_chan</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
-<span class="n">setup_det_chan</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">fluor</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">detector_scan</span><span class="p">,</span> <span class="n">filenumber</span><span class="p">,</span> <span class="n">sample_theta</span><span class="p">,</span> <span class="n">hybrid_x</span><span class="p">,</span> <span class="n">hybrid_y</span><span class="p">,</span> <span class="n">mis</span><span class="p">)</span>
+<span class="n">setup_det_chan</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">fluor</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">detector_scan</span><span class="p">,</span>
+                <span class="n">filenumber</span><span class="p">,</span> <span class="n">sample_theta</span><span class="p">,</span> <span class="n">hybrid_x</span><span class="p">,</span> <span class="n">hybrid_y</span><span class="p">,</span> <span class="n">mis</span><span class="p">)</span>
 
 <span class="c1"># Set up SXDMFrameset</span>
 <span class="n">scan_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
-<span class="n">dataset_name</span> <span class="o">=</span> <span class="s1">&#39;Test Name&#39;</span>
-<span class="n">test_fs</span> <span class="o">=</span> <span class="n">SXDMFrameset</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">scan_numbers</span> <span class="o">=</span> <span class="n">scan_numbers</span><span class="p">,</span> <span class="n">median_blur_algorithm</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">)</span>
+<span class="n">dataset_name</span> <span class="o">=</span> <span class="s1">&#39;Test_Name&#39;</span>
+<span class="n">test_fs</span> <span class="o">=</span> <span class="n">SXDMFrameset</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span>
+                        <span class="n">scan_numbers</span> <span class="o">=</span> <span class="n">scan_numbers</span><span class="p">,</span> <span class="n">median_blur_algorithm</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">)</span>
 
 <span class="c1"># Alignment</span>
 <span class="n">test_fs</span><span class="o">.</span><span class="n">alignment</span><span class="p">()</span>

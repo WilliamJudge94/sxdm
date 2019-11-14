@@ -4,7 +4,6 @@ Visualization of Results
 Region of Interest Viewer
 -------------------------
 
-**Main Viewer**
 This will bring up the default Region Of Interest viewer, once the ``test_fs.roi_results`` have been calculated.
 
 .. code:: python
@@ -18,7 +17,6 @@ This will bring up the default Region Of Interest viewer, once the ``test_fs.roi
 Centroid Analysis Viewer
 ------------------------
 
-**Main Viewer**
 This will bring up the default Region Of Interest viewer, once the ``test_fs.centroid_results`` have been calculated.
 
 .. code:: python
