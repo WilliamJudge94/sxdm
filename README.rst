@@ -1,6 +1,8 @@
 SXDM v0.5
 ==========
 
+.. image:: https://travis-ci.org/WilliamJudge94/sxdm.svg?branch=master
+    :target: https://travis-ci.org/WilliamJudge94/sxdm
 
 SXDM is a library for analyzing Scanning X-Ray Diffraction Micriscopy data
 for materials science, chemistry and similar fields. The major focus is on
