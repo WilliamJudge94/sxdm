@@ -22,17 +22,29 @@ imported:
 
 .. code:: python
 
-   import_mda(mda_path='path/to/.mda_file',
+   import_mda(mda_path='path/to/folder/holding/.mda_files',
                 hdf5_save_directory='path/to/save/dir', 
                 hdf5_save_filename='file')
 
-This function will iterate through all ``file.mda`` files and import all
+This function will iterate through all ``file.mda`` files in the `mda_folder` and import all
 detector channel data into the User defined hdf5 destination/file.
+
+.. code:: python
+
+    # EXAMPLE
+
+   import_mda(mda_path='/home/usr/Desktop/mda_folder/',
+                hdf5_save_directory='/home/usr/Desktop',
+                hdf5_save_filename='test_file')
 
 .. note::
 
     Raw reader values are flipped and inverted to match 26-ID-C beamline MatLab
     Viewer output.
+
+.. note::
+
+    This importer is what creates the main *.h5 file.
 
 
 
@@ -59,6 +71,17 @@ to be used in later analysis. All source ``image_#####.tif`` file can be easily 
 
 This function will iterate through all folders in the ``images_loc`` folders and import all
 ``images_####.tif`` image data into the User defined hdf5 destination/file.
+
+.. code:: python
+
+    # EXAMPLE
+    # /home/usr/Desktop/images_folder/scan_folder/image.tif
+
+    import_images(
+        file='/home/usr/Desktop/test_file.h5',
+        images_loc='/home/usr/Desktop/images_folder/',
+        scans=[1, 2, 3, 4],
+        )
 
 .. note::
     This will **Not** reimport the .tif images. If the User would like to do this they
@@ -142,3 +165,7 @@ The main structure is similar to what is shown below:
             #dxdy
             #scan_numbers
             #scan_theta
+
+.. note::
+
+    Please see `Analyzing the Data/Retrieving Imported Data` for more details

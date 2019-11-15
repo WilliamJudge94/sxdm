@@ -87,17 +87,24 @@ Once these values are set the User can run
 .. code:: python
 
     # Change Values From Default Output, Run Cell, And Input Values Into Function Below
-    setup_det_chan(file, fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis)
+    setup_det_chan(file,
+                    fluor,
+                    roi,
+                    detector_scan,
+                    filenumber,
+                    sample_theta,
+                    hybrid_x,
+                    hybrid_y,
+                    mis)
 
 
 Setting Up Frameset
 ===================
 
-After importing the data, and setting the detector channels you will likely need to process and analyze
-the frame set. This is done through the
-:py:class:`sxdm.SXDMFrameset` class. Most
-**processing and analysis steps are provided as methods on this
-class**, so the first step is to create a frameset object.
+After importing the data, and setting the detector channels you will likely
+need to process and analyze the frame set. This is done through the
+:py:class:`sxdm.SXDMFrameset` class. Most **processing and analysis steps are provided as methods on this class**,
+so the first step is to create a frameset object.
 
 .. code:: python
 
