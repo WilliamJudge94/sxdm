@@ -12,7 +12,9 @@ cache: pip
 
 install: "pip install -r requirements.txt"
 
-script: python /tests/test_all.py
+before_script: cd tests
+
+script: python test_all.py
 
 
 notifications:
