@@ -10,9 +10,15 @@ This will bring up the default Region Of Interest viewer, once the ``test_fs.roi
 
     test_fs.roi_viewer()
 
+.. warning:: Please use the `close all` box to close all windows. If not the program may keep cached data
+
 .. note::
 
     Median Blur Height will be only be enabled for a `median_blur_algorithm='selective'`
+
+.. note::
+
+    User can move sliders as well as click on maps to show intensity values/scan values
 
 Centroid Analysis Viewer
 ------------------------
@@ -26,6 +32,10 @@ This will bring up the default Region Of Interest viewer, once the ``test_fs.cen
 .. note::
 
     Median Blur Height will be only be enabled for a `median_blur_algorithm='selective'`
+
+.. note::
+
+    User can click on maps to display how the program is interpreting pixel data. 
 
 
 Return Raw Centroid Map Values

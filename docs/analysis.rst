@@ -382,6 +382,8 @@ multiprocessing tool for pixel by pixel diffraction pattern analysis.
 Standard Set Up
 ---------------
 
+This creates the User defined frameset
+
 .. code:: python
 
     from sxdm import *
@@ -397,17 +399,23 @@ Standard Set Up
 Defining a Function
 --------------------
 
+The User will have to define a function that will be applied to the each background corrected diffraction images.
+If the User would like to perform operations on the Summed Diffraction Pattern please write in 
+`summed_dif = np.sum(each_scan_diffraction_post_bk_sub, axis=0)` into your first line of your function.
+
 .. code:: python
 
-    def do_something(summed_dif, inputs):
+    def do_something(each_scan_diffraction_post_bk_sub, inputs):
         """
-        summed_diff - This is an automatic input that has to come first. We are passing in the corrected summed
-        diffraction pattern
+        each_scan_diffraction_post_bk_sub - This is an automatic input that has to come first. We are passing in
+                                            the corrected summed diffraction pattern
 
         inputs - the user defined inputs used to split up into function definitions - must be static values
 
         """
 
+        summed_dif = np.sum(each_scan_diffraction_post_bk_sub, axis=0)
+        
         adding, subtracting, dividing, multiplying = inputs
 
         first = np.add(summed_diff, adding)
@@ -422,6 +430,9 @@ Defining a Function
 Creating A .tif Image Array
 ---------------------------
 
+The program needs to have locations for the diffraction.tif images. This creates a centered array for all the locations.
+The User can choose which scan they would like to center around.
+
 .. code:: python
 
     create_imagearray(test_fs)
@@ -429,17 +440,18 @@ Creating A .tif Image Array
 Implementing General Multiprocessing
 ------------------------------------
 
+
+
 .. code:: python
 
     # Iterate through the first 10 rows and columns
-    # OR iterate through rows 0 - 5 and columns 5 - 10
-    rows = 10       # or (0, 5)
-    columns = 10    # or (5, 10)
+    # OR iterate through rows # - # and columns # - #
+    rows = 10       # to iterate through row 0 - row 10  -  OR  set value to (1, 5) - iterates through row 1 - row 5
+    columns = 10    # to iterate through col 0 - col 10  -  OR  set value to (7, 12) - iterates through col 7 - col 12
 
     inputs = [1, 3, 5, 7]
 
-
-    output = general_analysis_multi(test_fs, rows, columns, do_something, inputs)
+    output = general_analysis_multi(test_fs, rows, columns, do_something, inputs, bkg_multiplier=0)
 
 
     # The output has a general formula [(row, column), analysis_output]
@@ -563,7 +575,7 @@ Find Frameset Dimensions
 
 .. code:: python
 
-    SXDMFrameset_object.frame_shape()
+    test_fs.frame_shape()
 
 
 This returns the image dimensions for the SXDMFrameset class object
@@ -574,7 +586,7 @@ Calculate Background and FileNumber Locations
 
 .. code:: python
 
-    SXDMFrameset_object.ims_array()
+    test_fs.ims_array()
 
 
 This will auto load/calculate the background images and the image location array
@@ -586,7 +598,7 @@ Show Raw .tif Image Dimensions
 
 .. code:: python
 
-    SXDMFrameset_object.image_data_dimensions()
+    test_fs.image_data_dimensions()
 
 This will return the diffraction image dimensions
 

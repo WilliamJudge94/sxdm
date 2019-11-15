@@ -65,10 +65,10 @@ def general_pixel_analysis_multi(row, column, image_array, scan_numbers, backgro
     each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
 
     # This sums together all the background corrected images for that single pixel
-    summed_dif = np.sum(each_scan_diffraction_post, axis=0)
+    #summed_dif = np.sum(each_scan_diffraction_post, axis=0)
 
 
-    analysis_output = analysis_function(summed_dif, analysis_input)
+    analysis_output = analysis_function(each_scan_diffraction_post, analysis_input)
 
 
     results = [(row, column), analysis_output]
