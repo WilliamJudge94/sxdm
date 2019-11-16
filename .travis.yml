@@ -13,11 +13,12 @@ cache: pip
 install:
   - "pip install -r requirements.txt"
   - pip install coveralls
+  - pip install pytest
+  - pip install pytest-cov
 
-before_script: cd tests
 
-script: python test_all.py
-
+script:
+  - pytest --cov=sxdm tests/
 
 notifications:
   email: williamjudge94@gmail.com
