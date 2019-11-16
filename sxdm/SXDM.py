@@ -84,9 +84,6 @@ class SXDMFrameset():
             resolution_check(self)
         except Exception as ex:
             print('SXDM.py/__init__2', ex)
-            
-    def select_median_blur_algorithm(self, algorithm='numpy'):
-        pass
 
 
     def alignment(self, reset=False):
@@ -447,28 +444,8 @@ class SXDMFrameset():
         scan_background(self, amount2ave=amount2ave,
                         multiplier=multiplier)
         create_imagearray(self)
-        
-    def make_diffraction_video(self, rows, columns, bkg_multiplier=1, vmin=0, vmax=1200):
-        """WIP
-        
-        :param rows: 
-        :param columns: 
-        :param bkg_multiplier: 
-        :param vmin: 
-        :param vmax: 
-        :return: 
-        """
-        try:
-            master_chi = self.chi / 2
-            master_two_theta = float(self.detector_theta_center)
-            two_theta_bound_right = master_two_theta + master_chi
-            two_theta_bound_left = master_two_theta - master_chi
-            chi_bound_top = master_chi
-            chi_bound_down = -master_chi
-            self.extents = (two_theta_bound_left, two_theta_bound_right, chi_bound_down, chi_bound_top)
-        except:
-            self.extents = None
-            
+
+
     def image_data_dimensions(self):
         """Determine the CCD image dimensions
         
