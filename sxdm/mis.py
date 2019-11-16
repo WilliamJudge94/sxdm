@@ -560,7 +560,7 @@ def median_blur_selective(input_array, median_blur_distance,
     blur to the entire spectra.
 
     Parameters:
-    ==========
+    ===========
     input_array (nd.array)
         the 1D spectral array
 
@@ -574,7 +574,7 @@ def median_blur_selective(input_array, median_blur_distance,
         True median blurs on values way above or way below the mean. Rather than just way above.
 
     Returns:
-    =======
+    ========
     An 1D spectral array with appropriate values median blurred
     """
     iteration_number = np.shape(input_array)[0]
@@ -676,12 +676,12 @@ def create_rois(self):
     """Take the self.roi_results and make them into something more useful
 
     Parameters
-    ==========
+    ===========
     self (SXDMFrameset)
         the sxdmframset
 
     Returns
-    =======
+    ========
     the region of interst maps for each scan, the region of interest maps for the user defined
     sub regions of interest
     """
@@ -776,7 +776,7 @@ def total_rows_int_tup(input, difference=False):
     at zero.
 
     Parameters:
-    ==========
+    ===========
 
     input (int or tuple)
         the int or tuple input of the analysis functions
@@ -785,7 +785,7 @@ def total_rows_int_tup(input, difference=False):
         if the User would like to take the difference between the starting and ending points
 
     Returns:
-    =======
+    ========
 
     Either the starting and ending values for a scan or the difference between them
     """

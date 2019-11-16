@@ -19,6 +19,7 @@ import config
 
 def general_pixel_analysis_multi(row, column, image_array, scan_numbers, background_dic, file, analysis_function, analysis_input):
     """The analysis done on a single pixel
+
     Parameters
     ==========
     row: (int)
@@ -43,6 +44,7 @@ def general_pixel_analysis_multi(row, column, image_array, scan_numbers, backgro
     Returns
     =======
     the analysis results as an nd.array
+
     """
     if column == 0 and row % 2 == 0:
         if ram_check() > 90:
@@ -100,6 +102,7 @@ def general_pre_multi(inputs, image_array, scan_numbers, background_dic, file, a
     Returns
     =======
     the results from the general_pixel_analysis_multi() function
+
     """
 
     with h5py.File(file, 'r', swmr=True) as hdf:
@@ -139,6 +142,7 @@ def general_analysis_multi(self, rows, columns, analysis_function, analysis_inpu
     Returns
     =======
     a pooled results from the centroid_pixel_analysis_multi() function
+
     """
 
     # Creating the background images
@@ -190,6 +194,7 @@ def general_pooled_return(results, user_val):
     Returns
     =======
     An n dimensional array consisting of the user selected data output from the multi.analysis function
+
     """
 
     acceptable_values = ['row_column', 'summed_dif',

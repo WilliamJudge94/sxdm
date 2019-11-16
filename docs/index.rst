@@ -22,6 +22,7 @@ Python library for analyzing **Scanning X-Ray Diffraction Microscopy** data.
    importing
    analysis
    visualization
+   modules
 
 Indices and tables
 ==================
