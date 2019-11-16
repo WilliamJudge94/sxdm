@@ -18,8 +18,9 @@
 # -- Project information -----------------------------------------------------
 
 import sphinx_rtd_theme
+master_doc = 'index'
 
-project = 'sxdm'
+project = 'SXDM Documentation'
 copyright = '2019, William Judge'
 author = 'William Judge'
 
@@ -49,7 +50,6 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-master_doc = 'index'
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -62,3 +62,13 @@ html_theme = "sphinx_rtd_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+latex_documents = [
+    (master_doc, 'sxdm.tex', 'SXDM Documentation',
+     author, 'manual'),
+]
+
+epub_title = project
+epub_author = author
+epub_publisher = author
+epub_copyright = copyright
