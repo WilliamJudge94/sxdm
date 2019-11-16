@@ -116,7 +116,7 @@ so the first step is to create a frameset object.
                 scan_numbers=[1, 2, 3, 4, ...],
                 fill_num=4,
                 restart_zoneplate=False,
-                median_blur_algorithm='scipy',
+                median_blur_algorithm='selective',
                 )
 
 
@@ -132,7 +132,7 @@ this will import the stored/previously completed scan numbers data
 ``restart_zoneplate`` (bool) if you would like to restart the zoneplate data set this to True
 
 ``median_blur_algorithm`` (str) this initializes which type of median blur will be performed on the datasets during
-analysis. acceptable values consist of 'scipy' and 'selective'. ''numpy performs a median blur on the entire dataset
+analysis. acceptable values consist of 'scipy' and 'selective'. ''scipy performs a median blur on the entire dataset
 while 'selective' only applies a median blur if the binned 1D data is within a certain User threshold.
 
 
@@ -142,13 +142,13 @@ In the creation of the SXDMFrameset there is an option to set a ``median_blur_al
 There are two option in the current version of SXDM. ``scipy`` and ``selective``.
 
 
-**mis.median_blur_scipy()**
+**sxdm.mis.median_blur_scipy()**
 
 This median blur algorithm calls the ``scipy.signal.me_blur``. This will apply a median blur to the entire 1 dimensional
 datasets produced by the 2 dimensional images. 
 
 
-**mis.median_blur_selective()**
+**sxdm.mis.median_blur_selective()**
 
 This median blur alogrithm bins off line scan data, determines the mean, if there is a value above a User value + mean
 it will be replaced with the mean value for the chunk. This preserves most of the raw intensity data at the cost of
@@ -242,7 +242,7 @@ the User to define as many Region Of Interests as they please in the diffraction
 portion, the program will determine the summed value of these regions, plot them, as well as normalize.
 
 Through a GUI the User can select multiple region of interests from the summed diffraction pattern. Set the
-``diff_segmentation=True`` in the ``test_fs.region_of_interest()`` function to True for this analysis to be carried out.
+``diff_segmentation=True`` in the ``test_fs.region_of_interest()`` function for this analysis to be carried out.
 
 
 .. code:: python
@@ -407,10 +407,13 @@ If the User would like to perform operations on the Summed Diffraction Pattern p
 
     def do_something(each_scan_diffraction_post_bk_sub, inputs):
         """
-        each_scan_diffraction_post_bk_sub - This is an automatic input that has to come first. We are passing in
-                                            the corrected summed diffraction pattern
+        each_scan_diffraction_post_bk_sub (preset default)
+            - This is an automatic input that has to come first. We are passing in
+            - the background corrected diffraction patterns for each test_fs.scan_numbers
 
-        inputs - the user defined inputs used to split up into function definitions - must be static values
+        inputs (list of ints, ex. [1, 2, 3, 4])
+            - the user defined inputs used to split up into function definitions
+            - must be static values
 
         """
 
@@ -446,12 +449,21 @@ Implementing General Multiprocessing
 
     # Iterate through the first 10 rows and columns
     # OR iterate through rows # - # and columns # - #
-    rows = 10       # to iterate through row 0 - row 10  -  OR  set value to (1, 5) - iterates through row 1 - row 5
-    columns = 10    # to iterate through col 0 - col 10  -  OR  set value to (7, 12) - iterates through col 7 - col 12
+
+    rows = 10       # to iterate through row 0 - row 10
+    # OR  set value to (1, 5) - iterates through row 1 - row 5
+
+    columns = 10    # to iterate through col 0 - col 10
+    # OR  set value to (7, 12) - iterates through col 7 - col 12
 
     inputs = [1, 3, 5, 7]
 
-    output = general_analysis_multi(test_fs, rows, columns, do_something, inputs, bkg_multiplier=0)
+    output = general_analysis_multi(test_fs,
+                                    rows,
+                                    columns,
+                                    do_something,
+                                    inputs,
+                                    bkg_multiplier=0)
 
 
     # The output has a general formula [(row, column), analysis_output]

@@ -26,14 +26,14 @@ imported:
                 hdf5_save_directory='path/to/save/dir', 
                 hdf5_save_filename='file')
 
-This function will iterate through all ``file.mda`` files in the `mda_folder` and import all
+This function will iterate through all ``scan.mda`` files in the `mda_folder` and import all
 detector channel data into the User defined hdf5 destination/file.
 
 .. code:: python
 
     # EXAMPLE
 
-   import_mda(mda_path='/home/usr/Desktop/mda_folder/',
+    import_mda(mda_path='/home/usr/Desktop/mda_folder/',
                 hdf5_save_directory='/home/usr/Desktop',
                 hdf5_save_filename='test_file')
 
@@ -80,7 +80,7 @@ This function will iterate through all folders in the ``images_loc`` folders and
     import_images(
         file='/home/usr/Desktop/test_file.h5',
         images_loc='/home/usr/Desktop/images_folder/',
-        scans=[1, 2, 3, 4],
+        scans=[1, 2, 10, 18],
         )
 
 .. note::
@@ -121,50 +121,56 @@ The main structure is similar to what is shown below:
 
         #mda/
             #0001_scan/
-                #D01_channel
+                #D01_channel/
+                    #detector data
                 .
                 .
                 .
-                #D70_channel
+                #D70_channel/
+                    #detector data
 
             #0002_scan/
-                #D01_channel
+                #D01_channel/
+                    #detector data
                 .
                 .
                 .
-                #D70_channel
+                #D70_channel/
+                    #detector data
 
             #0003_scan/
-                #D01_channel
+                #D01_channel/
+                    #detector data
                 .
                 .
                 .
-                #D70_channel
+                #D70_channel/
+                    #detector data
 
         #detector_channels/
-            #detector_scan
-            #filenumber
-            #fluor
-            #hybrid_x
-            #hybrid_y
-            #mis
-            #roi
-            #sample_theta
+            #detector_scan/
+            #filenumber/
+            #fluor/
+            #hybrid_x/
+            #hybrid_y/
+            #mis/
+            #roi/
+            #sample_theta/
 
         #zone_plate/
-            #D_um
-            #d_rN_nm
-            #detector_pixel_size
+            #D_um/
+            #d_rN_nm/
+            #detector_pixel_size/
 
         #dataset_name1/
-            #dxdy
-            #scan_numbers
-            #scan_theta
+            #dxdy/
+            #scan_numbers/
+            #scan_theta/
 
         #dataset_name2/
-            #dxdy
-            #scan_numbers
-            #scan_theta
+            #dxdy/
+            #scan_numbers/
+            #scan_theta/
 
 .. note::
 

@@ -80,8 +80,11 @@ The easiest way to run unit-tests is with python tester from the command line:
 
 .. code:: bash
 
-   $ cd sxdm/tests
-   $ python3.6 test_all.py
+   $ pip install pytest
+   $ pip install pytest-cov
+
+   $ cd /dir/sxdm
+   $ pytest --cov=sxdm tests/
 
 Documentation
 -------------
@@ -90,8 +93,8 @@ The documentation is built using sphinx. To make HTML documents, use the followi
 
 .. code:: bash
 
-   $ pip install -r sxdm/requirements-docs.txt
-   $ cd sxdm/docs
+   $ pip install sphinx
+   $ cd /dir/sxdm/docs
    $ make html
 
 Scanning X-Ray Diffraction Microscopy
@@ -105,7 +108,7 @@ Example Workflow
 
 A typical procedure for interacting with microscope frame-sets involves the following parts:
 
-- Import the raw data
+- Import the raw data (.mda and .tif)
 - Apply corrections and align the images
 - Calculate some metric and create maps of it
 - Visualize the maps, statically or interactively.
@@ -117,6 +120,7 @@ Example for a single frameset across difference X-ray incident angles:
     %load_ext autoreload
     %autoreload 2
     %matplotlib qt
+
 
     # Developer Version
     import sys
@@ -133,7 +137,8 @@ Example for a single frameset across difference X-ray incident angles:
     # Importing .mda data
     import_mda(mda_path, hdf5_save_directory, hdf5_save_filename)
 
-    # Importing .tif images - file='/dir/test.h5' - was created by the import_mda() function
+    # Importing .tif images - file='/dir/test.h5'
+                                - was created by the import_mda() function
     import_images(file, images_loc)
 
     # Setting Detector Channels
