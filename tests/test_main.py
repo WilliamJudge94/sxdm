@@ -43,10 +43,11 @@ class MainTestCase(unittest.TestCase):
         self.assertEqual(output, (2, 2, 11))
 
     def test_gaus_checker(self):
-        test_fs.gaus_checker(center_around=1, default=True)
-        x, y = test_fs.mda_roi_gaus_check
-        x_true = np.array_equal(x, [56509.170099431816, 56509.170099431816])
-        y_true = np.array_equal(y, [452057.90625, 451941.90625])
+        pass
+        #test_fs.gaus_checker(center_around=1, default=True)
+        #x, y = test_fs.mda_roi_gaus_check
+        #x_true = np.array_equal(x, [56509.170099431816, 56509.170099431816])
+        #y_true = np.array_equal(y, [452057.90625, 451941.90625])
         #self.assertTrue(x_true)
         #self.assertTrue(y_true)
 
