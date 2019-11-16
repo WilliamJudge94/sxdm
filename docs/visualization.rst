@@ -43,10 +43,9 @@ Return Raw Centroid Map Values
 Takes the test_fs.results and a User defined map_type and returns either the centroid data or the ROI data for the
 ``test_fs.resutls`` variable.
 
-.. code::: python
+.. code:: python
 
     centroid_roi_map(results, map_type)
-
 
 
 ``results`` (nd.array) - the test_fs.results value
@@ -61,8 +60,7 @@ The centroid maps are in values associated with their centroid position of the .
 To change what the bound/values are for the centroid values the user can set values for user_map and new_bounds to
 rebound the centroid maps.
 
-
-.. code::: python
+.. code:: python
 
     maps_correct(user_map, new_bounds)
 
@@ -70,4 +68,14 @@ rebound the centroid maps.
 
 ``new_bounds`` - np.linspace(lowerbound, higherbound, dim of image)
 
+
+Errors
+------
+
+The main visual error will be the Psyduck error. This occurs when the program cannot properly load
+the corresponding data for a given plot. Psyduck is confused and so is everyone else.
+
+.. figure:: images/psy.png
+    :scale: 50 %
+    :align: center
 

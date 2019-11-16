@@ -30,28 +30,35 @@ Installation (pip)
 - `pip install sxdm`
 
 
-Installation (git)
-------------------
+Developer Installation (git)
+----------------------------
 
-- Make a clone of the SXDM project onto your machine
-- Possibly create a virtual environment
-- Run/install requirements.txt file
+- conda create -n sxdm python=3.6
+- source activate sxdm
+- git clone clone git@github.com:WilliamJudge94/sxdm.git
+- pip3 install -r sxdm/requirements.txt
+- pip3 install ipykernel
+- ipython kernel install --user --name=sxdm
+
+Developer Virtual Environment & Jupyter Setup (git)
+---------------------------------------------------
+
+**Run Commands In Jupyter Shell**
 
 
-Virtual Environment & Jupyter Setup (git)
------------------------------------------
+- `%matplotlib qt`
+- `import sys`
 
-- cd to directory you would like to keep the virtual environment
-- run `python3 -m venv projectname` in the terminal. projectname can be anything the User would like it to be
-- run `source projectname/bin/activate`
-- run `pip3 install ipykernel`
-- run `ipython kernel install --user --name=projectname`
-- run `pip3 install -r requirements.txt` for the sxdm repository
-- in jupyter notebook/lab run `import sys` and `sys.path.append("/path/to/module/")`
+**Linux**
+- `sys.path.append('/path/to/sxdm/folder')`
 
-- if you are running on a Mac then:
-- run in jupyter notebook/lab `import sys`
-- run in jupyter notebook/lab `sys.path.append('/Users/usr/virtual_environment/lib/python3.7/site-packages/')`
+**MacOS**
+- `sys.path.append('/Users/usr/virtual_environment/lib/python3.7/site-packages/')`
+
+
+- `from sxdm import *`
+
+
 
 Usage
 -----
