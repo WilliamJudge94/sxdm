@@ -426,7 +426,7 @@ If the User would like to perform operations on the Summed Diffraction Pattern p
         third = np.divide(second, dividing)
         fourth = np.multiply(third, multiplying)
 
-        return [fourth, third, second, first]
+        return fourth, third, second, first
 
     analysis_output = do_something(summed_dif, inputs)
 
@@ -443,7 +443,7 @@ The User can choose which scan they would like to center around.
 Implementing General Multiprocessing
 ------------------------------------
 
-
+This will allow the User to carry out a multiprocesses analysis of the user defined function across all pixels. 
 
 .. code:: python
 
@@ -467,6 +467,22 @@ Implementing General Multiprocessing
 
 
     # The output has a general formula [(row, column), analysis_output]
+
+
+Conveniently Return General Analysis Values
+-------------------------------------------
+
+.. code:: python
+    
+    # Define the analysis outputs: must be in the same order as your original function output
+    user_acceptable_values = ['fourth', 'third', 'second', 'first']
+
+    # Return values
+    all_values = general_pooled_return(output, 'fourth', user_acceptable_values)
+
+    # You can also call 'row_column' or 'help' to show the row and column locations or a list of all acceptable values
+    # Both 'row_column' and 'help' are created automatically. DO NOT add them to the user_acceptable_values
+    row_column_values = general_pooled_return(output, 'row_column', user_acceptable_values)
 
 .. note::
 

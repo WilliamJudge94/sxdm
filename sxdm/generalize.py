@@ -72,8 +72,10 @@ def general_pixel_analysis_multi(row, column, image_array, scan_numbers, backgro
 
     analysis_output = analysis_function(each_scan_diffraction_post, analysis_input)
 
+    results = [(row, column)]
 
-    results = [(row, column), analysis_output]
+    for array in analysis_output:
+        results.append(array)
 
     return results
 
@@ -175,12 +177,12 @@ def general_analysis_multi(self, rows, columns, analysis_function, analysis_inpu
         # add chunksize
         results = pool.map(p_general_pre_analysis, inputs, chunksize=chunky)
 
-    if False in self.roi_results:
+    if False in results:
         warnings.warn('RAM Usage Too High. ROI Analysis Stopped')
 
     return results
 
-def general_pooled_return(results, user_val):
+def general_pooled_return(results, user_val, user_acceptable_values):
     """Makes it easy to return values from the pooled results from the multi.analysis function
 
     Parameters
@@ -189,7 +191,10 @@ def general_pooled_return(results, user_val):
         the output from the analysis function
 
     user_val (str)
-        a string that defines what the user wants to be returned
+        a string that defines what the user wants to be returned. Type 'help' for all acceptable values
+
+    user_acceptable_values (list)
+        an array of all the analysis_function outputs in the order the user has set them as.
 
     Returns
     =======
@@ -197,10 +202,8 @@ def general_pooled_return(results, user_val):
 
     """
 
-    acceptable_values = ['row_column', 'summed_dif',
-                         'ttheta', 'chi', 'ttheta_corr',
-                         'ttheta_centroid', 'chi_corr',
-                         'chi_centroid', 'full_roi']
+    acceptable_values = user_acceptable_values
+    acceptable_values.insert(0, 'row_column')
 
     if user_val in acceptable_values:
         acceptable_values = np.asarray(acceptable_values)
