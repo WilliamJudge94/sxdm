@@ -13,6 +13,10 @@ dataset. To begin, run the following
 
 .. code:: python
     
+    %load_ext autoreload
+    %autoreload 2
+    %matplotlib qt
+
     from sxdm import *
 
     file='/path/to/file.h5'
@@ -97,6 +101,8 @@ Once these values are set the User can run
                     hybrid_y,
                     mis)
 
+    # You can reset the detector_channels through `del_det_chan(file)` function
+
 
 Setting Up Frameset
 ===================
@@ -107,6 +113,10 @@ need to process and analyze the frame set. This is done through the
 so the first step is to create a frameset object.
 
 .. code:: python
+
+    %load_ext autoreload
+    %autoreload 2
+    %matplotlib qt
 
     from sxdm import *
 
@@ -203,6 +213,25 @@ one to use in the GUI. Once all alignment centers have been set, it is ok to jus
   # Run through five passes of the default phase correlation
   test_fs.alignment(reset=False)
 
+
+**Brings Up All Fluor Maps**
+
+.. figure:: images/alignment3.png
+    :scale: 50 %
+    :align: center
+
+**User Select Center**
+
+.. figure:: images/alignment4.png
+    :scale: 50 %
+    :align: center
+
+**Showing All Centers**
+
+.. figure:: images/alignment5.png
+    :scale: 50 %
+    :align: center
+
 ``reset`` (bool) - if you would like to completely reset the alignment make this equal True
 
 .. note::
@@ -253,6 +282,11 @@ Through a GUI the User can select multiple region of interests from the summed d
 ``bkg_multiplier`` (int) - an integer value applied to the backgound scans
 
 ``restart`` (bool) - if set to True this will reset all the segmentation data
+
+
+.. figure:: images/roi_analysis1.png
+    :scale: 50 %
+    :align: center
 
 .. note::
 

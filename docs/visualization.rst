@@ -10,6 +10,11 @@ This will bring up the default Region Of Interest viewer, once the ``test_fs.roi
 
     test_fs.roi_viewer()
 
+
+.. figure:: images/roi_viewer.png
+    :scale: 50 %
+    :align: center
+
 .. warning:: Please use the `close all` box to close all windows. If not the program may keep cached data
 
 .. note::
@@ -28,6 +33,10 @@ This will bring up the default Region Of Interest viewer, once the ``test_fs.cen
 .. code:: python
 
     test_fs.centroid_viewer()
+
+.. figure:: images/centroid_viewer.png
+    :scale: 50 %
+    :align: center
 
 .. note::
 
