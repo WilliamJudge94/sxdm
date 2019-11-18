@@ -4,6 +4,7 @@ from tqdm import tqdm
 
 from mis import delimiter_func, tif_separation, zfill_scan, order_dir
 from h5 import h5images_wra, h5path_exists, h5create_file
+from readingmda import readMDA
 
 
 def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
