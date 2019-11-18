@@ -14,11 +14,11 @@ def centroid_roi_map(results, map_type='chi_centroid'):
     results (nd.array)
         self.results or the output of self.analysis
     map_type (str)
-        the value the user would like to return
-        acceptable values are chi_centroid, ttheta_centroid, or full_roi
+        the value the user would like to return acceptable values are chi_centroid, ttheta_centroid, or full_roi
     Returns
     =======
     the user selected map in an nd.array
+    
     """
 
     # Grab data
@@ -162,8 +162,7 @@ def saved_return(file, group, summed_dif_return=False):
     group (str)
         the group the user would like to import
     summed_dif_return (bool)
-        if True this will import all data. it is set to False because
-        this import take up a lot of RAM
+        if True this will import all data. it is set to False because this import take up a lot of RAM
     Returns
     =======
     a nd.array thay can be set to the self.results value
