@@ -76,9 +76,46 @@ class H5TestCase(unittest.TestCase):
 
         pix = grab_pix(array=test_fs.image_array, row=row, column=column, int_convert=True)
         destination = h5get_image_destination(self=test_fs, pixel=pix)
-        print(destination)
+        destination2 = h5get_image_destination_v2(self=test_fs, pixel=pix)
+
         equality = destination == ['images/0178/165137', 'images/0178/165144']
+        equality2 = destination2 == [('0178', '165137'), ('0178', '165144')]
+
         self.assertTrue(equality)
+        self.assertTrue(equality2)
+
+    def test_h5delete_file(self):
+        h5create_file(main_path, 'test_deleting')
+        h5delete_file('{}/test_deleting.h5'.format(test_path))
+
+        file_check = os.path.isfile('{}/test_deleting.h5'.format(test_path))
+        self.assertFalse(file_check)
+
+    def test_h5del_group(self):
+        h5create_file(main_path, 'test_deleting2')
+        file = '{}/test_deleting2.h5'.format(test_path)
+
+
+        h5create_group(file, 'testing_group')
+        self.assertTrue(h5path_exists(file, 'testing_group'))
+
+        h5del_group(file, 'testing_group')
+        self.assertFalse(h5path_exists(file, 'testing_group'))
+
+        h5delete_file(file)
+
+
+    def test_h5set_attr(self):
+        h5create_file(main_path, 'test_deleting3')
+        file = '{}/test_deleting3.h5'.format(test_path)
+
+        h5create_group(file, 'testing_group')
+        h5set_attr(file, 'testing_group', 'attr_test', 'sup')
+
+        self.assertEqual(h5read_attr(file, 'testing_group', 'attr_test'), 'sup')
+        
+        h5delete_file(file)
+        
 
 
     @classmethod

@@ -2,7 +2,7 @@ import warnings
 import numpy as np
 from tqdm import tqdm
 
-from h5 import h5group_list, h5create_dataset, h5grab_data, h5del_group, h5list_group
+from h5 import h5group_list, h5create_dataset, h5grab_data, h5del_group
 
 def space_check(fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis):
     """Based on the input variables this checks to see if the user has put any spaces into their group names.

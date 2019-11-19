@@ -27,26 +27,26 @@ def h5create_file(loc, name):
         pass
 
 
-def h5read(file, data_loc):
-    """Reads .h5 file data at a set location in the file
-    DEPRECIATED
+#def h5read(file, data_loc):
+#    """Reads .h5 file data at a set location in the file
+#    DEPRECIATED
 
-    Parameters
-    ==========
-    file: (str)
-        a string of the file you are working on
+#    Parameters
+#    ==========
+#    file: (str)
+#        a string of the file you are working on
     
-    data_loc: (str)
-        read what has been set to a certain location in the hdf5 file
+#    data_loc: (str)
+#        read what has been set to a certain location in the hdf5 file
 
-    Returns
-    =======
-    The value set to the user defined path
-    """
-    with h5py.File(file, 'r') as hdf:
-        g1 = hdf.get(data_loc)
-        g1_data = list(g1)
-    return g1_data
+#    Returns
+#    =======
+#    The value set to the user defined path
+#    """
+#    with h5py.File(file, 'r') as hdf:
+#        g1 = hdf.get(data_loc)
+#        g1_data = list(g1)
+#    return g1_data
 
 
 def h5delete_file(file):
@@ -64,28 +64,28 @@ def h5delete_file(file):
     os.remove(file)
 
 
-def h5list_group(file, group='base'):
-    """Displays all group members for a user defined group
+#def h5list_group(file, group='base'):
+#    """Displays all group members for a user defined group
 
-    Parameters
-    ==========
-    file: (str)
-        the file the user wishes to find the group list for
-    group: (str)
-        the subgroup the user want to look at
+#    Parameters
+#    ==========
+#    file: (str)
+#        the file the user wishes to find the group list for
+#    group: (str)
+#        the subgroup the user want to look at
 
-    Returns
-    =======
-    a list of groups within the specified hdf5 location
-    """
-    with h5py.File(file, 'r') as hdf:
-        if group == 'base':
-            base_items = list(hdf.items())
-            base_items = np.array(base_items)
-        else:
-            base_items = hdf.get(group)
-            base_items = list(base_items)
-    return base_items
+#    Returns
+#    =======
+#    a list of groups within the specified hdf5 location
+#    """
+#    with h5py.File(file, 'r') as hdf:
+#        if group == 'base':
+#            base_items = list(hdf.items())
+#            base_items = np.array(base_items)
+#        else:
+#            base_items = hdf.get(group)
+#            base_items = list(base_items)
+#    return base_items
 
 
 def h5grab_data(file, data_loc):
@@ -147,13 +147,13 @@ def h5create_dataset(file, ds_path, ds_data):
         hdf.create_dataset(ds_path, data=ds_data)
 
 
-def h5create_subgroup(file, group, subgroup):
-    """Allows user to create a subgroup - Kinda useless
+#def h5create_subgroup(file, group, subgroup):
+#    """Allows user to create a subgroup - Kinda useless
 
-    Useless
-    """
-    with h5py.File(file, 'a') as hdf:
-        hdf.create_group(group+'/'+subgroup)
+#    Useless
+#    """
+#    with h5py.File(file, 'a') as hdf:
+#        hdf.create_group(group+'/'+subgroup)
 
 
 def h5del_group(file, group):
