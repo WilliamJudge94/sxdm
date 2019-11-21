@@ -8,7 +8,7 @@ from h5 import h5images_wra, h5path_exists, h5create_file, h5create_dataset
 from readingmda import readMDA
 
 
-def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
+def import_images(file, images_loc, scans=False, fill_num=4,
                   import_type='uint32', delimiter_function=delimiter_func, force_reimport=False):
 
     """Allows the user to import all .tif images into the .h5 file
@@ -23,8 +23,6 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
         the scans the user would like to import
     fill_num (int)
         the amount of numbers in the images folders names
-    delete (bool)
-        if True all the data from the selected scans will be set to zero
     import_type (str)
         a string value passed into imageio.imread().astype(import_type)
     delimiter_function (function)
@@ -70,7 +68,7 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
             print("Scan {} Already Imported. Will Not Continue. "
                   "Force Reimport With force_reimport = True".format(sorted_images_loc[i]))
 
-        # If the path already exsists but the User wants to force reimport then reimport
+        # If the path already exists but the User wants to force reimport then reimport
         elif h5path_exists(file, path2exsist) == True and force_reimport == True:
             print("Deleting Scan {} And Reimporting".format(sorted_images_loc[i]))
             h5images_wra(file=file,
@@ -85,7 +83,7 @@ def import_images(file, images_loc, scans=False, fill_num=4, delete=False,
                          scan=zfill_sorted_images_loc[i],
                          im_loc=im_loc,
                          im_name=im_name,
-                         delete=delete,
+                         delete=False,
                          import_type=import_type)
 
 

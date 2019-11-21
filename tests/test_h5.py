@@ -113,10 +113,49 @@ class H5TestCase(unittest.TestCase):
         h5set_attr(file, 'testing_group', 'attr_test', 'sup')
 
         self.assertEqual(h5read_attr(file, 'testing_group', 'attr_test'), 'sup')
-        
-        h5delete_file(file)
-        
 
+        h5delete_file(file)
+
+    def test_h5images_wra(self):
+        h5create_file(main_path, 'test_deleting4')
+        file = '{}/test_deleting4.h5'.format(test_path)
+        images_path = '{}/test_images'.format(test_path)
+        scan = '65'
+
+        import_images(file, images_path, import_type='uint64')
+
+        output1 = h5grab_data(file, 'images/0065/041930')
+
+        self.assertEqual(np.shape(output1), (516, 516))
+
+        import_images(file, images_path, force_reimport=True, import_type='float32')
+        output2 = h5grab_data(file, 'images/0065/041930')
+
+        t_or_f = np.array_equal(output1, output2)
+
+        self.assertTrue(output1.dtype == 'uint64')
+
+        h5delete_file(file)
+
+
+    def test_import_mda(self):
+
+        save_dir = '{}/'.format(test_path)
+        save_name = 'test_deleting5'
+        mda_path = '{}/test_mda'.format(test_path)
+        file = '{}/test_deleting5.h5'.format(test_path)
+
+        import_mda(mda_path, save_dir, save_name)
+
+        first_path = h5path_exists(file, 'mda')
+        second_path = h5path_exists(file, 'mda/0291')
+        third_path = h5path_exists(file, 'mda/0291/D01')
+
+        self.assertTrue(first_path)
+        self.assertTrue(second_path)
+        self.assertTrue(third_path)
+
+        h5delete_file(file)
 
     @classmethod
     def tearDownClass(cls):

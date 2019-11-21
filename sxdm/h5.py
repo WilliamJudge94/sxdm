@@ -224,6 +224,7 @@ def h5images_wra(file, scan, im_loc, im_name, delete=False, import_type='uint32'
                              ds_data=im)
         except:
             if delete == False:
+                #print(im.dtype)
                 h5replace_data(file=file,
                                group=write_path,
                                data=im)
@@ -251,9 +252,22 @@ def h5replace_data(file, group, data):
     =======
     Nothing
     """
+    
     with h5py.File(file, "a") as hdf:
         init_data = hdf[group]
         init_data[...] = data
+        
+        try:
+            dtype1 = init_data.dtype
+            dtype2 = data.dtype
+            if dtype1 != dtype2:
+                warnings.warn('Different import dtypes from original. HDF5 does not allow this change.'
+                              'Please recreate the entire dataset if you would like to change the import dtype.')
+        except:
+            pass
+
+
+
 
 
 def h5group_list(file, group_name='base'):
