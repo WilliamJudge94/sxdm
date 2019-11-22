@@ -427,7 +427,7 @@ class SXDMFrameset():
         """
         return grab_fov_dimensions(self)
 
-    def ims_array(self, amount2ave=3, multiplier=1):
+    def ims_array(self, amount2ave=3, multiplier=1, center_around=False):
         """Creates the Scan Background and the Image Array
         
         Parameters
@@ -443,7 +443,7 @@ class SXDMFrameset():
         """
         scan_background(self, amount2ave=amount2ave,
                         multiplier=multiplier)
-        create_imagearray(self)
+        create_imagearray(self, center_around=center_around)
 
 
     def image_data_dimensions(self):
