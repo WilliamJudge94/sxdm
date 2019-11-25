@@ -60,7 +60,6 @@ def scan_background(self, amount2ave=3, multiplier=1):
     background_store = []
 
     # Average each scans images together
-
     with h5py.File(self.file, 'r') as hdf:
 
         for scan in background_loc_store:

@@ -44,6 +44,7 @@ def alignment_function(self):
             except Exception as ex:
                 print('alignment.py/alignment_function 1', ex)
 
+        # If no redo and no start, save those choices
         else:
             start_alignment = 'n'
             redo_alignment = 'n'
@@ -52,11 +53,13 @@ def alignment_function(self):
         start_alignment = 'y'
         redo_alignment = 'n'
 
+    # Initialize the alignment process if we are starting the alignment
     if start_alignment == 'y':
         if start_alignment == 'y' and redo_alignment == 'n':
             init_dxdy(self)
         else:
             try:
+                # Try to pull previous alignment data - if you can't throw error to the user
                 print('Previous Alignment Done On - {} - {}'.format(self.alignment_group,
                                                                     self.alignment_subgroup))
             except Exception as ex:
