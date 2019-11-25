@@ -18,6 +18,19 @@ test_fs = SXDMFrameset(test_file_path, dataset_name, scan_numbers = scan_numbers
 test_fs.ims_array(center_around=-1)
 
 
+def do_something(each_scan_diffraction_post_bk_sub, inputs):
+    summed_diff = np.sum(each_scan_diffraction_post_bk_sub, axis=0)
+
+    adding, subtracting, dividing, multiplying = inputs
+
+    first = np.add(summed_diff, adding)
+    second = np.subtract(first, subtracting)
+    third = np.divide(second, dividing)
+    fourth = np.multiply(third, multiplying)
+
+    return fourth, third, second, first
+
+
 class MultiTestCase(unittest.TestCase):
     
     def test_iterations(self):
@@ -79,6 +92,18 @@ class MultiTestCase(unittest.TestCase):
         
     
     def test_roi_analysis(self):
+        
+        # ROI Single Pixel Multi
+
+        with h5py.File(test_fs.file, 'r', swmr=True) as hdf:
+            results = roi_pixel_analysis_multi(row=1, column=1, median_blur_distance=5, median_blur_height=10,
+                                           image_array=test_fs.image_array, scan_numbers=test_fs.scan_numbers,
+                                           background_dic=test_fs.background_dic, file=hdf, diff_segments=False)
+            
+        self.assertEqual(np.shape(results), (8, ))
+        self.assertEqual(results[0], (1, 1))
+        
+        # Analysis Single Thread
         output = roi_analysis(test_fs, 1, 2, med_blur_distance=5,
                               center_around=-1, diff_segmentation=False)
         
@@ -92,6 +117,7 @@ class MultiTestCase(unittest.TestCase):
         self.assertEqual(check1, [0, 1])
         self.assertTrue(check4)
 
+        # Analysis Multi Thread
         output = roi_analysis_multi(test_fs, 1, 2, med_blur_distance=5, med_blur_height=10,
                                     bkg_multiplier=1, diff_segments=False)
 
@@ -106,7 +132,33 @@ class MultiTestCase(unittest.TestCase):
         self.assertTrue(check4)
     
     def test_general_analysis_multi(self):
-        pass
+
+        rows = 1
+        columns = 2
+        inputs = [1, 3, 5, 7]
+        create_imagearray(test_fs, center_around=-1)
+        
+        with h5py.File(test_fs.file, 'r', swmr=True) as hdf:
+            # General Pixel Analysis Testing
+            results = general_pixel_analysis_multi(row=0, column=0,
+                                                   image_array=test_fs.image_array,
+                                                   scan_numbers=test_fs.scan_numbers,
+                                                   background_dic=test_fs.background_dic,
+                                                   file=hdf,
+                                                   analysis_function=do_something,
+                                                   analysis_input=inputs)
+
+        # General Analysis Multi testing
+        output = general_analysis_multi(test_fs, rows, columns, do_something, inputs)
+
+        user_acceptable_values = ['fourth', 'third', 'second', 'first']
+
+        # General Pooled Return Testing
+        all_values = general_pooled_return(output, 'row_column', user_acceptable_values)
+
+        self.assertEqual(all_values[0], (0, 0))
+        self.assertEqual(np.shape(output), (2, 5))
+        self.assertEqual(np.shape(results), (5, ))
     
     def test_sum_pixel_multi(self):
         pass
