@@ -5,6 +5,7 @@ from functools import partial
 import multiprocessing
 from tqdm import tqdm
 import time
+import warnings
 
 
 from background import scan_background_finder, scan_background

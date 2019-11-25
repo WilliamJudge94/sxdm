@@ -18,6 +18,7 @@ variable_path = main_path + 'test_pixel_vars.pickle'
 scan_numbers = [178, 178]
 dataset_name = '178'
 test_fs = SXDMFrameset(test_data_file_path, dataset_name, scan_numbers=scan_numbers)
+create_imagearray(test_fs, center_around=-1)
 
 
 class PixelTestCase(unittest.TestCase):
@@ -164,6 +165,22 @@ class PixelTestCase(unittest.TestCase):
                 out_checker.append(np.array_equal(new[i], self.roi_pixel_analysis_check[i]))
 
         self.assertTrue(all(out_checker))
+        
+    def test_sum_pixel_v2(self):
+        image_array = test_fs.image_array
+        row = 1
+        column = 1
+        pix = grab_pix(array=image_array, row=row, column=column, int_convert=True)
+        destination = h5get_image_destination(self=test_fs, pixel=pix)
+
+        with h5py.File(test_fs.file, 'r', swmr=True) as hdf:
+            each_scan_diffraction = sum_pixel_v2(images_loc=destination, file=hdf)
+        
+        self.assertEqual(np.shape(each_scan_diffraction), (2, 516, 516))
+        
+    def test_pixel_diffraction_grab(self):
+        summed_dif = pixel_diffraction_grab(test_fs, test_fs.image_array, row=1, column=1)
+        self.assertEqual(np.shape(summed_dif), (516, 516))
 
 if __name__ == '__main__':
     unittest.main()

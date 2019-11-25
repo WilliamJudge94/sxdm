@@ -14,8 +14,9 @@ test_file_path = main_path+'test_data.h5'
 scan_numbers = [178, 178]
 dataset_name = 'test_178'
 
-test_fs = SXDMFrameset(test_file_path, dataset_name, scan_numbers = scan_numbers)
+test_fs = SXDMFrameset(test_file_path, dataset_name, scan_numbers=scan_numbers)
 test_fs.ims_array(center_around=-1)
+create_imagearray(test_fs, center_around=-1)
 
 
 def do_something(each_scan_diffraction_post_bk_sub, inputs):
@@ -56,9 +57,21 @@ class MultiTestCase(unittest.TestCase):
 
     
     def test_centroid_map_analysis(self):
+        
+        # Centroid Single Pixel Multi
+
+        with h5py.File(test_fs.file, 'r', swmr=True) as hdf:
+            results = centroid_pixel_analysis_multi(row=1, column=1, median_blur_distance=5, median_blur_height=10,
+                                           image_array=test_fs.image_array, scan_numbers=test_fs.scan_numbers,
+                                           background_dic=test_fs.background_dic, file=hdf, stdev_min=10)
+            
+        self.assertEqual(np.shape(results), (9, ))
+            
         output = centroid_map_analysis(self=test_fs, rows=1, columns=2,
                                        med_blur_distance=5, center_around=-1)
-        
+        print(np.shape(output))
+        print(np.shape(output[0]))
+        print(output[0])
         shape_check = np.shape(output)
         rc_check = output[0][0]
         sum_dif_check = output[0][1]
@@ -72,6 +85,9 @@ class MultiTestCase(unittest.TestCase):
         self.assertEqual(check5, 397.09460443778215)
         self.assertEqual(check7, 279.2084836699383)
         self.assertEqual(check8, 53169.333333313465)
+        
+        returns = pooled_return(output, 'row_column')
+        self.assertEqual(returns[0], (0, 0))
 
         output = centroid_analysis_multi(test_fs, 1, 2, med_blur_distance=5,
                                          med_blur_height=10, bkg_multiplier=1)
@@ -89,6 +105,9 @@ class MultiTestCase(unittest.TestCase):
         self.assertEqual(check5, 397.09460443778215)
         self.assertEqual(check7, 279.2084836699383)
         self.assertEqual(check8, 53169.333333313465)
+        
+        
+
         
     
     def test_roi_analysis(self):
