@@ -12,7 +12,7 @@ setup(name="sxdm",
       author="William Judge",
       author_email="williamjudge94@gmail.com",
       url="https://github.com/WilliamJudge94/sxdm",
-      keywords="SXDM X-ray microscopy APS 26-ID-C",
+      keywords="SXDM X-ray microscopy APS 26-ID-C Argonne Advanced Photon Source",
       install_requires=[
           'h5py>=2.8.0', 'matplotlib>=2.1.0', 'psutil',
           'numpy>=1.16.1', 'tqdm>=4.19.5', 'tifffile', 'miniutils>=1.0.1',
