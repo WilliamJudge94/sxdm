@@ -181,7 +181,6 @@ def tb_setup(vmin_spot_ax, vmax_spot_ax,
     vmin_sum_tb = TextBox(vmin_sum_ax, 'vmin', initial='0')
     vmax_sum_tb = TextBox(vmax_sum_ax, 'vmax', initial='1200')
     med_blur_dis_tb = TextBox(med_blur_dis_ax, 'med_dis', initial=med_blur_dis)
-    med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei)
     
     if config.algorithm != 'selective':
         med_blur_h_tb = TextBox(med_blur_h_ax, 'med_h', initial=med_blur_hei, color='red')
