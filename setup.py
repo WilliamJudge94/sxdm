@@ -16,7 +16,7 @@ setup(name="sxdm",
       install_requires=[
           'h5py>=2.8.0', 'matplotlib>=2.1.0', 'psutil',
           'numpy>=1.16.1', 'tqdm>=4.19.5', 'tifffile', 'miniutils>=1.0.1',
-          'imageio>=2.5.0', 'nose>=1.3.7', 'progressbar>=2.5', 'scipy>=1.1.0', 'opencv-python',
+          'imageio>=2.5.0', 'nose>=1.3.7', 'progressbar>=2.5', 'scipy>=1.1.0', 'opencv-python', 'PyQt5',
       ],
       python_requires='>=3.6',
       packages=['sxdm',],
