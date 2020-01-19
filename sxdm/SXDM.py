@@ -17,6 +17,7 @@ from chi_determination import *
 from roi_bounding import *
 from roi import *
 from summed2d import *
+from qt_centroid_viewer import *
 
 from tqdm import tqdm
 
@@ -263,7 +264,7 @@ class SXDMFrameset():
         #self.log.info('Ending self.roi_viewer')
 
     def centroid_analysis(self, rows, columns, med_blur_distance=9,
-                 med_blur_height=10, stdev_min=25, bkg_multiplier=1, slow=False):
+                 med_blur_height=10, stdev_min=25, bkg_multiplier=1, slow=False, change_center=False):
         """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
 
         Parameters
@@ -288,7 +289,14 @@ class SXDMFrameset():
         """
 
 
-        create_imagearray(self)
+        try:
+            dummy_var = self.image_array
+            dummy_var2 = self.background_dic
+        except:
+            create_imagearray(self)
+            
+        if change_center:
+            create_imagearray(self)
 
         #self.log.info('Starting self.centroid_analysis')
 
@@ -307,6 +315,7 @@ class SXDMFrameset():
         if False in self.results:
             warnings.warn('RAM Usage Too High. Centroid Analysis Stopped')
         self.analysis_params = [med_blur_distance, med_blur_height, stdev_min, bkg_multiplier]
+        
 
         print('Results Stored As self.results')
 
@@ -387,7 +396,9 @@ class SXDMFrameset():
         except:
             fluor_image = sum_error()
         self.diffraction_load = diffraction_load
-        run_viewer(self, fluor_image)
+        
+        qt_centroid_view(self, fluor_image, self.analysis_params)
+        #run_viewer(self, fluor_image)
 
         #self.log.info('Ending self.centroid_viewer')
 

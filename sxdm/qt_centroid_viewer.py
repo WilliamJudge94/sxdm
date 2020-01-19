@@ -16,7 +16,16 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import tifffile as tif
 import imageio
 from functools import partial
-from sxdm import *
+import sys
+
+from det_chan import return_det
+from postprocess import centroid_roi_map
+from summed2d import summed2d_all_data
+from pixel import grab_pix, sum_pixel, theta_maths, chi_maths
+from h5 import h5get_image_destination
+from background import scan_background_finder, scan_background
+from mis import median_blur_numpy, median_blur_selective
+import config
 
 
 
@@ -342,10 +351,10 @@ class Ui_MainWindow(object):
         self.roi_vmax_value = np.max(self.im_roi)
 
         # Analysis Values
-        self.med_blur_dist_value = 9
-        self.med_blur_height_value = 100
-        self.stdev_min_value = 45
-        self.bkg_m_value = 1
+        self.med_blur_dist_value = self.start_med_blur_dist
+        self.med_blur_height_value = self.start_med_blur_height
+        self.stdev_min_value = self.start_stdev_min
+        self.bkg_m_value = self.start_bkg_multi
         self.alg_value = 'sel'
 
         # Position Values
@@ -569,6 +578,7 @@ class Ui_MainWindow(object):
             elif current_value == 'Background Multiplier (float, int)':
                 self.bkg_m_value = self.analysis_param_value.value()
                 self.bkg_m_lcd.display(self.bkg_m_value)
+                self.change_bkg_value()
 
             self.replot_ttheta_1d()
             self.replot_chi_1d()
@@ -700,16 +710,16 @@ class Ui_MainWindow(object):
 
     def change_spot(self, event):
 
-        from time import sleep
-        from tqdm import tqdm
+        #from time import sleep
+        #from tqdm import tqdm
 
-        inputs = np.arange(0, 10, 1)
+        #inputs = np.arange(0, 10, 1)
 
-        total_len = len(inputs)
+        #total_len = len(inputs)
 
-        inputs = tqdm(inputs)
+        #inputs = tqdm(inputs)
 
-        from time import sleep
+        #from time import sleep
 
         #self.pbar(inputs)
 
@@ -730,8 +740,13 @@ class Ui_MainWindow(object):
 
         self.x_pos = int(np.round(event.xdata,  decimals=0))
         self.y_pos = int(np.round(event.ydata, decimals=0))
+        
+        #self.x_pos = self.x_pos + self.fs.analysis_total_columns[0]
+        #self.y_pos = self.y_pos + self.fs.analysis_total_rows[0]
 
-        self.im_spot_dif = determine_spot_diff(self.fs, self.y_pos, self.x_pos)
+        self.im_spot_dif = determine_spot_diff(self.fs,
+                                               self.y_pos + self.fs.analysis_total_rows[0],
+                                               self.x_pos + self.fs.analysis_total_columns[0])
 
         self.replot_spot()
         self.replot_flour()
@@ -759,15 +774,15 @@ class Ui_MainWindow(object):
 
     def reprocess(self):
 
-        self.fs.centroid_analysis(self.total_rows,
-                                  self.total_cols,
+        self.fs.centroid_analysis(self.fs.analysis_total_rows,
+                                  self.fs.analysis_total_columns,
                                   self.med_blur_dist_value,
                                   self.med_blur_height_value,
                                   self.stdev_min_value,
                                   self.bkg_m_value)
 
-        ui.im_ttheta_2d = centroid_roi_map(fs.results, 'ttheta_centroid')
-        ui.im_chi_2d = centroid_roi_map(fs.results, 'chi_centroid')
+        self.im_ttheta_2d = centroid_roi_map(self.fs.results, 'ttheta_centroid')
+        self.im_chi_2d = centroid_roi_map(self.fs.results, 'chi_centroid')
 
         self.cross_hair_color = 'purple'
         self.replot_chi_2d()
@@ -781,6 +796,12 @@ class Ui_MainWindow(object):
 
     def change_click_position(self):
         pass
+
+    def change_bkg_value(self):        
+        bk_dic = scan_background(self.fs, multiplier=self.bkg_m_value)
+        self.im_summed_dif = summed2d_all_data_v2(self=self.fs, bkg_multiplier=self.bkg_m_value)
+        self.replot_summed()
+
 
 
 def make_2d(widget, image, types='norm'):
@@ -843,40 +864,32 @@ def determine_spot_diff(self, row, column):
     return summed_dif
 
 
-
-if __name__ == "__main__":
-    import sys
-
-    file = '/Users/will/Desktop/qt_test.h5'
-
-    fs = SXDMFrameset(file=file, dataset_name='qt')
-
+def qt_centroid_view(fs, fluor_im, start_analysis_params) :
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
 
     ui.fs = fs
-    ui.total_rows = 34
-    ui.total_cols = 27
-    fs.centroid_analysis(ui.total_rows, ui.total_cols, 9, 100, 45)
 
-    ui.im_flour = return_det(fs.file, fs.scan_numbers)[0][0]
+    ui.im_flour = fluor_im
 
     ui.im_roi = centroid_roi_map(fs.results, 'full_roi')
     ui.im_ttheta_2d = centroid_roi_map(fs.results, 'ttheta_centroid')
     ui.im_chi_2d = centroid_roi_map(fs.results, 'chi_centroid')
 
-    fs.ims_array()
+    ui.start_med_blur_dist, ui.start_med_blur_height, ui.start_stdev_min, ui.start_bkg_multi = start_analysis_params
+
 
     im_dif = determine_spot_diff(fs, 0, 0)
-    ui.im_summed_dif = summed2d_all_data(self=fs, bkg_multiplier=1)
+    ui.im_summed_dif = summed2d_all_data(self=fs, bkg_multiplier=ui.start_bkg_multi)
     ui.im_spot_dif = im_dif
 
     ui.ttheta_1d_data = [1]
     ui.chi_1d_data = [1]
-
-
+    
+    
+    
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

@@ -31,7 +31,7 @@ def summed2d_all_data(self, bkg_multiplier=0):
     columns = dims[2] - 1
     image_array = self.image_array
 
-    bkg = scan_background(self=self, multiplier=bkg_multiplier)
+    self.background_dic = scan_background(self=self, multiplier=bkg_multiplier)
 
     # open the hdf file
 

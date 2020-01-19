@@ -32,9 +32,19 @@ def centroid_roi_map(results, map_type='chi_centroid'):
     max_x = np.max(new_row_col[:, 1]) + 1
     max_y = np.max(new_row_col[:, 0]) + 1
 
-    min_x = np.min(new_row_col[:, 1]) + 1
-    min_y = np.min(new_row_col[:, 0]) + 1
+    min_x = np.min(new_row_col[:, 1])# + 1
+    min_y = np.min(new_row_col[:, 0])# + 1
 
+    if min_x == 0:
+        pass
+    else:
+        min_x = min_x
+        
+    if min_y == 0:
+        pass
+    else:
+        min_y = min_y
+    
     user_picker = pooled_return(results, map_type)
     mapper = [[0 for x in range(max_x-min_x)] for y in range(max_y-min_y)]
 
