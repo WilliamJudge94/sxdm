@@ -360,10 +360,14 @@ def centroid_pre_analysis(inputs, meds_d, meds_h, st, image_array, scan_numbers,
      the results from the centroid_pixel_analysis_multi() function
      """
 
+
+
+
     with h5py.File(file, 'r', swmr=True) as hdf:
         row, column = inputs
         results = centroid_pixel_analysis_multi(row, column, meds_d, meds_h, st,
                                             image_array, scan_numbers, background_dic, hdf)
+
 
     return results
 
@@ -405,6 +409,7 @@ def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
 
     inputs = tqdm(inputs, total=len(master_rows),
               desc="Progress", unit='pixles')
+
 
     # Creating a partial function
     p_centroid_pre_analysis = partial(centroid_pre_analysis, meds_d=med_blur_distance,
