@@ -192,7 +192,7 @@ class SXDMFrameset():
         #self.log.info('Ending self.roi_segmentation')
 
     def region_of_interest(self, rows, columns, med_blur_distance=9,
-                           med_blur_height=100, bkg_multiplier=1, diff_segmentation=True, slow=False):
+                           med_blur_height=100, bkg_multiplier=1, diff_segmentation=True, slow=False, cores=0):
         """Create a region of interest map for each scan and center the region of interest maps.
         If the diff segmentation is True this will also create a region of interest map based on
         a user defined sub region of interests
@@ -223,7 +223,7 @@ class SXDMFrameset():
         """
 
         #self.log.info('Starting self.region_of_interest')
-
+        config.cpu_count = cores
         # Setting total rows and columns for the roi_viewer
         self.roi_analysis_total_rows = rows
         self.roi_analysis_total_columns = columns
@@ -264,7 +264,7 @@ class SXDMFrameset():
         #self.log.info('Ending self.roi_viewer')
 
     def centroid_analysis(self, rows, columns, med_blur_distance=9,
-                 med_blur_height=10, stdev_min=25, bkg_multiplier=1, slow=False, change_center=False):
+                 med_blur_height=10, stdev_min=25, bkg_multiplier=1, slow=False, change_center=False, cores=0):
         """Calculates spot diffraction and data needed to make 2theta/chi/roi maps
 
         Parameters
@@ -288,6 +288,7 @@ class SXDMFrameset():
         the analysis results in the form of self.results
         """
 
+        config.cpu_count = cores
 
         try:
             dummy_var = self.image_array

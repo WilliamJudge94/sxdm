@@ -303,6 +303,12 @@ def roi_analysis_multi(self, rows, columns, med_blur_distance=9,
     =======
     a pooled results from the roi_pixel_analysis_multi() function
     """
+    
+    
+    if config.cpu_count != 0:
+        cores = config.cpu_count
+    else:
+        cores = multiprocessing.cpu_count()
 
     # Creating the iterable used for pool.map
     master_rows, master_columns = initialize_vectorize(num_rows=rows, num_columns=columns)
@@ -327,7 +333,7 @@ def roi_analysis_multi(self, rows, columns, med_blur_distance=9,
                                  diff_segments=diff_segments, scan_numbers=self.scan_numbers)
 
     # Starting multiprocessing
-    with multiprocessing.Pool() as pool:
+    with multiprocessing.Pool(cores) as pool:
         results = pool.map(p_roi_pre_analysis, inputs)
 
     return results
@@ -398,6 +404,11 @@ def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
     background_dic = scan_background(self, multiplier=bkg_multiplier)
     time.sleep(2)
 
+    if config.cpu_count != 0:
+        cores = config.cpu_count
+    else:
+        cores = multiprocessing.cpu_count()
+        
     # Creating the iterable to pool.map
     master_rows, master_columns = initialize_vectorize(num_rows=rows, num_columns=columns)
 
@@ -417,7 +428,7 @@ def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
     else:
         chunky = columns
     # Start multiprocessing
-    with multiprocessing.Pool() as pool:
+    with multiprocessing.Pool(cores) as pool:
         # add chunksize
         results = pool.map(p_centroid_pre_analysis, inputs, chunksize=chunky)
 
