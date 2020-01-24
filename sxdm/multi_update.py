@@ -304,7 +304,11 @@ def roi_analysis_multi(self, rows, columns, med_blur_distance=9,
     a pooled results from the roi_pixel_analysis_multi() function
     """
     
-    
+    try:
+        dummy_var = config.cpu_count
+    except:
+        config.cpu_count = 0
+        
     if config.cpu_count != 0:
         cores = config.cpu_count
     else:
@@ -407,6 +411,11 @@ def centroid_analysis_multi(self, rows, columns, med_blur_distance=9,
     # Creating the background images
     background_dic = scan_background(self, multiplier=bkg_multiplier)
     time.sleep(2)
+
+    try:
+        dummy_var = config.cpu_count
+    except:
+        config.cpu_count = 0
 
     if config.cpu_count != 0:
         cores = config.cpu_count
