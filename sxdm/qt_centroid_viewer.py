@@ -27,6 +27,9 @@ from background import scan_background_finder, scan_background
 from mis import median_blur_numpy, median_blur_selective
 import config
 
+from time import sleep
+from tqdm import tqdm
+
 
 
 class Ui_MainWindow(object):
@@ -468,6 +471,11 @@ class Ui_MainWindow(object):
         self.actionReprocess.triggered.connect(self.reprocess)
         self.actionSave_Reload.triggered.connect(self.save_reload)
 
+
+        #self.pprogresss = tqdm([1,2,3,4,5])
+        #self.threadclass = ThreadClass(pbar_tqdm = self.pprogresss)
+        #self.threadclass.start()
+
     def change_vmin_vmax_selector(self):
         current_value = self.vmin_vmax_map_picker.currentText()
         if current_value == 'Spot Diffraction':
@@ -710,14 +718,22 @@ class Ui_MainWindow(object):
 
     def change_spot(self, event):
 
-        #from time import sleep
-        #from tqdm import tqdm
+
 
         #inputs = np.arange(0, 10, 1)
 
         #total_len = len(inputs)
+        #self.pprogresss = tqdm(inputs)
 
-        #inputs = tqdm(inputs)
+
+        #self.inputs = self.pprogresss
+
+        #config.inputs = self.inputs
+
+        #for i in self.pprogresss:
+        #    sleep(1)
+        #    print(config.inputs.n, 'config inner function')
+        #    print(self.pprogresss.n, 'config inner function 2')
 
         #from time import sleep
 
@@ -744,9 +760,19 @@ class Ui_MainWindow(object):
         #self.x_pos = self.x_pos + self.fs.analysis_total_columns[0]
         #self.y_pos = self.y_pos + self.fs.analysis_total_rows[0]
 
+        try:
+            sub_rows = self.fs.analysis_total_rows[0]
+        except:
+            sub_rows = 0
+
+        try:
+            sub_columns = self.fs.analysis_total_columns[0]
+        except:
+            sub_columns = 0
+
         self.im_spot_dif = determine_spot_diff(self.fs,
-                                               self.y_pos + self.fs.analysis_total_rows[0],
-                                               self.x_pos + self.fs.analysis_total_columns[0])
+                                               self.y_pos + sub_rows,
+                                               self.x_pos + sub_columns)
 
         self.replot_spot()
         self.replot_flour()
@@ -803,6 +829,20 @@ class Ui_MainWindow(object):
         self.replot_summed()
 
 
+#class ThreadClass(QtCore.QThread):
+#    def __init__(self, pbar_tqdm, parent=None):
+#        super(ThreadClass, self).__init__(parent)
+#        self.pbar_tqdm = pbar_tqdm
+
+#    def run(self):
+#        for i in range(100):
+#            sleep(1)
+#            try:
+#                print(config.n)
+#            except Exception as ex:
+#                print(ex)
+#                config.n = 0
+
 
 def make_2d(widget, image, types='norm'):
     fig, ax = plt.subplots()
@@ -849,7 +889,7 @@ def make_1d(widget, data):
     return widget
 
 
-def determine_spot_diff(self, row, column):
+def determine_spot_diff(self, row, column, auto_sum=True):
 
     pix = grab_pix(array=self.image_array, row=row, column=column, int_convert=True)
     destination = h5get_image_destination(self=self, pixel=pix)
@@ -859,7 +899,10 @@ def determine_spot_diff(self, row, column):
     backgrounds = scan_background_finder(destination=destination, background_dic=self.background_dic)
     each_scan_diffraction_post = np.subtract(each_scan_diffraction, backgrounds)
 
-    summed_dif = np.sum(each_scan_diffraction_post, axis=0)
+    if auto_sum:
+        summed_dif = np.sum(each_scan_diffraction_post, axis=0)
+    elif not auto_sum:
+        summed_dif = each_scan_diffraction_post
 
     return summed_dif
 
