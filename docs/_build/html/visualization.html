@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Visualization of Results &mdash; sxdm v0.5 documentation</title>
+  <title>Visualization of Results &mdash; SXDM Documentation v0.5 documentation</title>
   
 
   
@@ -35,6 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="sxdm" href="modules.html" />
     <link rel="prev" title="Analyzing the Data" href="analysis.html" /> 
 </head>
 
@@ -49,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sxdm
+            <a href="index.html" class="icon icon-home"> SXDM Documentation
           
 
           
@@ -89,8 +90,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#centroid-analysis-viewer">Centroid Analysis Viewer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#return-raw-centroid-map-values">Return Raw Centroid Map Values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#make-new-bound-for-centroid-maps">Make New Bound For Centroid Maps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#errors">Errors</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sxdm</a></li>
 </ul>
 
             
@@ -105,7 +108,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sxdm</a>
+          <a href="index.html">SXDM Documentation</a>
         
       </nav>
 
@@ -159,32 +162,51 @@
 <h1>Visualization of Results<a class="headerlink" href="#visualization-of-results" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="region-of-interest-viewer">
 <h2>Region of Interest Viewer<a class="headerlink" href="#region-of-interest-viewer" title="Permalink to this headline">¶</a></h2>
-<p><strong>Main Viewer</strong>
-This will bring up the default Region Of Interest viewer, once the <code class="docutils literal notranslate"><span class="pre">test_fs.roi_results</span></code> have been calculated.</p>
+<p>This will bring up the default Region Of Interest viewer, once the <code class="docutils literal notranslate"><span class="pre">test_fs.roi_results</span></code> have been calculated.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">roi_viewer</span><span class="p">()</span>
 </pre></div>
+</div>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/roi_viewer.png"><img alt="_images/roi_viewer.png" src="_images/roi_viewer.png" style="width: 925.5px; height: 502.0px;" /></a>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please use the <cite>close all</cite> box to close all windows. If not the program may keep cached data</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Median Blur Height will be only be enabled for a <cite>median_blur_algorithm=’selective’</cite></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>User can move sliders as well as click on maps to show intensity values/scan values</p>
 </div>
 </div>
 <div class="section" id="centroid-analysis-viewer">
 <h2>Centroid Analysis Viewer<a class="headerlink" href="#centroid-analysis-viewer" title="Permalink to this headline">¶</a></h2>
-<p><strong>Main Viewer</strong>
-This will bring up the default Region Of Interest viewer, once the <code class="docutils literal notranslate"><span class="pre">test_fs.centroid_results</span></code> have been calculated.</p>
+<p>This will bring up the default Region Of Interest viewer, once the <code class="docutils literal notranslate"><span class="pre">test_fs.centroid_results</span></code> have been calculated.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">centroid_viewer</span><span class="p">()</span>
 </pre></div>
+</div>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/centroid_viewer.png"><img alt="_images/centroid_viewer.png" src="_images/centroid_viewer.png" style="width: 599.0px; height: 349.0px;" /></a>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Median Blur Height will be only be enabled for a <cite>median_blur_algorithm=’selective’</cite></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>User can click on maps to display how the program is interpreting pixel data.</p>
 </div>
 </div>
 <div class="section" id="return-raw-centroid-map-values">
 <h2>Return Raw Centroid Map Values<a class="headerlink" href="#return-raw-centroid-map-values" title="Permalink to this headline">¶</a></h2>
 <p>Takes the test_fs.results and a User defined map_type and returns either the centroid data or the ROI data for the
 <code class="docutils literal notranslate"><span class="pre">test_fs.resutls</span></code> variable.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">centroid_roi_map</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">map_type</span><span class="p">)</span>
+</pre></div>
+</div>
 <p><code class="docutils literal notranslate"><span class="pre">results</span></code> (nd.array) - the test_fs.results value</p>
 <p><code class="docutils literal notranslate"><span class="pre">map_type</span></code> - acceptable values - full_roi, chi_centroid, ttheta_centroid</p>
 </div>
@@ -193,8 +215,19 @@ This will bring up the default Region Of Interest viewer, once the <code class="
 <p>The centroid maps are in values associated with their centroid position of the .tif image dimensions (usually 516, 516).
 To change what the bound/values are for the centroid values the user can set values for user_map and new_bounds to
 rebound the centroid maps.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">maps_correct</span><span class="p">(</span><span class="n">user_map</span><span class="p">,</span> <span class="n">new_bounds</span><span class="p">)</span>
+</pre></div>
+</div>
 <p><code class="docutils literal notranslate"><span class="pre">user_map</span></code> - the output of the centroid_roi_map() function</p>
 <p><code class="docutils literal notranslate"><span class="pre">new_bounds</span></code> - np.linspace(lowerbound, higherbound, dim of image)</p>
+</div>
+<div class="section" id="errors">
+<h2>Errors<a class="headerlink" href="#errors" title="Permalink to this headline">¶</a></h2>
+<p>The main visual error will be the Psyduck error. This occurs when the program cannot properly load
+the corresponding data for a given plot. Psyduck is confused and so is everyone else.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/psy.png"><img alt="_images/psy.png" src="_images/psy.png" style="width: 237.5px; height: 237.5px;" /></a>
+</div>
 </div>
 </div>
 
@@ -205,6 +238,8 @@ rebound the centroid maps.</p>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules.html" class="btn btn-neutral float-right" title="sxdm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="analysis.html" class="btn btn-neutral float-left" title="Analyzing the Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

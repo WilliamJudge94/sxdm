@@ -13,6 +13,10 @@ dataset. To begin, run the following
 
 .. code:: python
     
+    %load_ext autoreload
+    %autoreload 2
+    %matplotlib qt
+
     from sxdm import *
 
     file='/path/to/file.h5'
@@ -87,19 +91,32 @@ Once these values are set the User can run
 .. code:: python
 
     # Change Values From Default Output, Run Cell, And Input Values Into Function Below
-    setup_det_chan(file, fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis)
+    setup_det_chan(file,
+                    fluor,
+                    roi,
+                    detector_scan,
+                    filenumber,
+                    sample_theta,
+                    hybrid_x,
+                    hybrid_y,
+                    mis)
+
+    # You can reset the detector_channels through `del_det_chan(file)` function
 
 
 Setting Up Frameset
 ===================
 
-After importing the data, and setting the detector channels you will likely need to process and analyze
-the frame set. This is done through the
-:py:class:`sxdm.SXDMFrameset` class. Most
-**processing and analysis steps are provided as methods on this
-class**, so the first step is to create a frameset object.
+After importing the data, and setting the detector channels you will likely
+need to process and analyze the frame set. This is done through the
+:py:class:`sxdm.SXDMFrameset` class. Most **processing and analysis steps are provided as methods on this class**,
+so the first step is to create a frameset object.
 
 .. code:: python
+
+    %load_ext autoreload
+    %autoreload 2
+    %matplotlib qt
 
     from sxdm import *
 
@@ -109,7 +126,7 @@ class**, so the first step is to create a frameset object.
                 scan_numbers=[1, 2, 3, 4, ...],
                 fill_num=4,
                 restart_zoneplate=False,
-                median_blur_algorithm='scipy',
+                median_blur_algorithm='selective',
                 )
 
 
@@ -125,7 +142,7 @@ this will import the stored/previously completed scan numbers data
 ``restart_zoneplate`` (bool) if you would like to restart the zoneplate data set this to True
 
 ``median_blur_algorithm`` (str) this initializes which type of median blur will be performed on the datasets during
-analysis. acceptable values consist of 'scipy' and 'selective'. ''numpy performs a median blur on the entire dataset
+analysis. acceptable values consist of 'scipy' and 'selective'. ''scipy performs a median blur on the entire dataset
 while 'selective' only applies a median blur if the binned 1D data is within a certain User threshold.
 
 
@@ -135,13 +152,13 @@ In the creation of the SXDMFrameset there is an option to set a ``median_blur_al
 There are two option in the current version of SXDM. ``scipy`` and ``selective``.
 
 
-**mis.median_blur_scipy()**
+**sxdm.mis.median_blur_scipy()**
 
 This median blur algorithm calls the ``scipy.signal.me_blur``. This will apply a median blur to the entire 1 dimensional
 datasets produced by the 2 dimensional images. 
 
 
-**mis.median_blur_selective()**
+**sxdm.mis.median_blur_selective()**
 
 This median blur alogrithm bins off line scan data, determines the mean, if there is a value above a User value + mean
 it will be replaced with the mean value for the chunk. This preserves most of the raw intensity data at the cost of
@@ -196,6 +213,25 @@ one to use in the GUI. Once all alignment centers have been set, it is ok to jus
   # Run through five passes of the default phase correlation
   test_fs.alignment(reset=False)
 
+
+**Brings Up All Fluor Maps**
+
+.. figure:: images/alignment3.png
+    :scale: 50 %
+    :align: center
+
+**User Select Center**
+
+.. figure:: images/alignment4.png
+    :scale: 50 %
+    :align: center
+
+**Showing All Centers**
+
+.. figure:: images/alignment5.png
+    :scale: 50 %
+    :align: center
+
 ``reset`` (bool) - if you would like to completely reset the alignment make this equal True
 
 .. note::
@@ -235,7 +271,7 @@ the User to define as many Region Of Interests as they please in the diffraction
 portion, the program will determine the summed value of these regions, plot them, as well as normalize.
 
 Through a GUI the User can select multiple region of interests from the summed diffraction pattern. Set the
-``diff_segmentation=True`` in the ``test_fs.region_of_interest()`` function to True for this analysis to be carried out.
+``diff_segmentation=True`` in the ``test_fs.region_of_interest()`` function for this analysis to be carried out.
 
 
 .. code:: python
@@ -246,6 +282,11 @@ Through a GUI the User can select multiple region of interests from the summed d
 ``bkg_multiplier`` (int) - an integer value applied to the backgound scans
 
 ``restart`` (bool) - if set to True this will reset all the segmentation data
+
+
+.. figure:: images/roi_analysis1.png
+    :scale: 50 %
+    :align: center
 
 .. note::
 
@@ -345,7 +386,7 @@ to slow down the analysis and save on RAM
 
     **Unsure About Dimension Size**
 
-    If you are unsure of the dimension sizes call ``self.frame_shape()``. The first number is the number of scans,
+    If you are unsure of the dimension sizes call ``test_fs.frame_shape()``. The first number is the number of scans,
     the second number is the about of rows + 1, and the third number is the number of columns + 1
 
 .. note::
@@ -362,18 +403,20 @@ to slow down the analysis and save on RAM
     **What Is The test_fs.results Variable**
 
     Sets the ``test_fs.results`` value where the user can return the results of their analysis.
-    Outputs - [pixel position, spot diffraction pattern, median blurred x axis, median blurred y axis, truncated x axis
+    Outputs - [pixel position, zero, median blurred x axis, median blurred y axis, truncated x axis
     for centroid finding, x axis centroid value, truncated y axis for centroid finding, y axis centroid value,
     summed diffraction intensity]
 
 General User Analysis
 ======================
 
-Sometime the built in functions do not align with what Users of the module would like to do. For this there is a general
+Sometimes the built in functions do not align with Users diffraction analysis goals. For this there is a general
 multiprocessing tool for pixel by pixel diffraction pattern analysis.
 
 Standard Set Up
 ---------------
+
+This creates the User defined frameset
 
 .. code:: python
 
@@ -390,17 +433,26 @@ Standard Set Up
 Defining a Function
 --------------------
 
+The User will have to define a function that will be applied to the each background corrected diffraction images.
+If the User would like to perform operations on the Summed Diffraction Pattern please write in 
+`summed_dif = np.sum(each_scan_diffraction_post_bk_sub, axis=0)` into your first line of your function.
+
 .. code:: python
 
-    def do_something(summed_dif, inputs):
+    def do_something(each_scan_diffraction_post_bk_sub, inputs):
         """
-        summed_diff - This is an automatic input that has to come first. We are passing in the corrected summed
-        diffraction pattern
+        each_scan_diffraction_post_bk_sub (preset default)
+            - This is an automatic input that has to come first. We are passing in
+            - the background corrected diffraction patterns for each test_fs.scan_numbers
 
-        inputs - the user defined inputs used to split up into function definitions - must be static values
+        inputs (list of ints, ex. [1, 2, 3, 4])
+            - the user defined inputs used to split up into function definitions
+            - must be static values
 
         """
 
+        summed_dif = np.sum(each_scan_diffraction_post_bk_sub, axis=0)
+        
         adding, subtracting, dividing, multiplying = inputs
 
         first = np.add(summed_diff, adding)
@@ -408,10 +460,15 @@ Defining a Function
         third = np.divide(second, dividing)
         fourth = np.multiply(third, multiplying)
 
-        return [fourth, third, second, first]
+        return fourth, third, second, first
+
+    analysis_output = do_something(summed_dif, inputs)
 
 Creating A .tif Image Array
 ---------------------------
+
+The program needs to have locations for the diffraction.tif images. This creates a centered array for all the locations.
+The User can choose which scan they would like to center around.
 
 .. code:: python
 
@@ -420,18 +477,56 @@ Creating A .tif Image Array
 Implementing General Multiprocessing
 ------------------------------------
 
+This will allow the User to carry out a multiprocesses analysis of the user defined function across all pixels. 
+
 .. code:: python
 
-    rows = 10       # or (0, 5)
-    columns = 10    # or (5, 10)
+    # Iterate through the first 10 rows and columns
+    # OR iterate through rows # - # and columns # - #
+
+    rows = 10       # to iterate through row 0 - row 10
+    # OR  set value to (1, 5) - iterates through row 1 - row 5
+
+    columns = 10    # to iterate through col 0 - col 10
+    # OR  set value to (7, 12) - iterates through col 7 - col 12
 
     inputs = [1, 3, 5, 7]
 
-
-    output = general_analysis_multi(test_fs, rows, columns, do_something, inputs)
+    output = general_analysis_multi(test_fs,
+                                    rows,
+                                    columns,
+                                    do_something,
+                                    inputs,
+                                    bkg_multiplier=0)
 
 
     # The output has a general formula [(row, column), analysis_output]
+
+
+Conveniently Return General Analysis Values
+-------------------------------------------
+
+.. code:: python
+    
+    # Define the analysis outputs: must be in the same order as your original function output
+    user_acceptable_values = ['fourth', 'third', 'second', 'first']
+
+    # Return values
+    all_values = general_pooled_return(output, 'fourth', user_acceptable_values)
+
+    # You can also call 'row_column' or 'help' to show the row and column locations or a list of all acceptable values
+    # Both 'row_column' and 'help' are created automatically. DO NOT add them to the user_acceptable_values
+    row_column_values = general_pooled_return(output, 'row_column', user_acceptable_values)
+
+.. note::
+
+    A built in utility checks the computer RAM usage for the User. If the User's function
+    requires a substantial amount of RAM, the program will default to `analysis_output = False`.
+    This avoids computer crashes. A warning will also be thrown to the User. To change this
+    value one must go to `~/sxdm/sxdm/generalize.py/general_pixel_analysis_multi` and change
+    the `90` in `if ram_check() > 90:` to the **max percent** of the computers RAM the User would
+    like to abort analysis at. 
+
 
 Retrieving Imported Data
 ========================
@@ -458,9 +553,9 @@ Centering Detector Data
 
 .. code:: python
 
-    centering_det(self, group='fluor', center_around=False, summed=False, default=False)
+    centering_det(test_fs, group='fluor', center_around=False, summed=False, default=False)
 
-This returns the User defined detector for all scans set in the self.scan_numbers and centers them around a User defined
+This returns the User defined detector for all scans set in the test_fs.scan_numbers and centers them around a User defined
 centering scan index
 
 ``self`` - the SXDMFrameset
@@ -542,7 +637,7 @@ Find Frameset Dimensions
 
 .. code:: python
 
-    SXDMFrameset_object.frame_shape()
+    test_fs.frame_shape()
 
 
 This returns the image dimensions for the SXDMFrameset class object
@@ -553,7 +648,7 @@ Calculate Background and FileNumber Locations
 
 .. code:: python
 
-    SXDMFrameset_object.ims_array()
+    test_fs.ims_array()
 
 
 This will auto load/calculate the background images and the image location array
@@ -565,7 +660,7 @@ Show Raw .tif Image Dimensions
 
 .. code:: python
 
-    SXDMFrameset_object.image_data_dimensions()
+    test_fs.image_data_dimensions()
 
 This will return the diffraction image dimensions
 

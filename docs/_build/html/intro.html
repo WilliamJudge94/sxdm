@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; sxdm v0.5 documentation</title>
+  <title>Introduction &mdash; SXDM Documentation v0.5 documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sxdm
+            <a href="index.html" class="icon icon-home"> SXDM Documentation
           
 
           
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="importing.html">Importing Data into SXDM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">Analyzing the Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization of Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sxdm</a></li>
 </ul>
 
             
@@ -112,7 +113,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sxdm</a>
+          <a href="index.html">SXDM Documentation</a>
         
       </nav>
 
@@ -226,16 +227,19 @@ $ ipython kernel install --user --name<span class="o">=</span>sxdm
 <div class="section" id="tests">
 <h3>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h3>
 <p>The easiest way to run unit-tests is with python tester from the command line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">cd</span> sxdm/tests
-$ python3.6 test_all.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install pytest
+$ pip install pytest-cov
+
+$ <span class="nb">cd</span> /dir/sxdm
+$ pytest --cov<span class="o">=</span>sxdm tests/
 </pre></div>
 </div>
 </div>
 <div class="section" id="documentation">
 <h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
 <p>The documentation is built using sphinx. To make HTML documents, use the following:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -r sxdm/requirements-docs.txt
-$ <span class="nb">cd</span> sxdm/docs
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install sphinx
+$ <span class="nb">cd</span> /dir/sxdm/docs
 $ make html
 </pre></div>
 </div>
@@ -249,7 +253,7 @@ $ make html
 <h2>Example Workflow<a class="headerlink" href="#example-workflow" title="Permalink to this headline">¶</a></h2>
 <p>A typical procedure for interacting with microscope frame-sets involves the following parts:</p>
 <ul class="simple">
-<li><p>Import the raw data</p></li>
+<li><p>Import the raw data (.mda and .tif)</p></li>
 <li><p>Apply corrections and align the images</p></li>
 <li><p>Calculate some metric and create maps of it</p></li>
 <li><p>Visualize the maps, statically or interactively.</p></li>
@@ -258,6 +262,7 @@ $ make html
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">load_ext</span> <span class="n">autoreload</span>
 <span class="o">%</span><span class="n">autoreload</span> <span class="mi">2</span>
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">qt</span>
+
 
 <span class="c1"># Developer Version</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -274,7 +279,8 @@ $ make html
 <span class="c1"># Importing .mda data</span>
 <span class="n">import_mda</span><span class="p">(</span><span class="n">mda_path</span><span class="p">,</span> <span class="n">hdf5_save_directory</span><span class="p">,</span> <span class="n">hdf5_save_filename</span><span class="p">)</span>
 
-<span class="c1"># Importing .tif images - file=&#39;/dir/test.h5&#39; - was created by the import_mda() function</span>
+<span class="c1"># Importing .tif images - file=&#39;/dir/test.h5&#39;</span>
+                            <span class="o">-</span> <span class="n">was</span> <span class="n">created</span> <span class="n">by</span> <span class="n">the</span> <span class="n">import_mda</span><span class="p">()</span> <span class="n">function</span>
 <span class="n">import_images</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">images_loc</span><span class="p">)</span>
 
 <span class="c1"># Setting Detector Channels</span>

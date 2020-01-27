@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Analyzing the Data &mdash; sxdm v0.5 documentation</title>
+  <title>Analyzing the Data &mdash; SXDM Documentation v0.5 documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sxdm
+            <a href="index.html" class="icon icon-home"> SXDM Documentation
           
 
           
@@ -110,6 +110,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#defining-a-function">Defining a Function</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#creating-a-tif-image-array">Creating A .tif Image Array</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#implementing-general-multiprocessing">Implementing General Multiprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conveniently-return-general-analysis-values">Conveniently Return General Analysis Values</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#retrieving-imported-data">Retrieving Imported Data</a><ul>
@@ -129,6 +130,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization of Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sxdm</a></li>
 </ul>
 
             
@@ -143,7 +145,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sxdm</a>
+          <a href="index.html">SXDM Documentation</a>
         
       </nav>
 
@@ -201,7 +203,11 @@
 channel values for the Experimental Run. This avoids having to remember
 them every time the User would like to go back and analyze a specific
 dataset. To begin, run the following</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">load_ext</span> <span class="n">autoreload</span>
+<span class="o">%</span><span class="n">autoreload</span> <span class="mi">2</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">qt</span>
+
+<span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="nb">file</span><span class="o">=</span><span class="s1">&#39;/path/to/file.h5&#39;</span>
 
@@ -264,18 +270,31 @@ be at least 1. Entries can be named however the User would like. None of these a
 for User additions.</p>
 <p>Once these values are set the User can run</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change Values From Default Output, Run Cell, And Input Values Into Function Below</span>
-<span class="n">setup_det_chan</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">fluor</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">detector_scan</span><span class="p">,</span> <span class="n">filenumber</span><span class="p">,</span> <span class="n">sample_theta</span><span class="p">,</span> <span class="n">hybrid_x</span><span class="p">,</span> <span class="n">hybrid_y</span><span class="p">,</span> <span class="n">mis</span><span class="p">)</span>
+<span class="n">setup_det_chan</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span>
+                <span class="n">fluor</span><span class="p">,</span>
+                <span class="n">roi</span><span class="p">,</span>
+                <span class="n">detector_scan</span><span class="p">,</span>
+                <span class="n">filenumber</span><span class="p">,</span>
+                <span class="n">sample_theta</span><span class="p">,</span>
+                <span class="n">hybrid_x</span><span class="p">,</span>
+                <span class="n">hybrid_y</span><span class="p">,</span>
+                <span class="n">mis</span><span class="p">)</span>
+
+<span class="c1"># You can reset the detector_channels through `del_det_chan(file)` function</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="setting-up-frameset">
 <h2>Setting Up Frameset<a class="headerlink" href="#setting-up-frameset" title="Permalink to this headline">¶</a></h2>
-<p>After importing the data, and setting the detector channels you will likely need to process and analyze
-the frame set. This is done through the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">sxdm.SXDMFrameset</span></code> class. Most
-<strong>processing and analysis steps are provided as methods on this
-class</strong>, so the first step is to create a frameset object.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
+<p>After importing the data, and setting the detector channels you will likely
+need to process and analyze the frame set. This is done through the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sxdm.SXDMFrameset</span></code> class. Most <strong>processing and analysis steps are provided as methods on this class</strong>,
+so the first step is to create a frameset object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">load_ext</span> <span class="n">autoreload</span>
+<span class="o">%</span><span class="n">autoreload</span> <span class="mi">2</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">qt</span>
+
+<span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># Use the same HDF file and group name as when importing</span>
 <span class="n">test_fs</span> <span class="o">=</span> <span class="n">SXDMFrameset</span><span class="p">(</span><span class="nb">file</span><span class="s1">&#39;/path/to/file.h5&#39;</span><span class="p">,</span>
@@ -283,7 +302,7 @@ class</strong>, so the first step is to create a frameset object.</p>
             <span class="n">scan_numbers</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
             <span class="n">fill_num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
             <span class="n">restart_zoneplate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="n">median_blur_algorithm</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span><span class="p">,</span>
+            <span class="n">median_blur_algorithm</span><span class="o">=</span><span class="s1">&#39;selective&#39;</span><span class="p">,</span>
             <span class="p">)</span>
 </pre></div>
 </div>
@@ -294,16 +313,16 @@ this will import the stored/previously completed scan numbers data</p>
 <p><code class="docutils literal notranslate"><span class="pre">fill_num</span></code> (int) the amount of digits in the image file number</p>
 <p><code class="docutils literal notranslate"><span class="pre">restart_zoneplate</span></code> (bool) if you would like to restart the zoneplate data set this to True</p>
 <p><code class="docutils literal notranslate"><span class="pre">median_blur_algorithm</span></code> (str) this initializes which type of median blur will be performed on the datasets during
-analysis. acceptable values consist of ‘scipy’ and ‘selective’. ‘’numpy performs a median blur on the entire dataset
+analysis. acceptable values consist of ‘scipy’ and ‘selective’. ‘’scipy performs a median blur on the entire dataset
 while ‘selective’ only applies a median blur if the binned 1D data is within a certain User threshold.</p>
 <div class="section" id="median-blur-type-selection">
 <h3>Median Blur Type Selection<a class="headerlink" href="#median-blur-type-selection" title="Permalink to this headline">¶</a></h3>
 <p>In the creation of the SXDMFrameset there is an option to set a <code class="docutils literal notranslate"><span class="pre">median_blur_algorithm</span></code>.
 There are two option in the current version of SXDM. <code class="docutils literal notranslate"><span class="pre">scipy</span></code> and <code class="docutils literal notranslate"><span class="pre">selective</span></code>.</p>
-<p><strong>mis.median_blur_scipy()</strong></p>
+<p><strong>sxdm.mis.median_blur_scipy()</strong></p>
 <p>This median blur algorithm calls the <code class="docutils literal notranslate"><span class="pre">scipy.signal.me_blur</span></code>. This will apply a median blur to the entire 1 dimensional
 datasets produced by the 2 dimensional images.</p>
-<p><strong>mis.median_blur_selective()</strong></p>
+<p><strong>sxdm.mis.median_blur_selective()</strong></p>
 <p>This median blur alogrithm bins off line scan data, determines the mean, if there is a value above a User value + mean
 it will be replaced with the mean value for the chunk. This preserves most of the raw intensity data at the cost of
 speed.</p>
@@ -346,6 +365,18 @@ one to use in the GUI. Once all alignment centers have been set, it is ok to jus
 <span class="n">test_fs</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Brings Up All Fluor Maps</strong></p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/alignment3.png"><img alt="_images/alignment3.png" src="_images/alignment3.png" style="width: 497.5px; height: 491.0px;" /></a>
+</div>
+<p><strong>User Select Center</strong></p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/alignment4.png"><img alt="_images/alignment4.png" src="_images/alignment4.png" style="width: 957.5px; height: 491.5px;" /></a>
+</div>
+<p><strong>Showing All Centers</strong></p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/alignment5.png"><img alt="_images/alignment5.png" src="_images/alignment5.png" style="width: 479.0px; height: 490.5px;" /></a>
+</div>
 <p><code class="docutils literal notranslate"><span class="pre">reset</span></code> (bool) - if you would like to completely reset the alignment make this equal True</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -377,13 +408,16 @@ showing which areas of the Field of View light up these diffraction bounding box
 the User to define as many Region Of Interests as they please in the diffraction image. Then upon running the Analysis
 portion, the program will determine the summed value of these regions, plot them, as well as normalize.</p>
 <p>Through a GUI the User can select multiple region of interests from the summed diffraction pattern. Set the
-<code class="docutils literal notranslate"><span class="pre">diff_segmentation=True</span></code> in the <code class="docutils literal notranslate"><span class="pre">test_fs.region_of_interest()</span></code> function to True for this analysis to be carried out.</p>
+<code class="docutils literal notranslate"><span class="pre">diff_segmentation=True</span></code> in the <code class="docutils literal notranslate"><span class="pre">test_fs.region_of_interest()</span></code> function for this analysis to be carried out.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Click and drag on the GUI interface to make roi bounding boxes</span>
 <span class="n">test_fs</span><span class="o">.</span><span class="n">roi_segmentation</span><span class="p">(</span><span class="n">bkg_multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">restart</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">bkg_multiplier</span></code> (int) - an integer value applied to the backgound scans</p>
 <p><code class="docutils literal notranslate"><span class="pre">restart</span></code> (bool) - if set to True this will reset all the segmentation data</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/roi_analysis1.png"><img alt="_images/roi_analysis1.png" src="_images/roi_analysis1.png" style="width: 300.5px; height: 298.5px;" /></a>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If the program throws image_array doesnt exist run <cite>create_imagearray(test_fs)</cite></p>
@@ -451,7 +485,7 @@ to slow down the analysis and save on RAM</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>Unsure About Dimension Size</strong></p>
-<p>If you are unsure of the dimension sizes call <code class="docutils literal notranslate"><span class="pre">self.frame_shape()</span></code>. The first number is the number of scans,
+<p>If you are unsure of the dimension sizes call <code class="docutils literal notranslate"><span class="pre">test_fs.frame_shape()</span></code>. The first number is the number of scans,
 the second number is the about of rows + 1, and the third number is the number of columns + 1</p>
 </div>
 <div class="admonition note">
@@ -466,7 +500,7 @@ bool value.</p>
 <p class="admonition-title">Note</p>
 <p><strong>What Is The test_fs.results Variable</strong></p>
 <p>Sets the <code class="docutils literal notranslate"><span class="pre">test_fs.results</span></code> value where the user can return the results of their analysis.
-Outputs - [pixel position, spot diffraction pattern, median blurred x axis, median blurred y axis, truncated x axis
+Outputs - [pixel position, zero, median blurred x axis, median blurred y axis, truncated x axis
 for centroid finding, x axis centroid value, truncated y axis for centroid finding, y axis centroid value,
 summed diffraction intensity]</p>
 </div>
@@ -474,10 +508,11 @@ summed diffraction intensity]</p>
 </div>
 <div class="section" id="general-user-analysis">
 <h2>General User Analysis<a class="headerlink" href="#general-user-analysis" title="Permalink to this headline">¶</a></h2>
-<p>Sometime the built in functions do not align with what Users of the module would like to do. For this there is a general
+<p>Sometimes the built in functions do not align with Users diffraction analysis goals. For this there is a general
 multiprocessing tool for pixel by pixel diffraction pattern analysis.</p>
 <div class="section" id="standard-set-up">
 <h3>Standard Set Up<a class="headerlink" href="#standard-set-up" title="Permalink to this headline">¶</a></h3>
+<p>This creates the User defined frameset</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sxdm</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="n">test_fs</span> <span class="o">=</span> <span class="n">SXDMFrameset</span><span class="p">(</span><span class="nb">file</span><span class="s1">&#39;/path/to/file.h5&#39;</span><span class="p">,</span>
@@ -492,14 +527,22 @@ multiprocessing tool for pixel by pixel diffraction pattern analysis.</p>
 </div>
 <div class="section" id="defining-a-function">
 <h3>Defining a Function<a class="headerlink" href="#defining-a-function" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="n">summed_dif</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+<p>The User will have to define a function that will be applied to the each background corrected diffraction images.
+If the User would like to perform operations on the Summed Diffraction Pattern please write in
+<cite>summed_dif = np.sum(each_scan_diffraction_post_bk_sub, axis=0)</cite> into your first line of your function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="n">each_scan_diffraction_post_bk_sub</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    summed_diff - This is an automatic input that has to come first. We are passing in the corrected summed</span>
-<span class="sd">    diffraction pattern</span>
+<span class="sd">    each_scan_diffraction_post_bk_sub (preset default)</span>
+<span class="sd">        - This is an automatic input that has to come first. We are passing in</span>
+<span class="sd">        - the background corrected diffraction patterns for each test_fs.scan_numbers</span>
 
-<span class="sd">    inputs - the user defined inputs used to split up into function definitions - must be static values</span>
+<span class="sd">    inputs (list of ints, ex. [1, 2, 3, 4])</span>
+<span class="sd">        - the user defined inputs used to split up into function definitions</span>
+<span class="sd">        - must be static values</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">summed_dif</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">each_scan_diffraction_post_bk_sub</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="n">adding</span><span class="p">,</span> <span class="n">subtracting</span><span class="p">,</span> <span class="n">dividing</span><span class="p">,</span> <span class="n">multiplying</span> <span class="o">=</span> <span class="n">inputs</span>
 
@@ -508,29 +551,67 @@ multiprocessing tool for pixel by pixel diffraction pattern analysis.</p>
     <span class="n">third</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">dividing</span><span class="p">)</span>
     <span class="n">fourth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">third</span><span class="p">,</span> <span class="n">multiplying</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">[</span><span class="n">fourth</span><span class="p">,</span> <span class="n">third</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">first</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">fourth</span><span class="p">,</span> <span class="n">third</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">first</span>
+
+<span class="n">analysis_output</span> <span class="o">=</span> <span class="n">do_something</span><span class="p">(</span><span class="n">summed_dif</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="creating-a-tif-image-array">
 <h3>Creating A .tif Image Array<a class="headerlink" href="#creating-a-tif-image-array" title="Permalink to this headline">¶</a></h3>
+<p>The program needs to have locations for the diffraction.tif images. This creates a centered array for all the locations.
+The User can choose which scan they would like to center around.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">create_imagearray</span><span class="p">(</span><span class="n">test_fs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="implementing-general-multiprocessing">
 <h3>Implementing General Multiprocessing<a class="headerlink" href="#implementing-general-multiprocessing" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="mi">10</span>       <span class="c1"># or (0, 5)</span>
-<span class="n">columns</span> <span class="o">=</span> <span class="mi">10</span>    <span class="c1"># or (5, 10)</span>
+<p>This will allow the User to carry out a multiprocesses analysis of the user defined function across all pixels.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Iterate through the first 10 rows and columns</span>
+<span class="c1"># OR iterate through rows # - # and columns # - #</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="mi">10</span>       <span class="c1"># to iterate through row 0 - row 10</span>
+<span class="c1"># OR  set value to (1, 5) - iterates through row 1 - row 5</span>
+
+<span class="n">columns</span> <span class="o">=</span> <span class="mi">10</span>    <span class="c1"># to iterate through col 0 - col 10</span>
+<span class="c1"># OR  set value to (7, 12) - iterates through col 7 - col 12</span>
 
 <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
 
-
-<span class="n">output</span> <span class="o">=</span> <span class="n">general_analysis_multi</span><span class="p">(</span><span class="n">test_fs</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">do_something</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">general_analysis_multi</span><span class="p">(</span><span class="n">test_fs</span><span class="p">,</span>
+                                <span class="n">rows</span><span class="p">,</span>
+                                <span class="n">columns</span><span class="p">,</span>
+                                <span class="n">do_something</span><span class="p">,</span>
+                                <span class="n">inputs</span><span class="p">,</span>
+                                <span class="n">bkg_multiplier</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 
 <span class="c1"># The output has a general formula [(row, column), analysis_output]</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="conveniently-return-general-analysis-values">
+<h3>Conveniently Return General Analysis Values<a class="headerlink" href="#conveniently-return-general-analysis-values" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the analysis outputs: must be in the same order as your original function output</span>
+<span class="n">user_acceptable_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fourth&#39;</span><span class="p">,</span> <span class="s1">&#39;third&#39;</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">,</span> <span class="s1">&#39;first&#39;</span><span class="p">]</span>
+
+<span class="c1"># Return values</span>
+<span class="n">all_values</span> <span class="o">=</span> <span class="n">general_pooled_return</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;fourth&#39;</span><span class="p">,</span> <span class="n">user_acceptable_values</span><span class="p">)</span>
+
+<span class="c1"># You can also call &#39;row_column&#39; or &#39;help&#39; to show the row and column locations or a list of all acceptable values</span>
+<span class="c1"># Both &#39;row_column&#39; and &#39;help&#39; are created automatically. DO NOT add them to the user_acceptable_values</span>
+<span class="n">row_column_values</span> <span class="o">=</span> <span class="n">general_pooled_return</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;row_column&#39;</span><span class="p">,</span> <span class="n">user_acceptable_values</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A built in utility checks the computer RAM usage for the User. If the User’s function
+requires a substantial amount of RAM, the program will default to <cite>analysis_output = False</cite>.
+This avoids computer crashes. A warning will also be thrown to the User. To change this
+value one must go to <cite>~/sxdm/sxdm/generalize.py/general_pixel_analysis_multi</cite> and change
+the <cite>90</cite> in <cite>if ram_check() &gt; 90:</cite> to the <strong>max percent</strong> of the computers RAM the User would
+like to abort analysis at.</p>
 </div>
 </div>
 </div>
@@ -549,10 +630,10 @@ multiprocessing tool for pixel by pixel diffraction pattern analysis.</p>
 </div>
 <div class="section" id="centering-detector-data">
 <h3>Centering Detector Data<a class="headerlink" href="#centering-detector-data" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">centering_det</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;fluor&#39;</span><span class="p">,</span> <span class="n">center_around</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">summed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">centering_det</span><span class="p">(</span><span class="n">test_fs</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;fluor&#39;</span><span class="p">,</span> <span class="n">center_around</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">summed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This returns the User defined detector for all scans set in the self.scan_numbers and centers them around a User defined
+<p>This returns the User defined detector for all scans set in the test_fs.scan_numbers and centers them around a User defined
 centering scan index</p>
 <p><code class="docutils literal notranslate"><span class="pre">self</span></code> - the SXDMFrameset</p>
 <p><code class="docutils literal notranslate"><span class="pre">group</span></code> - a string defining the group value to be returned filenumber, sample_theta, hybrid_x, hybrid_y, fluor, roi</p>
@@ -604,21 +685,21 @@ file.</p>
 </div>
 <div class="section" id="find-frameset-dimensions">
 <h3>Find Frameset Dimensions<a class="headerlink" href="#find-frameset-dimensions" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SXDMFrameset_object</span><span class="o">.</span><span class="n">frame_shape</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">frame_shape</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>This returns the image dimensions for the SXDMFrameset class object</p>
 </div>
 <div class="section" id="calculate-background-and-filenumber-locations">
 <h3>Calculate Background and FileNumber Locations<a class="headerlink" href="#calculate-background-and-filenumber-locations" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SXDMFrameset_object</span><span class="o">.</span><span class="n">ims_array</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">ims_array</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>This will auto load/calculate the background images and the image location array</p>
 </div>
 <div class="section" id="show-raw-tif-image-dimensions">
 <h3>Show Raw .tif Image Dimensions<a class="headerlink" href="#show-raw-tif-image-dimensions" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SXDMFrameset_object</span><span class="o">.</span><span class="n">image_data_dimensions</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_fs</span><span class="o">.</span><span class="n">image_data_dimensions</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>This will return the diffraction image dimensions</p>
