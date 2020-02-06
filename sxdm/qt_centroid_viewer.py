@@ -33,7 +33,13 @@ from tqdm import tqdm
 
 
 class Ui_MainWindow(object):
+    
     def setupUi(self, MainWindow):
+        """Sets up the PyQt5 GUI
+        
+        :param MainWindow: QtDev Tool Variable
+        :return: Nothing
+        """
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1161, 821)
@@ -422,6 +428,11 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
+        """Starts the PyQt5 GUI
+        
+        :param MainWindow: Qt Dev Tool variable
+        :return: Nothing
+        """
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "SXDM Centroid Viewer"))
         self.spot_vmax_label.setText(_translate("MainWindow", "Spot VMax:"))
@@ -477,6 +488,11 @@ class Ui_MainWindow(object):
         #self.threadclass.start()
 
     def change_vmin_vmax_selector(self):
+        """When User would like to change the vmin or vmax settings,
+        This will reload all data with the appropriate bound values.
+        
+        :return: Nothing
+        """
         current_value = self.vmin_vmax_map_picker.currentText()
         if current_value == 'Spot Diffraction':
             self.vmin_box.setValue(self.spot_vmin_value)
@@ -506,6 +522,10 @@ class Ui_MainWindow(object):
             self.analysis_param_value.setValue(self.bkg_m_value)
 
     def change_alg_selective(self):
+        """Handels all processes after chaning the median blur algorithm to selective.
+        
+        :return: Nothing
+        """
         self.alg_value = 'sel'
         self.alg_lcd.display(self.alg_value)
         self.med_blur_height_lcd.setStyleSheet("QLCDNumber { background-color: black }")
@@ -514,6 +534,10 @@ class Ui_MainWindow(object):
         self.replot_ttheta_1d()
 
     def change_alg_scipy(self):
+        """Handels all processes after chaning the median blur algorithm to selective.
+
+        :return: Nothing
+        """
         self.alg_value = 'scpy'
         self.alg_lcd.display(self.alg_value)
         self.med_blur_height_lcd.setStyleSheet("QLCDNumber { background-color: red }")
@@ -522,12 +546,21 @@ class Ui_MainWindow(object):
         self.replot_ttheta_1d()
 
     def pbar(self, inputs):
+        """One day will allow for a progress bar at the bottom of the PyQt5 GUI
+        
+        :param inputs: a tqdm() object
+        :return: Nothing
+        """
 
         for link in inputs:
             progress += 100 / len(inputs)
             self.progressChanged.emit(progress)
 
     def change_vmin_vmax(self):
+        """ Deals with all processes after chaning the vmin or vmax values.
+        
+        :return: Nothing
+        """
 
         current_value = self.vmin_vmax_map_picker.currentText()
 
@@ -596,6 +629,10 @@ class Ui_MainWindow(object):
 
 
     def determine_replot(self):
+        """Determines which maps to replot based on User's current selections
+        
+        :return: Nothing
+        """
         current_value = self.vmin_vmax_map_picker.currentText()
         if current_value == 'Spot Diffraction':
             self.replot_spot()
@@ -609,6 +646,10 @@ class Ui_MainWindow(object):
             self.replot_roi()
 
     def replot_flour(self):
+        """Replots everything needed for changing flourescence images
+        
+        :return: Nothing
+        """
 
         self.fluor_widget.ax.cla()
         if self.flour_vmax_value < self.flour_vmin_value:
@@ -625,6 +666,10 @@ class Ui_MainWindow(object):
         self.gridLayout_6.update()
 
     def replot_roi(self):
+        """Replots everything needed for changing region of interest images
+
+        :return: Nothing
+        """
         self.roi_widget.ax.cla()
 
         if self.roi_vmax_value < self.roi_vmin_value:
@@ -641,6 +686,10 @@ class Ui_MainWindow(object):
         self.gridLayout_6.update()
 
     def replot_spot(self):
+        """Replots everything needed for changing the diffraction spot image
+
+        :return: Nothing
+        """
         self.spot_widget.ax.cla()
         if self.spot_vmax_value < self.spot_vmin_value:
             self.spot_vmax_value = self.spot_vmin_value
@@ -651,6 +700,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.update()
 
     def replot_summed(self):
+        """Replots everything needed for changing the summed diffraction image
+
+        :return: Nothing
+        """
         self.summed_widget.ax.cla()
         if self.summed_vmax_value < self.summed_vmin_value:
             self.summed_vmax_value = self.summed_vmin_value
@@ -661,6 +714,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.update()
 
     def replot_ttheta_2d(self):
+        """Replots everything needed for changing the 2theta 2D centroid plots
+
+        :return: Nothing
+        """
         self.ttheta_2d_widget.ax.cla()
         self.ttheta_2d_widget.ax.imshow(self.im_ttheta_2d)
 
@@ -673,6 +730,10 @@ class Ui_MainWindow(object):
         self.gridLayout_5.update()
 
     def replot_chi_2d(self):
+        """Replots everything needed for changing the chi 2D centroid plots
+
+        :return: Nothing
+        """
         self.chi_2d_widget.ax.cla()
         self.chi_2d_widget.ax.imshow(self.im_chi_2d)
 
@@ -685,7 +746,10 @@ class Ui_MainWindow(object):
         self.gridLayout_5.update()
 
     def replot_ttheta_1d(self):
+        """Replots everything needed for changing the 2theta 1D centroid plots
 
+        :return: Nothing
+        """
         ttheta, ttheta_centroid, ttheta_centroid_finder, ttheta2 = theta_maths(self.im_spot_dif,
                                                                                self.med_blur_dist_value,
                                                                                self.med_blur_height_value,
@@ -701,7 +765,10 @@ class Ui_MainWindow(object):
         self.gridLayout_5.update()
 
     def replot_chi_1d(self):
+        """Replots everything needed for changing the chi 1D centroid plots
 
+        :return: Nothing
+        """
         chi, chi_centroid, chi_centroid_finder = chi_maths(self.im_spot_dif,
                                                             self.med_blur_dist_value,
                                                             self.med_blur_height_value,
@@ -717,7 +784,11 @@ class Ui_MainWindow(object):
         self.gridLayout_5.update()
 
     def change_spot(self, event):
-
+        """Handels all processes after changing to a different User selected spot. 
+        
+        :param event: matplotlib event variable
+        :return: Nothing
+        """
 
 
         #inputs = np.arange(0, 10, 1)
@@ -783,6 +854,11 @@ class Ui_MainWindow(object):
         self.replot_chi_1d()
 
     def change_analysis_params(self):
+        """Handels changing the analysis parameters and reloads plot accordingly
+        
+        :return: Nothing
+        """
+        
         self.med_blur_dist_value = int(self.analysis_param_value.value())
         self.med_blur_height_value = self.analysis_param_value.value()
         self.stdev_min_value = self.analysis_param_value.value()
@@ -792,6 +868,11 @@ class Ui_MainWindow(object):
         self.replot_chi_1d()
 
     def mousePressEvent(self, event):
+        """Matplotlib event than handels the button clicking
+        
+        :param event: Matplotlib event
+        :return: Nothing
+        """
         if event.button() == Qt.LeftButton:
             self.x_pos = event.x
             self.y_pos = event.y
@@ -799,6 +880,10 @@ class Ui_MainWindow(object):
             self.change_spot()
 
     def reprocess(self):
+        """Handels when the User clicks on reprocess
+        
+        :return: Nothing
+        """
 
         self.fs.centroid_analysis(self.fs.analysis_total_rows,
                                   self.fs.analysis_total_columns,
@@ -815,15 +900,21 @@ class Ui_MainWindow(object):
         self.replot_ttheta_2d()
 
     def save_reload(self):
+        """Allows the User to save the data
+        
+        :return: Nothing
+        """
         self.fs.save()
         self.cross_hair_color = 'black'
         self.replot_chi_2d()
         self.replot_ttheta_2d()
 
-    def change_click_position(self):
-        pass
 
-    def change_bkg_value(self):        
+    def change_bkg_value(self):
+        """Handels changing the background multiplier value
+        
+        :return: Nothing
+        """
         bk_dic = scan_background(self.fs, multiplier=self.bkg_m_value)
         self.im_summed_dif = summed2d_all_data_v2(self=self.fs, bkg_multiplier=self.bkg_m_value)
         self.replot_summed()
@@ -845,6 +936,13 @@ class Ui_MainWindow(object):
 
 
 def make_2d(widget, image, types='norm'):
+    """Creates the first 2D plots
+    
+    :param widget: the PyQt5 widget you are trying to make a plot for
+    :param image: the image you want to show
+    :param types: the type of image - sets the image title
+    :return: the PyQt5 Completed widget
+    """
     fig, ax = plt.subplots()
 
     plt.imshow(image)
@@ -879,6 +977,12 @@ def make_2d(widget, image, types='norm'):
 
 
 def make_1d(widget, data):
+    """Created the 1 dimensional widgets
+    
+    :param widget: the PyQt5 widget
+    :param data: the data the Users wants to show
+    :return: the PyQt5 widget
+    """
     fig, ax = plt.subplots()
     plt.plot(data)
     plt.xlabel(' ')
@@ -890,6 +994,14 @@ def make_1d(widget, data):
 
 
 def determine_spot_diff(self, row, column, auto_sum=True):
+    """Determines the diffraction pattern for a given x and y location
+    
+    :param self: the SXDMFrameset
+    :param row: the row value
+    :param column: the column value
+    :param auto_sum: (bool) would you like to summ all the diffraction patterns? True = yes
+    :return: the diffraction pattern(s)
+    """
 
     pix = grab_pix(array=self.image_array, row=row, column=column, int_convert=True)
     destination = h5get_image_destination(self=self, pixel=pix)
@@ -908,6 +1020,14 @@ def determine_spot_diff(self, row, column, auto_sum=True):
 
 
 def qt_centroid_view(fs, fluor_im, start_analysis_params) :
+    """Initiates the Centroid Viewer
+    
+    
+    :param fs: the SXDMFrameset
+    :param fluor_im: the flourescence image to show in the viewer
+    :param start_analysis_params: the staring analaysis parameters
+    :return: Nothing
+    """
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
