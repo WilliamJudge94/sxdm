@@ -1,4 +1,4 @@
-SXDM v0.5
+SXDM v0.7
 ==========
 
 .. image:: https://travis-ci.org/WilliamJudge94/sxdm.svg?branch=master
