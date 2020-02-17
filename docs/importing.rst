@@ -84,6 +84,15 @@ This function will iterate through all folders in the ``images_loc`` folders and
         )
 
 .. note::
+    fill number is the number of digits in the image_####.tif name.
+
+.. note::
+    scans=False will import all scans in the designated folder. Must be either False or an array.
+
+.. note::
+    import_type gets passed into 'np.astype()' function
+
+.. note::
     This will **Not** reimport the .tif images. If the User would like to do this they
     can set ``force_reimport=True``
 

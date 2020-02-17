@@ -59,7 +59,12 @@ dataset. To begin, run the following
     sample_theta = 2
 
 If detector channels have not been previously set default values will present themselves. Change all values according
-to your experimental setup. 
+to your experimental setup.
+
+.. note::
+    All dictionary entries are in the form of 'Detector Name': detector number. Example above says the Cu flourescence
+    detector channel was 2. The Fe flourescence detector channel was also 2. Etc. All dictionary entries, reguardless
+    of what they are for, should have different detector channel numbers.
 
 ``fluor`` (dic) The User can place as many Fluorescence dictionary entries as they would like. Except there must be at
 least 1. Entries can be named however the User would like.
