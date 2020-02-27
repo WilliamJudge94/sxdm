@@ -35,7 +35,7 @@ This will bring up the default Region Of Interest viewer, once the ``test_fs.cen
     test_fs.centroid_viewer()
 
 .. figure:: images/centroid_viewer.png
-    :scale: 50 %
+    :scale: 100 %
     :align: center
 
 .. note::
