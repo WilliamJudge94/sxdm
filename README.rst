@@ -21,7 +21,7 @@ Motivation & Features
 ---------------------
 
 - Importing and analysis of scanning x-ray diffraction microscopy framesets
-- Analysis of scanning x-ray diffraction microscopy (centroids & region of interest)
+- Analysis of scanning x-ray diffraction microscopy (centroids, region of interest, and general user analysis)
 
 
 Installation (pip)
