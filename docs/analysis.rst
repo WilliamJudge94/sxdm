@@ -537,7 +537,7 @@ Retrieving Imported Data
 ========================
 
 Return Detector Data - Before Users Set Up SXDMFrameset
----------------------
+--------------------------------------------------------
 
 .. code:: python
 
@@ -559,7 +559,7 @@ Returns all information for a given detector channel for the array of scan numbe
 
 
 Return Detector Data - After Users Set Up SXDMFrameset
----------------------
+-------------------------------------------------------
 
 .. code:: python
 
