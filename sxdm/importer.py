@@ -116,6 +116,8 @@ def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename):
     Nothing
     """
 
+    unsucessful_import_files = []
+    reason_for_fail = []
     file_path = '{}/{}.h5'.format(hdf5_save_directory, hdf5_save_filename)
 
     file_locs, filenames = order_dir(mda_path)
@@ -132,34 +134,45 @@ def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename):
         file_name = filenames[i]
         current_scan_number_import = delimiter_func(string=file_name)
 
-        output = readMDA(file, verbose=0)
-
-        # Determining if it is 2D or 1D
-        if len(output) == 3:
-            source_data = output[2]
-            flips = True
-        elif len(output) == 2:
-            source_data = output[1]
-            flips = False
-
-        else:
-            warnings.warn("Input Scan Dimensions Are Not 1D or 2D. Error In Importing Scan - {}".format(
-                current_scan_number_import))
-
-        for dats in source_data.d:
-            detector_number = dats.number + 1
-            current_det_num = str(detector_number).zfill(2)
-            save_path = 'mda/{}/D{}'.format(current_scan_number_import, current_det_num)
-
-            # If the save path exsists don't bother saving it again
-            if h5path_exists(file=file_path, loc=save_path):
-                pass
-
-            # All image data is flipped - unflip the 2D data
+        try:
+            output = readMDA(file, verbose=0)
+    
+            # Determining if it is 2D or 1D
+            if len(output) == 3:
+                source_data = output[2]
+                flips = True
+            elif len(output) == 2:
+                source_data = output[1]
+                flips = False
+            elif len(output) == 4:
+                source_data = output[2]
+                flips = False
+    
             else:
-                raw_data2save = dats.data
-                if flips:
-                    data2save = np.flip(np.flip(raw_data2save), axis=1)
+                warnings.warn("Input Scan Dimensions Are Not 1D or 2D. Error In Importing Scan - {}".format(
+                    current_scan_number_import))
+    
+            for dats in source_data.d:
+                detector_number = dats.number + 1
+                current_det_num = str(detector_number).zfill(2)
+                save_path = 'mda/{}/D{}'.format(current_scan_number_import, current_det_num)
+    
+                # If the save path exsists don't bother saving it again
+                if h5path_exists(file=file_path, loc=save_path):
+                    pass
+    
+                # All image data is flipped - unflip the 2D data
                 else:
-                    data2save = raw_data2save
-                h5create_dataset(file=file_path, ds_path=save_path, ds_data=data2save)
+                    raw_data2save = dats.data
+                    if flips:
+                        data2save = np.flip(np.flip(raw_data2save), axis=1)
+                    else:
+                        data2save = raw_data2save
+                    h5create_dataset(file=file_path, ds_path=save_path, ds_data=data2save)
+        except Exception as ex:
+            unsucessful_import_files.append(file)
+            reason_for_fail.append(ex)
+    
+    
+    for idxs, f in enumerate(unsucessful_import_files):
+        warnings.warn(f'Unable to Import File -- {f} -- because -- {reason_for_fail[idxs]}')
