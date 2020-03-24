@@ -540,6 +540,7 @@ Return Detector Data - Before Users Set Up SXDMFrameset
 ---------------------
 
 .. code:: python
+
     scans = [1, 2, 3, 4, 5]
     string_scans = scan_num_convert(scans)
     return_det(file, string_scans, group='fluor', default=False, dim_correction=False)
