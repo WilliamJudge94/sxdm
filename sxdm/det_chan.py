@@ -13,7 +13,7 @@ def space_check(fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, h
     ==========
     fluor: (dic)
         a dictionary entry with all the Fluorescence images names as well as their corresponding .mda detector channel
-        vale
+        value
     roi: (dic)
         a dictionary entry with all the Region of Interest images names as well as their corresponding .mda detector channel
         vale

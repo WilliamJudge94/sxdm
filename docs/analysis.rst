@@ -536,7 +536,28 @@ Conveniently Return General Analysis Values
 Retrieving Imported Data
 ========================
 
-Return Detector Data
+Return Detector Data - Before Users Set Up SXDMFrameset
+---------------------
+
+.. code:: python
+    scans = [1, 2, 3, 4, 5]
+    string_scans = scan_num_convert(scans)
+    return_det(file, string_scans, group='fluor', default=False, dim_correction=False)
+
+Returns all information for a given detector channel for the array of scan numbers.
+
+``file`` - test_fs.file
+
+``scan_numbers`` - test_fs.scan_numbers
+
+``group`` - Examples: filenumber, sample_theta, hybrid_x, hybrid_y, fluor, roi, mis
+
+``default`` - if True this will default to the first fluorescence image
+
+``dim_correction`` - if True this will add empty rows and columns to smaller datasets to make them the same shape
+
+
+Return Detector Data - After Users Set Up SXDMFrameset
 ---------------------
 
 .. code:: python
@@ -552,6 +573,7 @@ Returns all information for a given detector channel for the array of scan numbe
 ``group`` - Examples: filenumber, sample_theta, hybrid_x, hybrid_y, fluor, roi, mis
 
 ``default`` - if True this will default to the first fluorescence image
+
 
 Centering Detector Data
 ------------------------
