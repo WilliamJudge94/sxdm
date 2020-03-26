@@ -94,7 +94,8 @@ def images_group_exsist(file, scan):
                            loc='images/{}'.format(scan))
 
 
-def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename):
+def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename,
+               single_file=False, maxdims=2):
     """Allows the User to import all .mda image and line scan data into an hdf5 format
 
     Parameters
@@ -110,17 +111,30 @@ def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename):
         the file inside that path in which you would like to save data to (DO NOT INCLUDE ".h5")
         EXAMPLE: 'test'
 
+    single_file (str)
+        the location of the file to import
+
+    maxdims (int)
+        the maximum dimensions for the readMDA function to import from the .mda file
+
 
     Returns
     =======
-    Nothing
+    Nothing - Will Not Reimport Files
     """
 
     unsucessful_import_files = []
     reason_for_fail = []
     file_path = '{}/{}.h5'.format(hdf5_save_directory, hdf5_save_filename)
 
-    file_locs, filenames = order_dir(mda_path)
+    if single_file == False:
+        file_locs, filenames = order_dir(mda_path)
+
+    elif single_file:
+        split_files = single_file.split('/')
+
+        file_locs = [single_file,]
+        filenames = [split_files[-1],]
 
     # Create a file path if it does not exists.
 
@@ -135,19 +149,22 @@ def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename):
         current_scan_number_import = delimiter_func(string=file_name)
 
         try:
-            output = readMDA(file, verbose=0)
+            output = readMDA(file, verbose=0, maxdim=maxdims)
     
             # Determining if it is 2D or 1D
             if len(output) == 3:
                 source_data = output[2]
+                xrf_data = output[3]
                 flips = True
             elif len(output) == 2:
                 source_data = output[1]
+                xrf_data = output[2]
                 flips = False
             elif len(output) == 4:
                 source_data = output[2]
+                xrf_data = output[3]
                 flips = False
-    
+
             else:
                 warnings.warn("Input Scan Dimensions Are Not 1D or 2D. Error In Importing Scan - {}".format(
                     current_scan_number_import))
@@ -169,6 +186,41 @@ def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename):
                     else:
                         data2save = raw_data2save
                     h5create_dataset(file=file_path, ds_path=save_path, ds_data=data2save)
+
+
+            if maxdims >= 3:
+                # Save 3D data in h5 file
+                for dats in xrf_data.d:
+                    detector_number = dats.number + 1
+                    current_det_num = str(detector_number).zfill(2)
+                    save_path = 'xrf/{}/D{}'.format(current_scan_number_import, current_det_num)
+                    raw_data2save = dats.data
+                    if h5path_exists(file=file_path, loc=save_path):
+                        pass
+                    else:
+                        if flips:
+                            pass
+                            #data2save = np.flip(np.flip(raw_data2save), axis=1)
+                            #not yet clear how raw XRF data will be saved in that case ... skip for now
+                        else:
+                            data2save = raw_data2save
+                        h5create_dataset(file=filename_output_h5, ds_path=save_path, ds_data=data2save)
+
+                # Save position data in h5 file
+                data2save = output[2].p[0].data
+                save_path = f'pos/{current_scan_number_import}/inner_hor'
+                if h5path_exists(file=file_path, loc=save_path):
+                    pass
+                else:
+                    h5create_dataset(file=filename_output_h5, ds_path=save_path, ds_data=data2save)
+
+                data2save = output[1].p[0].data
+                save_path = f'pos/{current_scan_number_import}/outer_hor'
+                if h5path_exists(file=file_path, loc=save_path):
+                    pass
+                else:
+                    h5create_dataset(file=filename_output_h5, ds_path=save_path, ds_data=data2save)
+
         except Exception as ex:
             unsucessful_import_files.append(file)
             reason_for_fail.append(ex)
