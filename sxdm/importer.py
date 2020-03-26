@@ -204,7 +204,7 @@ def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename,
                             #not yet clear how raw XRF data will be saved in that case ... skip for now
                         else:
                             data2save = raw_data2save
-                        h5create_dataset(file=filename_output_h5, ds_path=save_path, ds_data=data2save)
+                        h5create_dataset(file=file_path, ds_path=save_path, ds_data=data2save)
 
                 # Save position data in h5 file
                 data2save = output[2].p[0].data
@@ -212,14 +212,14 @@ def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename,
                 if h5path_exists(file=file_path, loc=save_path):
                     pass
                 else:
-                    h5create_dataset(file=filename_output_h5, ds_path=save_path, ds_data=data2save)
+                    h5create_dataset(file=file_path, ds_path=save_path, ds_data=data2save)
 
                 data2save = output[1].p[0].data
                 save_path = f'pos/{current_scan_number_import}/outer_hor'
                 if h5path_exists(file=file_path, loc=save_path):
                     pass
                 else:
-                    h5create_dataset(file=filename_output_h5, ds_path=save_path, ds_data=data2save)
+                    h5create_dataset(file=file_path, ds_path=save_path, ds_data=data2save)
 
         except Exception as ex:
             unsucessful_import_files.append(file)
