@@ -46,6 +46,42 @@ detector channel data into the User defined hdf5 destination/file.
 
     This importer is what creates the main *.h5 file.
 
+.. note::
+
+    There is no way to force overwrite imported data - will be added soon
+
+
+Experimental Data (.mda) XRF Data Import
+----------------------------------------
+
+Since XRF data adds another dimensionality to the import once must set maxdims=3. These values
+will be saved under the xrf/####/D## in the hdf5 file.
+
+.. code:: python
+
+    # EXAMPLE
+
+    import_mda(mda_path='/home/usr/Desktop/mda_folder/',
+                hdf5_save_directory='/home/usr/Desktop',
+                hdf5_save_filename='test_file',
+                maxdims=3)
+
+Experimental Data (.mda) Single Data Import
+-------------------------------------------
+
+If one would like to only import a single file they may add the file location to the single_file argument.
+
+.. code:: python
+
+    # EXAMPLE
+
+    file_location = '/home/user/Desktop/mda/filename_0001.mda'
+
+    import_mda(mda_path='/home/usr/Desktop/mda_folder/',
+                hdf5_save_directory='/home/usr/Desktop',
+                hdf5_save_filename='test_file',
+                maxdims=3,
+                single_file=file_location)
 
 
 Diffraction Image (.tif) Import
