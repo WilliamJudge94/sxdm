@@ -154,15 +154,18 @@ def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename,
             # Determining if it is 2D or 1D
             if len(output) == 3:
                 source_data = output[2]
-                xrf_data = output[3]
+                if maxdims >= 3:
+                    xrf_data = output[3]
                 flips = True
             elif len(output) == 2:
                 source_data = output[1]
-                xrf_data = output[2]
+                if maxdims >= 3:
+                    xrf_data = output[2]
                 flips = False
             elif len(output) == 4:
                 source_data = output[2]
-                xrf_data = output[3]
+                if maxdims >= 3:
+                    xrf_data = output[3]
                 flips = False
 
             else:
