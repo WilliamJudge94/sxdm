@@ -190,7 +190,7 @@ def import_mda(mda_path, hdf5_save_directory, hdf5_save_filename,
                         data2save = raw_data2save
                     h5create_dataset(file=file_path, ds_path=save_path, ds_data=data2save)
 
-
+            # XRF Importer Written By - Dr. Michael Stueckelberger
             if maxdims >= 3:
                 # Save 3D data in h5 file
                 for dats in xrf_data.d:
