@@ -25,7 +25,7 @@ copyright = '2019, William Judge'
 author = 'William Judge'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.6'
+release = 'v0.7.3'
 
 
 # -- General configuration ---------------------------------------------------
