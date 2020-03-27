@@ -53,6 +53,13 @@ class DetChanTestCase(unittest.TestCase):
 
         hybrid_y = 68
 
+        xrf = {
+            'Fe': 2,
+            'Cu': 2,
+            'Ni': 2,
+            'Full': 2,
+        }
+
         mis = {
             '2Theta': 2,
             'Relative_r_To_Detector': 2,
@@ -68,11 +75,11 @@ class DetChanTestCase(unittest.TestCase):
         sample_theta = 2
 
 
-        setup_det_chan(test_fs.file, fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis)
+        setup_det_chan(test_fs.file, fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis, xrf)
 
         del_det_chan(test_fs.file)
 
-        setup_det_chan(test_fs.file, fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis)
+        setup_det_chan(test_fs.file, fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis, xrf)
 
         self.assertTrue(True)
 

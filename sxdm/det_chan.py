@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 from h5 import h5group_list, h5create_dataset, h5grab_data, h5del_group
 
-def space_check(fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis):
+def space_check(fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, hybrid_y, mis, xrf):
     """Based on the input variables this checks to see if the user has put any spaces into their group names.
 
     Warns the user that they are using spaces
@@ -29,14 +29,16 @@ def space_check(fluor, roi, detector_scan, filenumber, sample_theta, hybrid_x, h
         the detector channel that corresponds to the hybrid_y
     mis: (dic)
         a miscellaneous dictionary with entries of detector channels that might be usefull. ex. 2Theta, Ring_Current
-
+    xrf: (dic)
+        an x-ray fluorescence dictionary with entries of the detector channels CORRESPOND TO THE DETECTOR CHANNELS
+        UNDER THE 'xrf' HEADING THE THE HDF FILE!!!
     Return
     ======
     (bool) on whether or not there is a space in any of the dictionary entries given by the user
     """
     dic = False
     ints = False
-    master_dic = [fluor, roi, detector_scan, mis]
+    master_dic = [fluor, roi, detector_scan, mis, xrf]
     master_int = [filenumber, sample_theta, hybrid_x, hybrid_y]
 
     # See if there are any spaces in the dictionary names
@@ -74,7 +76,8 @@ def setup_det_chan(file,
                    sample_theta,
                    hybrid_x,
                    hybrid_y,
-                   mis):
+                   mis,
+                   xrf):
     """Sets detector channel information and stores it in the .h5 file
 
     Parameters
@@ -99,6 +102,9 @@ def setup_det_chan(file,
         the detector channel that corresponds to the hybrid_y
     mis: (dic)
         a miscellaneous dictionary with entries of detector channels that might be usefull. ex. 2Theta, Ring_Current
+    xrf: (dic)
+        an x-ray fluorescence dictionary with entries of the detector channels CORRESPOND TO THE DETECTOR CHANNELS
+        UNDER THE 'xrf' HEADING THE THE HDF FILE!!!
 
     Returns
     =======
@@ -113,7 +119,8 @@ def setup_det_chan(file,
                        sample_theta=sample_theta,
                        hybrid_x=hybrid_x,
                        hybrid_y=hybrid_y,
-                       mis=mis)
+                       mis=mis,
+                       xrf=xrf)
 
     if cont == True:
         total = [fluor,
@@ -123,11 +130,12 @@ def setup_det_chan(file,
                  [sample_theta],
                  [hybrid_x],
                  [hybrid_y],
-                 mis]
+                 mis,
+                 xrf]
 
         acceptable_types = ['fluor', 'roi', 'detector_scan',
                             'filenumber', 'sample_theta',
-                            'hybrid_x', 'hybrid_y', 'mis']
+                            'hybrid_x', 'hybrid_y', 'mis', 'xrf']
 
         for i, dic in enumerate(total):
             det_type = acceptable_types[i]
@@ -234,6 +242,7 @@ def disp_det_chan(file):
                 "sample_theta = 2"+'\n' +
                 "hybrid_x = 2" + '\n' +
                 "hybrid_y = 2" + '\n' +
+                "xrf = {\n\t'Fe':2,\n\t'Cu':2,\n\t'Ni':2,\n\t'Full':2\n\t}" + '\n' +
                 "mis = {'2Theta':2,\n\t'Storage_Ring_Current':2,\n\t'Relative_r_To_Detector':2,}"+'\n'
                )
         print(base)
@@ -293,11 +302,19 @@ def return_det(file, scan_numbers, group='fluor', default=False, dim_correction=
                 shapes = []
 
                 for i, scan in enumerate(scan_numbers):
-                    fluors = h5grab_data(file=file,
+                    
+                    if group != 'xrf':
+                        fluors = h5grab_data(file=file,
                                          data_loc='mda/' + scan + '/' + det)
-                    shapes.append(np.shape(fluors))
-
+                    elif group == 'xrf':
+                        fluors = h5grab_data(file=file, data_loc='xrf/' + scan + '/' + det)
+                        
+                    
+                    if group == 'filenumber':
+                        shapes.append(np.shape(fluors))
+                        
                     fluor_array.append(fluors)
+                        
                 end = True
 
 

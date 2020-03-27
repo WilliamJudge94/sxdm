@@ -43,7 +43,14 @@ dataset. To begin, run the following
     hybrid_x = 2
     
     hybrid_y = 2
-    
+
+    xrf = {
+	    'Fe':2,
+	    'Cu':2,
+	    'Ni':2,
+	    'Full':2,
+	    }
+
     mis = {
         '2Theta': 2,
         'Relative_r_To_Detector': 2,
@@ -87,6 +94,10 @@ hybrid_x location/motor position. this should correspond to the detector number 
 ``hybrid_y`` (int) This must be a single integer value corresponding to the detector channel associated with the
 hybrid_y location/motor position. this should correspond to the detector number of the motor you are scanning in the y direction
 
+``xrf`` (dic) The User can place as many x-ray fluorescence dictionary entries as they would like. Except there must
+be at least 1. Entries can be named however the User would like. None of these are in use in SXDM-1.0. They are there
+for User additions. THESE CORRESPOND TO THE DETECTOR CHANNELS UNDER THE 'xrf' HEADING THE THE HDF FILE!!!
+
 ``mis`` (dic) The User can place as many miscellaneous (mis) dictionary entries as they would like. Except there must
 be at least 1. Entries can be named however the User would like. None of these are in use in SXDM-1.0. They are there
 for User additions.
@@ -104,7 +115,8 @@ Once these values are set the User can run
                     sample_theta,
                     hybrid_x,
                     hybrid_y,
-                    mis)
+                    mis,
+                    xrf,)
 
     # You can reset the detector_channels through `del_det_chan(file)` function
 
@@ -543,7 +555,7 @@ Return Detector Data - Before Users Set Up SXDMFrameset
 
     scans = [1, 2, 3, 4, 5]
     string_scans = scan_num_convert(scans)
-    return_det(file, string_scans, group='fluor', default=False, dim_correction=False)
+    return_det(file, string_scans, group='xrf', default=False, dim_correction=False)
 
 Returns all information for a given detector channel for the array of scan numbers.
 
@@ -551,7 +563,7 @@ Returns all information for a given detector channel for the array of scan numbe
 
 ``scan_numbers`` - test_fs.scan_numbers
 
-``group`` - Examples: filenumber, sample_theta, hybrid_x, hybrid_y, fluor, roi, mis
+``group`` - Examples: filenumber, sample_theta, hybrid_x, hybrid_y, fluor, roi, mis, xrf
 
 ``default`` - if True this will default to the first fluorescence image
 
@@ -563,6 +575,11 @@ Return Detector Data - After Users Set Up SXDMFrameset
 
 .. code:: python
 
+    test_fs = SXDMFrameset(*args)
+
+    file = test_fs.file
+    scan_numbers = test_fs.scan_numbers
+
     return_det(file, scan_numbers, group='fluor', default=False)
 
 Returns all information for a given detector channel for the array of scan numbers.
@@ -571,10 +588,11 @@ Returns all information for a given detector channel for the array of scan numbe
 
 ``scan_numbers`` - test_fs.scan_numbers
 
-``group`` - Examples: filenumber, sample_theta, hybrid_x, hybrid_y, fluor, roi, mis
+``group`` - Examples: filenumber, sample_theta, hybrid_x, hybrid_y, fluor, roi, mis, xrf
 
 ``default`` - if True this will default to the first fluorescence image
 
+``dim_correction`` - if True this will add empty rows and columns to smaller datasets to make them the same shape
 
 Centering Detector Data
 ------------------------
