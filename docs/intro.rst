@@ -2,16 +2,18 @@
  Introduction 
 ===============
 
-SXDM is a toolkit for interacting with Scanning X-ray microscopy data,
-most likely collected at the Advanced Photon Source - Beamline 26-ID-C.
-By collecting a set of frames at multiple incident angles, spectral/diffraction
-maps  are reconstructed to provide chemical/strain insight. Although SXDM was not
-designed for Fluorescence Mapping or XANES Mapping, built in functions allow
-Users to easily handle datasets to fit their needs.
+SXDM is a toolkit for interacting with Scanning X-ray microscopy and
+X-ray Fluorescence data, most likely collected at the Advanced Photon
+Source - Beamline 26-ID-C. By collecting a set of frames at multiple
+incident angles/energies, spectral/diffraction maps are reconstructed to provide
+chemical/strain insight. Although SXDM was not designed for Fluorescence
+Mapping or XANES Mapping, built in functions allow Users to easily handle
+datasets to fit their needs.
 
 This project has the following design goals:
 
 - Provide a python toolkit for analysis of X-ray diffraction frames.
+- Privide a python toolkit for importing and retrieving X-ray Fluorescence data.
 - Store data in an open format for easy distribution.
 - Provide framework 26-ID-C data handling.
 

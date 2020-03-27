@@ -14,15 +14,18 @@ SXDM v0.7
 SXDM is a library for analyzing Scanning X-Ray Diffraction Microscopy data
 for materials science, chemistry and similar fields. The major focus is on
 Scanning Microscopy frames collected at multiple incident angles. One can
-import, retrieve, and analyze 26 - ID - C datasets all from a Python format.
-
+import, retrieve, and analyze 26 - ID - C datasets, including X-ray
+Fluorescence data, all from a Python format.
 
 Motivation & Features
 ---------------------
 
 - Importing and analysis of scanning x-ray diffraction microscopy framesets
 - Analysis of scanning x-ray diffraction microscopy (centroids, region of interest, and general user analysis)
-
+- Provide a python toolkit for analysis of X-ray diffraction frames.
+- Privide a python toolkit for importing and retrieving X-ray Fluorescence data.
+- Store data in an open format for easy distribution.
+- Provide framework 26-ID-C data handling.
 
 Installation (pip)
 ------------------
