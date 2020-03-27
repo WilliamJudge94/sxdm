@@ -2,7 +2,7 @@
  Introduction 
 ===============
 
-SXSM is a toolkit for interacting with Scanning X-ray microscopy data,
+SXDM is a toolkit for interacting with Scanning X-ray microscopy data,
 most likely collected at the Advanced Photon Source - Beamline 26-ID-C.
 By collecting a set of frames at multiple incident angles, spectral/diffraction
 maps  are reconstructed to provide chemical/strain insight. Although SXDM was not
