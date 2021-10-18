@@ -12,6 +12,18 @@ from functools import partial
 
 import config
 
+def create_bounding_box_rois(fs):
+    main_roi = create_rois(fs)
+    return main_roi[1]
+
+
+def create_total_linescan(fs):
+    main_roi = create_rois(fs)
+    linescan_store = []
+    for roi1 in main_roi[0]:
+        linescan_store.append(np.nansum(roi1))
+    return linescan_store
+
 
 def start_scan_roi(user_class):
     """Displays the scan roi figure with appropriate settings
@@ -689,6 +701,8 @@ def grab_int_v_scan(user_class, types='scan'):
     # Return the ROI data for each scan
     output = create_rois(user_class)
 
+    y_values_scan = create_total_linescan(user_class)
+
     # If we are looking at the scans as a whole
     if types == 'scan':
         # Grab the scan thetas
@@ -716,7 +730,7 @@ def grab_int_v_scan(user_class, types='scan'):
         pre_y = add_rois(output, types='scan')
 
         # Make sure the summed values are in order
-        y = pre_y[inds]
+        y = y_values_scan
 
         # Save the data so it can be called later
         user_class.scan_top_x = x.copy()
