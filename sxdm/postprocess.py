@@ -8,7 +8,7 @@ from h5 import h5grab_data
 
 
 def centroid_roi_map(results, map_type='chi_centroid'):
-    """Returns the centroid or roi
+    """Returns the centroid or roi based on the Centroid Analysis
     Parameters
     ==========
     results (nd.array)
