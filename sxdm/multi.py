@@ -121,7 +121,7 @@ def pooled_return(results, user_val):
     if user_val in acceptable_values:
         acceptable_values = np.asarray(acceptable_values)
         finder = np.where(acceptable_values == user_val)[0][0]
-        results = np.asarray(results)
+        results = np.asarray(results, dtype=object)
 
         return np.asarray(results[:, finder])
 

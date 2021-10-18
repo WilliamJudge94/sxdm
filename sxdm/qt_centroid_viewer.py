@@ -720,9 +720,13 @@ class Ui_MainWindow(object):
         """
         self.ttheta_2d_widget.ax.cla()
         self.ttheta_2d_widget.ax.imshow(self.im_ttheta_2d)
+        min_val = np.nanmin(self.im_ttheta_2d)
+        max_val = np.nanmax(self.im_ttheta_2d)
+        diff_val = max_val = min_val
 
         self.ttheta_2d_widget.ax.axvline(x=self.x_pos, color=self.cross_hair_color, linewidth=0.5)
         self.ttheta_2d_widget.ax.axhline(y=self.y_pos, color=self.cross_hair_color, linewidth=0.5)
+        self.ttheta_2d_widget.ax.set_title(f'Min: {min_val}  Max: {max_val}  Delta: {diff_val}')
 
         self.ttheta_2d_widget.ax.axis('off')
 
