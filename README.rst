@@ -1,8 +1,6 @@
 SXDM v0.7
 ==========
 
-https://app.travis-ci.com/WilliamJudge94/sxdm.svg?branch=master
-
 .. image:: https://app.travis-ci.com/WilliamJudge94/sxdm.svg?branch=master
     :target: https://app.travis-ci.com/WilliamJudge94/sxdm
 .. image:: https://coveralls.io/repos/github/WilliamJudge94/sxdm/badge.svg?branch=master
