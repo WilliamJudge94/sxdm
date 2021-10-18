@@ -695,7 +695,8 @@ class Ui_MainWindow(object):
             self.spot_vmax_value = self.spot_vmin_value
 
         self.spot_widget.ax.imshow(self.im_spot_dif, vmin=self.spot_vmin_value, vmax=self.spot_vmax_value)
-        self.spot_widget.ax.set_title('Spot Diffraction')
+        self.spot_widget.ax.set_title('Spot Diffraction', fontsize=8)
+        self.spot_widget.ax.tick_params(axis='both', which='major', labelsize=8)
         self.spot_widget.fig.canvas.draw()
         self.horizontalLayout_2.update()
 
@@ -709,7 +710,8 @@ class Ui_MainWindow(object):
             self.summed_vmax_value = self.summed_vmin_value
 
         self.summed_widget.ax.imshow(self.im_summed_dif, vmin=self.summed_vmin_value, vmax=self.summed_vmax_value)
-        self.summed_widget.ax.set_title('Sum. Diffraction')
+        self.summed_widget.ax.set_title('Sum. Diffraction', fontsize=8)
+        self.summed_widget.ax.tick_params(axis='both', which='major', labelsize=8)
         self.summed_widget.fig.canvas.draw()
         self.horizontalLayout_2.update()
 
@@ -723,6 +725,7 @@ class Ui_MainWindow(object):
         min_val = np.nanmin(self.im_ttheta_2d)
         max_val = np.nanmax(self.im_ttheta_2d)
         diff_val = max_val = min_val
+        #self.ttheta_2d_widget.ax.imshow(self.im_ttheta_2d, cmap='inferno')
 
         self.ttheta_2d_widget.ax.axvline(x=self.x_pos, color=self.cross_hair_color, linewidth=0.5)
         self.ttheta_2d_widget.ax.axhline(y=self.y_pos, color=self.cross_hair_color, linewidth=0.5)
@@ -739,7 +742,7 @@ class Ui_MainWindow(object):
         :return: Nothing
         """
         self.chi_2d_widget.ax.cla()
-        self.chi_2d_widget.ax.imshow(self.im_chi_2d)
+        self.chi_2d_widget.ax.imshow(self.im_chi_2d, cmap='plasma')
 
         self.chi_2d_widget.ax.axvline(x=self.x_pos, color=self.cross_hair_color, linewidth=0.5)
         self.chi_2d_widget.ax.axhline(y=self.y_pos, color=self.cross_hair_color, linewidth=0.5)
@@ -764,6 +767,7 @@ class Ui_MainWindow(object):
         self.ttheta_1d_widget.ax.plot(ttheta, color='blue')
         self.ttheta_1d_widget.ax.plot(ttheta_centroid_finder, color='red')
         self.ttheta_1d_widget.ax.axvline(x=ttheta_centroid, color='black')
+        self.ttheta_1d_widget.ax.tick_params(axis='both', which='major', labelsize=2)
 
         self.ttheta_1d_widget.fig.canvas.draw()
         self.gridLayout_5.update()
@@ -783,6 +787,7 @@ class Ui_MainWindow(object):
         self.chi_1d_widget.ax.plot(chi, color='blue')
         self.chi_1d_widget.ax.plot(chi_centroid_finder, color='red')
         self.chi_1d_widget.ax.axvline(x=chi_centroid, color='black')
+        self.chi_1d_widget.ax.tick_params(axis='both', which='major', labelsize=2)
 
         self.chi_1d_widget.fig.canvas.draw()
         self.gridLayout_5.update()
@@ -964,11 +969,11 @@ def make_2d(widget, image, types='norm'):
         plt.tight_layout()
 
     elif types == 'spot_dif':
-        plt.title('Spot Diffraction')
+        plt.title('Spot Diffraction', fontsize=8)
         plt.tight_layout(pad=3)
 
     elif types == 'sum_dif':
-        plt.title('Sum. Diffraction')
+        plt.title('Sum. Diffraction', fontsize=8)
         plt.tight_layout(pad=3)
 
 
