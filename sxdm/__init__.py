@@ -39,6 +39,11 @@ from viewer import *
 from readingmda import *
 from generalize import *
 
+def get_sxdm_test_data_location():
+    base = f'{os.path.dirname(__file__)[:-4]}tests/test_data/'
+    mda_data = f'{base}data/'
+    images = f'{base}images/'
+    return mda_data, images
 
 def warning_on_one_line(message, category, filename, lineno, file=None, line=None):
     """Warning formatter
