@@ -40,6 +40,12 @@ from readingmda import *
 from generalize import *
 
 def get_sxdm_test_data_location():
+    """Obtaining the folder locaitons of the test data.
+
+    Returns
+    -------
+    the mda_location, the images_location
+    """
     base = f'{os.path.dirname(__file__)[:-4]}tests/test_data/'
     mda_data = f'{base}data/'
     images = f'{base}images/'
