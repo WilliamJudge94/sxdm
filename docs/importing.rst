@@ -99,7 +99,6 @@ to be used in later analysis. All source ``image_#####.tif`` file can be easily 
         images_loc='/path/to/master/images/directory',
         scans=False,
         fill_num=4,
-        delete=False,
         import_type='uint32',
         delimiter_function=<function delimiter_func at 0x7f0873f3fe18>,
         force_reimport=False,
