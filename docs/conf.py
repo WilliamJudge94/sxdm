@@ -37,7 +37,7 @@ def read(fname):
     og_fname2 = og_fname.split('/')[:-1]
     return open(os.path.join('/'.join(og_fname2)+'/', fname)).read()
 
-release = '10'#read('VERSION.txt')
+release = read('VERSION.txt')
 
 
 # -- General configuration ---------------------------------------------------
