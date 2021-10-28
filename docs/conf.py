@@ -13,11 +13,18 @@
 
 import os
 import sys
+from unittest import mock
+import numpy as np
 sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
-
+if False:
+    autodoc_mock_imports = ['_tkinter', 'pandas', 'scipy.optimize', 'numpy', 'h5py']
+    for mod_name in autodoc_mock_imports:
+        sys.modules[mod_name] = mock.Mock()
 import sphinx_rtd_theme
+
+
 master_doc = 'index'
 
 project = 'SXDM Documentation'

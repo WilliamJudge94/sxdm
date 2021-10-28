@@ -422,24 +422,23 @@ def roi_pixel_analysis(self, row, column, median_blur_distance,
 def pixel_diffraction_grab(self, image_array, row, column):
     """Returns the diffraction image for a specific scan location (row, column)
 
-    Paramters
+    Parameters
     ==========
 
-    self (SXDMFrameset object)
+    self : (SXDMFrameset object)
         the sxdmframset object
 
-    image_array (nd.array)
+    image_array : (nd.array)
         the array that holds all the diffraction image locations self.im_array()
 
-    row (int)
+    row : (int)
         the row the User would like to return data for
 
-    column (int)
+    column : (int)
         the column the User would like to return data for
 
     Returns
     ========
-
     Summed diffraction image for a single pixel
     """
     
