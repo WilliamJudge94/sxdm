@@ -2,7 +2,7 @@ opencv_python
 miniutils==1.0.1
 scipy==1.1.0
 psutil
-numpy==1.16.1
+numpy==1.17
 tqdm==4.19.5
 h5py==2.8.0
 imageio==2.5.0
