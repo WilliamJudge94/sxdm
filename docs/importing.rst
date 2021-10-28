@@ -44,11 +44,11 @@ detector channel data into the User defined hdf5 destination/file.
 
 .. note::
 
-    This importer is what creates the main *.h5 file.
+    This importer is what creates the main .h5 file.
 
 .. note::
 
-    There is no way to force overwrite imported data - will be added soon
+    There is no way to force overwrite imported data. This will be added soon.
 
 
 Experimental Data (.mda) XRF Data Import
