@@ -13,3 +13,4 @@ sphinx
 tifffile
 sphinx-rtd-theme
 PyQt5
+docutils<0.18
