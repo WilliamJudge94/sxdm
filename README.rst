@@ -1,5 +1,5 @@
-SXDM v0.7
-==========
+SXDM
+====
 
 .. image:: https://app.travis-ci.com/WilliamJudge94/sxdm.svg?branch=master
     :target: https://app.travis-ci.com/WilliamJudge94/sxdm
@@ -8,6 +8,8 @@ SXDM v0.7
 .. image:: https://readthedocs.org/projects/sxdm/badge/?version=latest
    :target: http://sxdm.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
+.. image:: https://badge.fury.io/py/sxdm.svg
+    :target: https://badge.fury.io/py/sxdm
 
 
 

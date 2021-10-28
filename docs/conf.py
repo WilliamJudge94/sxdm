@@ -15,6 +15,9 @@ import os
 import sys
 from unittest import mock
 import numpy as np
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
@@ -32,7 +35,7 @@ copyright = '2019, William Judge'
 author = 'William Judge'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.7.3'
+release = read('VERSION.txt')
 
 
 # -- General configuration ---------------------------------------------------
