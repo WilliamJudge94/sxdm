@@ -13,10 +13,17 @@
 
 import os
 import sys
+import numpy as np
+from unittest import mock
 
 sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 import sphinx_rtd_theme
+
+if False:
+    autodoc_mock_imports = ['_tkinter', 'pandas', 'scipy.optimize', 'numpy', 'h5py']
+    for mod_name in autodoc_mock_imports:
+        sys.modules[mod_name] = mock.Mock()
 
 master_doc = 'index'
 
@@ -29,7 +36,8 @@ def read(fname):
     og_fname = os.path.join(os.path.dirname(__file__))
     og_fname2 = og_fname.split('/')[:-1]
     return open(os.path.join('/'.join(og_fname2)+'/', fname)).read()
-release = read('VERSION.txt')
+
+release = '10'#read('VERSION.txt')
 
 
 # -- General configuration ---------------------------------------------------

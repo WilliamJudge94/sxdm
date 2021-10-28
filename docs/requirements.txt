@@ -13,4 +13,4 @@ sphinx==3.2.0
 tifffile
 sphinx-rtd-theme==0.5.1
 PyQt5
-docutils<0.18
+docutils<=0.16
