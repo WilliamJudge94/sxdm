@@ -15,8 +15,11 @@ import os
 import sys
 from unittest import mock
 import numpy as np
+
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    og_fname = os.path.join(os.path.dirname(__file__))
+    og_fname2 = og_fname.split('/')[:-1]
+    return open(os.path.join('/'.join(og_fname2)+'/', fname)).read()
 
 sys.path.insert(0, os.path.abspath('../'))
 
