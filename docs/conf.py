@@ -13,21 +13,11 @@
 
 import os
 import sys
-from unittest import mock
-import numpy as np
-
-def read(fname):
-    og_fname = os.path.join(os.path.dirname(__file__))
-    og_fname2 = og_fname.split('/')[:-1]
-    return open(os.path.join('/'.join(og_fname2)+'/', fname)).read()
 
 sys.path.insert(0, os.path.abspath('../'))
+import sxdm
 
 # -- Project information -----------------------------------------------------
-if False:
-    autodoc_mock_imports = ['_tkinter', 'pandas', 'scipy.optimize', 'numpy', 'h5py']
-    for mod_name in autodoc_mock_imports:
-        sys.modules[mod_name] = mock.Mock()
 import sphinx_rtd_theme
 
 
@@ -38,6 +28,10 @@ copyright = '2019, William Judge'
 author = 'William Judge'
 
 # The full version, including alpha/beta/rc tags
+def read(fname):
+    og_fname = os.path.join(os.path.dirname(__file__))
+    og_fname2 = og_fname.split('/')[:-1]
+    return open(os.path.join('/'.join(og_fname2)+'/', fname)).read()
 release = read('VERSION.txt')
 
 
