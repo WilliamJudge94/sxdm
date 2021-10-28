@@ -1,3 +1,4 @@
+setuptools>=45.2.0
 opencv_python
 miniutils==1.0.1
 scipy==1.1.0
@@ -13,4 +14,4 @@ tifffile
 sphinx-rtd-theme==0.5.1
 PyQt5
 docutils<=0.16
-numpy==1.19
+numpy==1.20.0rc1

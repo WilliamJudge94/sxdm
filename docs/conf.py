@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../'))
 import sphinx_rtd_theme
 
 if False:
-    autodoc_mock_imports = ['_tkinter', 'pandas', 'scipy.optimize', 'numpy', 'h5py']
+    autodoc_mock_imports = ['_tkinter', 'pandas', 'scipy.optimize', 'numpy', 'h5py',]
     for mod_name in autodoc_mock_imports:
         sys.modules[mod_name] = mock.Mock()
 
