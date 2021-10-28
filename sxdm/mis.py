@@ -559,7 +559,7 @@ def median_blur_selective(input_array, median_blur_distance,
     """Allows for the user to have a selective median blur for individual spots. Meaning it will not assign a median
     blur to the entire spectra.
 
-    Parameters:
+    Parameters
     ===========
     input_array (nd.array)
         the 1D spectral array
@@ -573,7 +573,7 @@ def median_blur_selective(input_array, median_blur_distance,
     with_low (bool)
         True median blurs on values way above or way below the mean. Rather than just way above.
 
-    Returns:
+    Returns
     ========
     An 1D spectral array with appropriate values median blurred
     """
@@ -775,7 +775,7 @@ def total_rows_int_tup(input, difference=False):
     """Allows the user to return the true starting and ending values for a scan. Useful for when scans do not start
     at zero.
 
-    Parameters:
+    Parameters
     ===========
 
     input (int or tuple)
@@ -784,7 +784,7 @@ def total_rows_int_tup(input, difference=False):
     difference (bool)
         if the User would like to take the difference between the starting and ending points
 
-    Returns:
+    Returns
     ========
 
     Either the starting and ending values for a scan or the difference between them

@@ -321,8 +321,8 @@ def h5path_exists(file, loc):
 def h5set_attr(file, loc, attribute_name, attribute_val):
     """Set and attribute for a User selected group
 
-    Parameter
-    =========
+    Parameters
+    ==========
     file (str)
         the path to the hdf5 file
     loc (str)
@@ -414,12 +414,12 @@ def h5get_image_destination_v2(self, pixel):
 def open_h5(file):
     """Opening an hdf5 file
 
-    Parameters:
+    Parameters
     ===========
     file (str)
         the path to the hdf5 file
 
-    Returns:
+    Returns
     ========
     The opened hdf5 file
     """
@@ -429,12 +429,12 @@ def open_h5(file):
 def close_h5(hdf):
     """Closing and opened hdf5 file
 
-    Parameters:
+    Parameters
     ===========
     file (str)
         the path to the hdf5 file
 
-    Returns:
+    Returns
     ========
     Closes an opened hdf5 file
     """
