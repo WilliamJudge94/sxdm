@@ -13,4 +13,4 @@ tifffile
 sphinx-rtd-theme==0.5.2
 PyQt5
 pyparsing==2.4.7
-docutils==0.17.1
+docutils<0.18
