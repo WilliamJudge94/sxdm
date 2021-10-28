@@ -14,10 +14,7 @@
 import os
 import sys
 
-og_fname = os.path.join(os.path.dirname(__file__))
-og_fname2 = og_fname.split('/')[:-1]
-sys.path.insert(0, '/'.join(og_fname2)+'/sxdm/')
-
+sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 import sphinx_rtd_theme
 
