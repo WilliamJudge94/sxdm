@@ -1,8 +1,9 @@
 SXDM
 ====
-
-![example workflow](https://github.com/WilliamJudge94/sxdm/actions/workflows/python-package-conda.yml/badge.svg)
-
+   
+.. image:: https://github.com/WilliamJudge94/sxdm/actions/workflows/python-package-conda.yml/badge.svg
+   :target: http://shields.io/
+   
 .. image:: https://readthedocs.org/projects/sxdm/badge/?version=latest
    :target: http://sxdm.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
