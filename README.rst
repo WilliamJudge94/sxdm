@@ -1,10 +1,8 @@
 SXDM
 ====
 
-.. image:: https://app.travis-ci.com/WilliamJudge94/sxdm.svg?branch=master
-    :target: https://app.travis-ci.com/WilliamJudge94/sxdm
-.. image:: https://coveralls.io/repos/github/WilliamJudge94/sxdm/badge.svg?branch=master
-    :target: https://coveralls.io/github/WilliamJudge94/sxdm?branch=master
+![example workflow](https://github.com/WilliamJudge94/sxdm/actions/workflows/python-package-conda.yml/badge.svg)
+
 .. image:: https://readthedocs.org/projects/sxdm/badge/?version=latest
    :target: http://sxdm.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation status
