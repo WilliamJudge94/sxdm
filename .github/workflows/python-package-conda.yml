@@ -20,10 +20,7 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
-        pip install pytest
-        pip install coveralls
-        pip install pytest-cov
+        conda env update --file envs/test_sxdm.yml --name base
 
     - name: Test with pytest
       run: |
