@@ -127,9 +127,7 @@ Example for a single frameset across difference X-ray incident angles:
     # Developer Version
     import sys
     sys.path.append('/path/to/sxdm')
-    # Developer Version
-
-
+    
     from sxdm import *
 
     # Set file name
@@ -140,7 +138,7 @@ Example for a single frameset across difference X-ray incident angles:
     import_mda(mda_path, hdf5_save_directory, hdf5_save_filename)
 
     # Importing .tif images - file='/dir/test.h5'
-                                - was created by the import_mda() function
+      # was created by the import_mda() function
     import_images(file, images_loc)
 
     # Setting Detector Channels
